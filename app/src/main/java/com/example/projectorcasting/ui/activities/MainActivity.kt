@@ -5,20 +5,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.core.view.GravityCompat
-import androidx.navigation.NavController
 import com.example.projectorcasting.R
 import com.example.projectorcasting.databinding.ActivityMainBinding
-import com.kpstv.tinyhttpd.BuildConfig
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity() , View.OnClickListener{
+class MainActivity : BaseActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -32,21 +30,10 @@ class MainActivity : BaseActivity() , View.OnClickListener{
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        /** Required to initialize the server */
-        SimpleWebServer.init(this, BuildConfig.DEBUG)
+//        setupCasting()
 
         drawerLayout = binding.drawerLayout
-//        val navView: NavigationView = binding.navView
-
-         navController = findNavController(R.id.nav_host_fragment_content_main)
-
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-//        appBarConfiguration = AppBarConfiguration(
-//            setOf(
-//                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
-//            ), drawerLayout
-//        )
+        navController = findNavController(R.id.nav_host_fragment_content_main)
 
         navController?.addOnDestinationChangedListener { controller, destination, arguments ->
             if (destination.id == R.id.nav_dash) {
@@ -55,9 +42,6 @@ class MainActivity : BaseActivity() , View.OnClickListener{
                 drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             }
         }
-
-//        setupActionBarWithNavController(navController, appBarConfiguration)
-//        navView.setupWithNavController(navController)
 
         binding.menuRateUs.setOnClickListener(this)
         binding.menuShare.setOnClickListener(this)
@@ -204,7 +188,6 @@ class MainActivity : BaseActivity() , View.OnClickListener{
 //            //            println("AHandler.callingForMapper excep " + e.message)
 //        }
     }
-
 
 
 }

@@ -1,7 +1,6 @@
 package com.example.projectorcasting.ui.activities
 
 import android.Manifest
-import android.annotation.TargetApi
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
@@ -12,7 +11,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.provider.Settings
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -24,13 +22,18 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.mediarouter.media.MediaRouter
+import androidx.viewbinding.BuildConfig
 import com.example.projectorcasting.R
-import com.example.projectorcasting.ui.utils.AppUtils
 import com.example.projectorcasting.viewmodels.DashboardViewModel
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
+import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.SessionManagerListener
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import java.util.*
 import javax.inject.Inject
 
@@ -38,6 +41,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
+    //    abstract fun bindingView(): ViewBinding?
     private val dashboardViewModel: DashboardViewModel? by viewModels()
 
     var alertDialogProgressBar: Dialog? = null
@@ -49,10 +53,116 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
     private var mSessionManagerListener: SessionManagerListener<CastSession>? = null
     private var mCastSession: CastSession? = null
     private var mCastContext: CastContext? = null
+    private var mMediaRouter: MediaRouter? = null
+    private var isConnected = false
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    val isCastingEnabledLiveData = MutableLiveData<Int>()
+    val data: LiveData<Int> = isCastingEnabledLiveData
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // setContentView()
+        establishCastSession()
+    }
+
+    private fun establishCastSession() {
+        /** Required to initialize the server */
+        SimpleWebServer.init(this, BuildConfig.DEBUG)
+
+        /** Set up cast listener as suggested in official documentation */
+        setUpCastListener()
+
+        /** Set up cast context as suggested in official documentation */
+        mCastContext = CastContext.getSharedInstance(this)
+        mCastSession = mCastContext?.sessionManager?.currentCastSession
+
+        mCastContext?.addCastStateListener { state ->
+            /** Show an introductory overlay to notify user that
+             *  there is a cast device available to connect.
+             */
+
+            isCastingEnabledLiveData.postValue(state)
+
+            if (state == CastState.CONNECTED)
+                isConnected = true
+            else if (state == CastState.NOT_CONNECTED)
+                isConnected = false
+        }
+
+        /** Set session manager listener, this listener consist various methods
+         *  which will be invoked when something changes in cast like
+         *  Start, Resume, End, etc listener.
+         */
+
+        mSessionManagerListener?.let {
+            mCastContext?.sessionManager?.addSessionManagerListener(it, CastSession::class.java)
+        }
+
+        if (mMediaRouter == null)
+            mMediaRouter = MediaRouter.getInstance(this)
+    }
+
+    private fun setUpCastListener() {
+        mSessionManagerListener = object : SessionManagerListener<CastSession> {
+            override fun onSessionStarted(session: CastSession, p1: String) {
+                onApplicationConnected(session)
+            }
+
+            override fun onSessionResumeFailed(p0: CastSession, p1: Int) {
+                onApplicationDisconnected()
+            }
+
+            override fun onSessionEnded(p0: CastSession, p1: Int) {
+                onApplicationDisconnected()
+            }
+
+            override fun onSessionResumed(session: CastSession, p1: Boolean) {
+                onApplicationConnected(session)
+            }
+
+            override fun onSessionStartFailed(p0: CastSession, p1: Int) {
+                onApplicationDisconnected()
+            }
+
+            override fun onSessionSuspended(p0: CastSession, p1: Int) {}
+
+            override fun onSessionStarting(p0: CastSession) {}
+
+            override fun onSessionResuming(p0: CastSession, p1: String) {}
+
+            override fun onSessionEnding(p0: CastSession) {}
+
+            private fun onApplicationConnected(castSession: CastSession) {
+                mCastSession = castSession
+//                invalidateOptionsMenu() // This is required to refresh the activity toolbar to display cast connect button.
+            }
+
+            private fun onApplicationDisconnected() {
+//                invalidateOptionsMenu() // This is required to refresh the toolbar after disconnect.
+            }
+        }
+    }
+
+    fun getMediaRouter(): MediaRouter? {
+        return mMediaRouter
+    }
+
+    fun startCasting(routeInfo: MediaRouter.RouteInfo) {
+        mMediaRouter?.selectRoute(routeInfo)
+    }
+
+//    fun startCasting() {
+//        mMediaRouter?.selectRoute(mMediaRouter?.routes!![1])
+//    }
+
+    fun stopCasting() {
+        mMediaRouter?.unselect(MediaRouter.UNSELECT_REASON_DISCONNECTED)
+        mCastSession?.remoteMediaClient?.stop()
+        SimpleWebServer.stopServer()
+    }
+
+    fun isCastingConnected(): Boolean {
+        return isConnected
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -249,19 +359,18 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
     fun startMirroring() {
 //        if (Utils.isNetworkConnected(this)) {
-            try {
-                startActivity(Intent("android.settings.CAST_SETTINGS"))
-            } catch (e: Exception) {
-                Toast.makeText(this, getString(R.string.device_not_supported), Toast.LENGTH_LONG)
-                    .show()
-            }
+        try {
+            startActivity(Intent("android.settings.CAST_SETTINGS"))
+        } catch (e: Exception) {
+            Toast.makeText(this, getString(R.string.device_not_supported), Toast.LENGTH_LONG)
+                .show()
+        }
 //        } else {
 //            Toast.makeText(this, getString(R.string.required_wifi_network), Toast.LENGTH_SHORT)
 //                .show()
 //            AppUtils.openWifiPopUpInApp(this)
 //        }
     }
-
 
 
 }

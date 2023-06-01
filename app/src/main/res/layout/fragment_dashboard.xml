@@ -47,6 +47,7 @@
     </RelativeLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:layout_below="@+id/rl_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -54,7 +55,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="210dp"
+            android:layout_marginTop="170dp"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
@@ -62,7 +63,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding20dp"
                 android:layout_marginRight="@dimen/padding20dp"
-                android:layout_marginTop="@dimen/padding10dp"
                 app:cardBackgroundColor="@color/light_blue"
                 app:cardCornerRadius="@dimen/padding10dp">
 

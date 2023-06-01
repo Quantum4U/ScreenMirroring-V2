@@ -33,4 +33,8 @@
         <item name="android:background">#ffffff</item>
     </style>
 
+    <style name="Theme.CastVideosDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimaryDark">#000000</item>
+    </style>
+
 </resources>
