@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -28,6 +29,7 @@ import androidx.mediarouter.media.MediaRouter
 import androidx.viewbinding.BuildConfig
 import com.example.projectorcasting.R
 import com.example.projectorcasting.viewmodels.DashboardViewModel
+import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.CastState
@@ -54,9 +56,11 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
     private var mCastSession: CastSession? = null
     private var mCastContext: CastContext? = null
     private var mMediaRouter: MediaRouter? = null
-    private var isConnected = false
+    private var isConnected: Boolean? = null
+    private var connectedDeviceName: String? = null
+    private var castDevice: CastDevice? = null
 
-    val isCastingEnabledLiveData = MutableLiveData<Int>()
+    private val isCastingEnabledLiveData = MutableLiveData<Int>()
     val data: LiveData<Int> = isCastingEnabledLiveData
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,12 +85,20 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
              *  there is a cast device available to connect.
              */
 
-            isCastingEnabledLiveData.postValue(state)
+            if (state == CastState.CONNECTING) {
+                showLoader()
+            }
 
-            if (state == CastState.CONNECTED)
+            Log.d("BaseActivity", "establishCastSession A13 : >>" + state)
+            if (state == CastState.CONNECTED) {
                 isConnected = true
-            else if (state == CastState.NOT_CONNECTED)
+                hideLoader()
+            } else if (state == CastState.NOT_CONNECTED) {
                 isConnected = false
+                hideLoader()
+            }
+
+            isCastingEnabledLiveData.postValue(state)
         }
 
         /** Set session manager listener, this listener consist various methods
@@ -134,6 +146,9 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
             private fun onApplicationConnected(castSession: CastSession) {
                 mCastSession = castSession
+                Log.d("CastHelper", "getCastEnabled A13 : >>"+ castSession.castDevice.deviceId)
+                castDevice = castSession.castDevice
+                connectedDeviceName = castSession.castDevice?.modelName
 //                invalidateOptionsMenu() // This is required to refresh the activity toolbar to display cast connect button.
             }
 
@@ -147,8 +162,10 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
         return mMediaRouter
     }
 
-    fun startCasting(routeInfo: MediaRouter.RouteInfo) {
-        mMediaRouter?.selectRoute(routeInfo)
+    fun startCasting(routeInfo: MediaRouter.RouteInfo?, device: CastDevice?) {
+        castDevice = device
+        connectedDeviceName = device?.modelName
+        routeInfo?.let { mMediaRouter?.selectRoute(it) }
     }
 
 //    fun startCasting() {
@@ -161,8 +178,22 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
         SimpleWebServer.stopServer()
     }
 
-    fun isCastingConnected(): Boolean {
+    fun isCastingConnected(): Boolean? {
         return isConnected
+    }
+
+    fun getConnectedDeviceName(): String? {
+        return connectedDeviceName
+    }
+
+    fun setConnectionInfo(isConnected: Boolean, device: CastDevice?) {
+        this.isConnected = isConnected
+        this.connectedDeviceName = device?.modelName
+        this.castDevice = device
+    }
+
+    fun getConnectedCastDevice(): CastDevice? {
+        return castDevice
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -342,6 +373,10 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
     fun showBottomBannerAds(view: LinearLayout?, activity: Activity?) {
 //        view?.addView(AHandler.getInstance().getBannerHeader(activity))
+    }
+
+    fun showNativeMedium(view: LinearLayout?, activity: Activity?) {
+//        view?.addView(AHandler.getInstance().getNativeMedium(activity))
     }
 
 //    fun isAdsEnabled(): Boolean {

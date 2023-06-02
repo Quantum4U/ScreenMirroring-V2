@@ -9,7 +9,7 @@
 
     <string name="menu_dash">Dashboard</string>
     <string name="menu_video">Videos</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_scan_device">Scan Device</string>
 
     <string name="share_app">Share App</string>
     <string name="feedback">Feedback</string>
@@ -39,4 +39,13 @@
     <string name="queue_item_added_to_play_next">An item was added to play next</string>
     <string name="queue_item_added_to_queue">An item was added to the queue</string>
     <string name="media_route_menu_title">Play On</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="no_device_connected">No devices connected</string>
+    <string name="connected">%s Connected</string>
+    <string name="connect_to_chrome_cast">Connect to Chromecast TV</string>
+    <string name="connect_to_chrome_cast_subheading">Make sure your “app name “ is turned \non and connected to the same wifi</string>
+    <string name="connect_to_wifi_text">You are offline. Please open your phone settings \nand connect to an active WiFi Network.</string>
+    <string name="no_device_found">No device found for connection</string>
+    <string name="available_devices">Available Devices</string>
+    <string name="searching_for_devices">Searching for devices</string>
 </resources>

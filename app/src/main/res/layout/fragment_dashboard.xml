@@ -9,10 +9,11 @@
     <com.airbnb.lottie.LottieAnimationView
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        app:lottie_loop="true"
         android:scaleType="centerCrop"
         app:lottie_autoPlay="true"
-        app:lottie_rawRes="@raw/dash_json"/>
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/dash_json" />
+
 
     <RelativeLayout
         android:id="@+id/rl_toolbar"
@@ -47,21 +48,94 @@
     </RelativeLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:layout_below="@+id/rl_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/rl_toolbar"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="170dp"
+            android:layout_marginTop="55dp"
             android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/ll_connected_device_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:orientation="horizontal"
+                        android:visibility="invisible">
+
+                        <View
+                            android:layout_width="@dimen/padding10dp"
+                            android:layout_height="@dimen/padding10dp"
+                            android:background="@drawable/active_dot_bg" />
+
+                        <TextView
+                            android:id="@+id/tv_connected_device_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/padding5dp"
+                            android:fontFamily="@font/inter_semibold"
+                            android:text="@string/connected"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/textsize20sp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_disconnect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ll_connected_device_name"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/padding5dp"
+                        android:background="@drawable/dash_mirror_start_bg"
+                        android:fontFamily="@font/inter_semibold"
+                        android:paddingLeft="@dimen/padding15dp"
+                        android:paddingTop="@dimen/padding10dp"
+                        android:paddingRight="@dimen/padding15dp"
+                        android:paddingBottom="@dimen/padding10dp"
+                        android:text="@string/disconnect"
+                        android:textColor="@color/heading"
+                        android:textSize="@dimen/textsize14sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_no_device_connected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ll_connected_device_name"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/padding10dp"
+                        android:layout_marginBottom="@dimen/padding10dp"
+                        android:fontFamily="@font/inter_semibold"
+                        android:text="@string/no_device_connected"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/textsize20sp"
+                        android:visibility="visible" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding20dp"
+                android:layout_marginTop="@dimen/padding30dp"
                 android:layout_marginRight="@dimen/padding20dp"
                 app:cardBackgroundColor="@color/light_blue"
                 app:cardCornerRadius="@dimen/padding10dp">
@@ -71,53 +145,53 @@
                     android:layout_height="wrap_content">
 
                     <LinearLayout
-                        android:layout_marginLeft="@dimen/padding10dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginRight="@dimen/padding20dp"
-                        android:layout_toLeftOf="@+id/ll_start_mirrioring"
-                        android:paddingLeft="@dimen/padding10dp"
-                        android:paddingTop="@dimen/padding20dp"
-                        android:paddingBottom="@dimen/padding20dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/padding10dp"
+                        android:layout_marginRight="@dimen/padding20dp"
+                        android:layout_toLeftOf="@+id/ll_start_mirrioring"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/padding10dp"
+                        android:paddingTop="@dimen/padding20dp"
+                        android:paddingBottom="@dimen/padding20dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_semibold"
                             android:text="@string/screen_mirror"
-                            android:textSize="@dimen/textsize20sp"
                             android:textColor="@color/heading"
-                            android:fontFamily="@font/inter_semibold"/>
+                            android:textSize="@dimen/textsize20sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
                             android:text="@string/screen_mirror_info"
-                            android:textSize="@dimen/textsize14sp"
                             android:textColor="@color/sub_heading"
-                            android:fontFamily="@font/inter_regular"/>
+                            android:textSize="@dimen/textsize14sp" />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_marginRight="@dimen/padding20dp"
-                        android:paddingTop="@dimen/margin_5"
-                        android:paddingLeft="@dimen/margin_5"
-                        android:paddingRight="@dimen/margin_5"
-                        android:paddingBottom="@dimen/padding10dp"
-                        android:background="@drawable/dash_mirror_start_bg"
-                        android:orientation="vertical"
                         android:id="@+id/ll_start_mirrioring"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_marginRight="@dimen/padding20dp"
+                        android:background="@drawable/dash_mirror_start_bg"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/margin_5"
+                        android:paddingTop="@dimen/margin_5"
+                        android:paddingRight="@dimen/margin_5"
+                        android:paddingBottom="@dimen/padding10dp">
 
                         <RelativeLayout
-                            android:background="@drawable/cast_icon_bg"
                             android:layout_width="@dimen/padding30dp"
-                            android:layout_height="@dimen/padding30dp">
+                            android:layout_height="@dimen/padding30dp"
+                            android:background="@drawable/cast_icon_bg">
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="wrap_content"
@@ -128,14 +202,14 @@
                         </RelativeLayout>
 
                         <TextView
-                            android:layout_marginTop="@dimen/padding5dp"
-                            android:layout_gravity="center_horizontal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/textsize10sp"
-                            android:textColor="@color/heading"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="@dimen/padding5dp"
                             android:fontFamily="@font/inter_semibold"
-                            android:text="@string/start"/>
+                            android:text="@string/start"
+                            android:textColor="@color/heading"
+                            android:textSize="@dimen/textsize10sp" />
 
                     </LinearLayout>
 
@@ -144,57 +218,57 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
-                android:text="@string/tv_cast"
-                android:textColor="@color/heading"
-                android:textSize="@dimen/textsize20sp"
-                android:fontFamily="@font/inter_semibold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding20dp"
                 android:layout_marginTop="@dimen/padding15dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:fontFamily="@font/inter_semibold"
+                android:text="@string/tv_cast"
+                android:textColor="@color/heading"
+                android:textSize="@dimen/textsize20sp" />
 
             <TextView
-                android:text="@string/tv_cast_subtitle"
-                android:textColor="@color/heading"
-                android:textSize="@dimen/textsize16sp"
-                android:fontFamily="@font/inter_regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding20dp"
                 android:layout_marginTop="@dimen/padding2dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:fontFamily="@font/inter_regular"
+                android:text="@string/tv_cast_subtitle"
+                android:textColor="@color/heading"
+                android:textSize="@dimen/textsize16sp" />
 
             <RelativeLayout
-                android:padding="@dimen/padding20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding20dp">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cv_cast_photos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/padding5dp"
                     android:layout_toLeftOf="@+id/v_center"
-                    app:cardUseCompatPadding="true"
                     app:cardCornerRadius="@dimen/padding10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="60dp"
-                            app:srcCompat="@drawable/ic_dash_photo"
-                            android:layout_height="60dp"/>
+                            android:layout_height="60dp"
+                            app:srcCompat="@drawable/ic_dash_photo" />
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/padding10dp"
                             android:layout_marginBottom="@dimen/padding10dp"
                             android:fontFamily="@font/inter_semibold"
-                            android:textColor="@color/heading"
                             android:text="@string/cast_photos"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:textColor="@color/heading" />
 
                     </LinearLayout>
 
@@ -202,37 +276,37 @@
 
                 <View
                     android:id="@+id/v_center"
-                    android:layout_centerInParent="true"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"/>
+                    android:layout_height="0dp"
+                    android:layout_centerInParent="true" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cv_cast_videos"
-                    android:layout_toRightOf="@+id/v_center"
-                    app:cardUseCompatPadding="true"
-                    android:layout_marginLeft="@dimen/padding5dp"
-                    app:cardCornerRadius="@dimen/padding10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padding5dp"
+                    android:layout_toRightOf="@+id/v_center"
+                    app:cardCornerRadius="@dimen/padding10dp"
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="60dp"
-                            app:srcCompat="@drawable/ic_dash_video"
-                            android:layout_height="60dp"/>
+                            android:layout_height="60dp"
+                            app:srcCompat="@drawable/ic_dash_video" />
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/padding10dp"
                             android:layout_marginBottom="@dimen/padding10dp"
                             android:fontFamily="@font/inter_semibold"
-                            android:textColor="@color/heading"
                             android:text="@string/cast_videos"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:textColor="@color/heading" />
 
                     </LinearLayout>
 
@@ -241,37 +315,37 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:padding="@dimen/padding20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding20dp">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cv_cast_audios"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/padding5dp"
                     android:layout_toLeftOf="@+id/v1_center"
-                    app:cardUseCompatPadding="true"
                     app:cardCornerRadius="@dimen/padding10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="60dp"
-                            app:srcCompat="@drawable/ic_dash_photo"
-                            android:layout_height="60dp"/>
+                            android:layout_height="60dp"
+                            app:srcCompat="@drawable/ic_dash_photo" />
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/padding10dp"
                             android:layout_marginBottom="@dimen/padding10dp"
                             android:fontFamily="@font/inter_semibold"
-                            android:textColor="@color/heading"
                             android:text="@string/cast_audios"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:textColor="@color/heading" />
 
                     </LinearLayout>
 
@@ -279,37 +353,37 @@
 
                 <View
                     android:id="@+id/v1_center"
-                    android:layout_centerInParent="true"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"/>
+                    android:layout_height="0dp"
+                    android:layout_centerInParent="true" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cv_pro"
-                    android:layout_toRightOf="@+id/v1_center"
-                    app:cardUseCompatPadding="true"
-                    android:layout_marginLeft="@dimen/padding5dp"
-                    app:cardCornerRadius="@dimen/padding10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padding5dp"
+                    android:layout_toRightOf="@+id/v1_center"
+                    app:cardCornerRadius="@dimen/padding10dp"
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="60dp"
-                            app:srcCompat="@drawable/ic_dash_video"
-                            android:layout_height="60dp"/>
+                            android:layout_height="60dp"
+                            app:srcCompat="@drawable/ic_dash_video" />
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/padding10dp"
                             android:layout_marginBottom="@dimen/padding10dp"
                             android:fontFamily="@font/inter_semibold"
-                            android:textColor="@color/heading"
                             android:text="@string/premium_upgrade"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:textColor="@color/heading" />
 
                     </LinearLayout>
 

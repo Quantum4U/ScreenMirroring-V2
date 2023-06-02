@@ -18,8 +18,8 @@
         tools:layout="@layout/fragment_videos" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.projectorcasting.ui.fragments.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_scan_device"
+        android:name="com.example.projectorcasting.ui.fragments.ScanDeviceFragment"
+        android:label="@string/menu_scan_device"
+        tools:layout="@layout/fragment_scandevice" />
 </navigation>

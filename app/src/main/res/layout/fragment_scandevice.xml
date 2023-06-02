@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.ScanDeviceFragment">
+
+    <RelativeLayout
+        android:id="@+id/rl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:actionBarSize">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:padding="@dimen/padding5dp"
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding20dp"
+            app:srcCompat="@drawable/ic_back_arrow" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/padding20dp"
+            app:srcCompat="@drawable/ic_refresh" />
+
+    </RelativeLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_below="@+id/rl_toolbar"
+        android:layout_above="@+id/bottom_banner_Ad"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.airbnb.lottie.LottieAnimationView
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/cast_device_json"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"/>
+
+            <TextView
+                android:text="@string/connect_to_chrome_cast"
+                android:textColor="@color/heading"
+                android:textSize="@dimen/textsize20sp"
+                android:fontFamily="@font/inter_semibold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_marginTop="@dimen/padding5dp"
+                android:text="@string/connect_to_chrome_cast_subheading"
+                android:gravity="center"
+                android:textColor="@color/heading"
+                android:textSize="@dimen/textsize16sp"
+                android:fontFamily="@font/inter_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <View
+                android:layout_marginTop="@dimen/padding20dp"
+                android:layout_marginBottom="@dimen/padding20dp"
+                android:background="#F1F1F1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding1dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:id="@+id/ll_scanning"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="@string/searching_for_devices"
+                        android:textSize="@dimen/textsize16sp"
+                        android:textColor="@color/heading"
+                        android:fontFamily="@font/inter_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        app:lottie_loop="true"
+                        app:lottie_autoPlay="true"
+                        app:lottie_rawRes="@raw/scanning_dot_json"
+                        android:layout_width="@dimen/padding40dp"
+                        android:layout_height="@dimen/margin_bottom_40"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/ll_item_layout"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:gravity="center"
+                        android:textSize="@dimen/textsize16sp"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/heading"
+                        android:text="@string/available_devices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_marginTop="@dimen/padding15dp"
+                        android:id="@+id/rv_scan_device"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="visible"
+                    android:id="@+id/ll_no_network"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        app:srcCompat="@drawable/ic_wifi_not_connected_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:lineSpacingExtra="@dimen/padding3dp"
+                        android:gravity="center"
+                        android:fontFamily="@font/inter_medium"
+                        android:layout_marginTop="@dimen/padding20dp"
+                        android:text="@string/connect_to_wifi_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/ll_no_device_found"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        app:srcCompat="@drawable/ic_no_device_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:lineSpacingExtra="@dimen/padding3dp"
+                        android:gravity="center"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="@string/no_device_found"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:id="@+id/bottom_banner_Ad"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

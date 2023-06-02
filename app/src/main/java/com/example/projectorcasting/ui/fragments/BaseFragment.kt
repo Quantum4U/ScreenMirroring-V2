@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.mediarouter.media.MediaRouter
 import com.example.projectorcasting.ui.activities.BaseActivity
 import com.example.projectorcasting.viewmodels.DashboardViewModel
+import com.google.android.gms.cast.CastDevice
 import java.io.File
 
 open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
@@ -34,6 +35,10 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
 //        view?.addView(AHandler.getInstance().getBannerHeader(activity))
     }
 
+    fun showNativeMedium(view: LinearLayout?, activity: Activity?) {
+//        view?.addView(AHandler.getInstance().getNativeMedium(activity))
+    }
+
     fun getDashViewModel(): DashboardViewModel? {
         return (activity as BaseActivity?)?.getDashboardViewmodel()
     }
@@ -50,8 +55,8 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
         return (activity as BaseActivity).getMediaRouter()
     }
 
-    fun startCasting(routeInfo: MediaRouter.RouteInfo){
-        (activity as BaseActivity).startCasting(routeInfo)
+    fun startCasting(routeInfo: MediaRouter.RouteInfo?,device: CastDevice?){
+        (activity as BaseActivity).startCasting(routeInfo,device)
     }
 
 //    fun startCasting(){
@@ -62,7 +67,7 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
         (activity as BaseActivity).stopCasting()
     }
 
-    fun isCastingConnected(): Boolean {
+    fun isCastingConnected(): Boolean? {
         return (activity as BaseActivity).isCastingConnected()
     }
 
@@ -70,4 +75,15 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
         return (activity as BaseActivity).data
     }
 
+    fun getConnectedDeviceName(): String? {
+        return (activity as BaseActivity).getConnectedDeviceName()
+    }
+
+    fun setConnectionInfo(isConnected: Boolean,device: CastDevice?){
+        (activity as BaseActivity).setConnectionInfo(isConnected,device)
+    }
+
+    fun getConnectedCastDevice(): CastDevice? {
+        return (activity as BaseActivity).getConnectedCastDevice()
+    }
 }

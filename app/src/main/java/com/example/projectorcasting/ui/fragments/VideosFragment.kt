@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.example.projectorcasting.R
 import com.example.projectorcasting.casting.utils.CastHelper
-import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.databinding.FragmentVideosBinding
 import com.google.android.gms.cast.framework.CastState
 
@@ -20,6 +19,15 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         binding = FragmentVideosBinding.bind(view)
 
         observeCastingLiveData()
+
+        binding?.play?.setOnClickListener {
+            val list = getMediaRouter()?.let { it1 -> CastHelper.getAvailableDevices(it1) }
+            startCasting(list?.get(0)?.routeInfo!!, list[0].castDevice!!)
+        }
+
+        binding?.etPath?.setOnClickListener {
+            stopCasting()
+        }
 
     }
 

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/rl_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/rl_top"
+        android:layout_marginTop="@dimen/padding15dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding30dp"
+            android:id="@+id/rl_icon"
+            android:layout_width="@dimen/padding35dp"
+            android:layout_height="@dimen/padding35dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_item_device_icon"/>
+
+            <View
+                android:visibility="gone"
+                android:id="@+id/v_active_dot"
+                android:layout_alignParentRight="true"
+                android:layout_width="@dimen/padding10dp"
+                android:layout_height="@dimen/padding10dp"
+                android:background="@drawable/active_dot_bg" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_marginLeft="@dimen/padding20dp"
+            android:textColor="@color/heading"
+            android:textSize="@dimen/textsize16sp"
+            android:fontFamily="@font/inter_medium"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/rl_icon"
+            android:id="@+id/tv_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_marginLeft="@dimen/padding10dp"
+        android:layout_marginRight="@dimen/padding10dp"
+        android:layout_marginTop="@dimen/padding15dp"
+        android:background="#1A000000"
+        android:layout_below="@+id/rl_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding1dp"/>
+
+</RelativeLayout>
