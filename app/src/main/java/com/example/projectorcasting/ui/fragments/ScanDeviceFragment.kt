@@ -126,8 +126,15 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
         getMediaRouter()?.let { scanViewModel.fetchDeviceList(it) }
     }
 
-    private fun itemClick(castModel: CastModel) {
-        startCasting(castModel.routeInfo, castModel.castDevice)
+    private fun itemClick(isConnect: Boolean,castModel: CastModel) {
+        scanViewModel.showConnectionPrompt(context,::actionPerform,isConnect,castModel)
+    }
+
+    private fun actionPerform(isConnect: Boolean,castModel: CastModel){
+        if(isConnect)
+            startCasting(castModel.routeInfo, castModel.castDevice)
+        else
+            stopCasting()
     }
 
     override fun onDestroyView() {

@@ -11,4 +11,7 @@
     <color name="light_blue">#ABDEFF</color>
     <color name="heading">#0E0E2C</color>
     <color name="sub_heading">#B2000000</color>
+    <color name="text_green">#00CC2D</color>
+    <color name="text_red">#FF2F2F</color>
+    <color name="text_orange">#FC6A4B</color>
 </resources>

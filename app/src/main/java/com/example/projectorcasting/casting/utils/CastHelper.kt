@@ -24,6 +24,7 @@ object CastHelper {
         var devices = ArrayList<CastModel>()
 
         for (routeInfo in routes) {
+            Log.d("CastHelper", "getAvailableDevices A13 : >>"+routeInfo)
             val device = CastDevice.getFromBundle(routeInfo.extras)
             if (device != null) {
                 devices.add(CastModel(routeInfo, device))

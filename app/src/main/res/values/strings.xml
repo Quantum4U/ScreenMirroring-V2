@@ -11,6 +11,7 @@
     <string name="menu_video">Videos</string>
     <string name="menu_scan_device">Scan Device</string>
 
+    <string name="videos">Videos</string>
     <string name="share_app">Share App</string>
     <string name="feedback">Feedback</string>
     <string name="more_app">More App</string>
@@ -40,6 +41,8 @@
     <string name="queue_item_added_to_queue">An item was added to the queue</string>
     <string name="media_route_menu_title">Play On</string>
     <string name="disconnect">Disconnect</string>
+    <string name="connect">Connect</string>
+    <string name="cancel">Cancel</string>
     <string name="no_device_connected">No devices connected</string>
     <string name="connected">%s Connected</string>
     <string name="connect_to_chrome_cast">Connect to Chromecast TV</string>
@@ -48,4 +51,11 @@
     <string name="no_device_found">No device found for connection</string>
     <string name="available_devices">Available Devices</string>
     <string name="searching_for_devices">Searching for devices</string>
+    <string name="connect_to">Connect %s</string>
+    <string name="disconnect_to">Disconnect %s</string>
+    <string name="queued">Queued</string>
+    <string name="no_videos_found">No videos found</string>
+    <string name="sort_by_date">Sort by :Date</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
 </resources>

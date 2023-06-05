@@ -24,6 +24,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private var drawerLayout: DrawerLayout? = null
 
+    private var isVideoPageBtnClicked = false
+    private var checkForPermission = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -132,9 +135,30 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 //        }
     }
 
+    fun openVideoPage(){
+        if (!checkStoragePermission()) {
+            checkForPermission = true
+            isVideoPageBtnClicked = true
+            verifyPermissions()
+        } else {
+            navController?.navigate(R.id.nav_video)
+            showFullAds(this)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 //        inAppUpdateManager?.checkNewAppVersionState()
+
+        if(checkForPermission && checkStoragePermission()) {
+            checkForPermission = false
+
+            if (isVideoPageBtnClicked) {
+                isVideoPageBtnClicked = false
+                openVideoPage()
+            }
+
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

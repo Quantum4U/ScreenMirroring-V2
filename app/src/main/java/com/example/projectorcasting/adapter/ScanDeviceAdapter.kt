@@ -5,14 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projectorcasting.R
 import com.example.projectorcasting.casting.model.CastModel
-import kotlin.reflect.KFunction1
+import kotlin.reflect.KFunction2
 
 class ScanDeviceAdapter(
     private val deviceList: List<CastModel>,
-    private val itemClick: KFunction1<CastModel, Unit>
+    private val itemClick: KFunction2<Boolean,CastModel, Unit>
 ) :
     RecyclerView.Adapter<ScanDeviceAdapter.ViewHolder>() {
 
@@ -58,7 +59,7 @@ class ScanDeviceAdapter(
             deviceName.text = item.castDevice?.modelName
 
             card.setOnClickListener {
-                itemClick(item)
+                itemClick(!activeDot.isVisible,item)
             }
         }
     }

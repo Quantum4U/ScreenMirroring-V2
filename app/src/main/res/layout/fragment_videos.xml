@@ -1,33 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.fragments.VideosFragment">
 
-
-    <EditText
-        android:layout_margin="10dp"
-        android:id="@+id/et_path"
+    <RelativeLayout
+        android:id="@+id/rl_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="sample.mp4"
-        app:layout_constraintBottom_toTopOf="@+id/play"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_height="?android:actionBarSize">
 
-    <Button
-        android:id="@+id/play"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding20dp"
+            android:padding="@dimen/padding5dp"
+            app:srcCompat="@drawable/ic_back_arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/inter_semibold"
+            android:text="@string/videos"
+            android:textColor="@color/heading"
+            android:textSize="@dimen/textsize20sp" />
+
+        <TextView
+            android:id="@+id/tv_queued"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/padding20dp"
+            android:drawableLeft="@drawable/ic_queued_icon"
+            android:drawablePadding="@dimen/padding5dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="@string/queued"
+            android:textColor="@color/text_orange"
+            android:textSize="@dimen/textsize15sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_view"
+        android:layout_below="@+id/rl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/padding10dp"
+            android:paddingEnd="@dimen/padding50dp" />
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/padding20dp"
+            android:layout_marginBottom="@dimen/padding10dp"
+            android:padding="@dimen/padding10dp"
+            android:id="@+id/rl_sorting"
+            android:layout_below="@+id/rv_horizontal"
+            android:background="#0D000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginLeft="@dimen/padding10dp"
+                android:textSize="@dimen/textsize16sp"
+                android:textColor="@color/heading"
+                android:text="@string/sort_by_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/ll_sorting"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/padding10dp"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_sorting_icon"
+                    app:srcCompat="@drawable/ic_ascending_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tv_sorting_text"
+                    android:layout_marginLeft="@dimen/padding10dp"
+                    android:text="@string/ascending"
+                    android:textSize="@dimen/textsize16sp"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rl_sorting"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/padding10dp"
+            android:paddingEnd="@dimen/padding50dp" />
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_no_videos_found"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Play"
-        android:hint="Media path"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.54" />
+        android:layout_centerInParent="true"
+        android:text="@string/no_videos_found"
+        android:textSize="@dimen/textsize20sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

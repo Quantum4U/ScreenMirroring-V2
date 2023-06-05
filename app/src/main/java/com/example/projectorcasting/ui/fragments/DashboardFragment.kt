@@ -41,7 +41,7 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
         }
 
         binding?.cvCastVideos?.setOnClickListener {
-            findNavController().navigate(R.id.nav_video)
+            (activity as MainActivity?)?.openVideoPage()
         }
 
     }
