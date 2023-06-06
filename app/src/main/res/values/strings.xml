@@ -10,6 +10,7 @@
     <string name="menu_dash">Dashboard</string>
     <string name="menu_video">Videos</string>
     <string name="menu_scan_device">Scan Device</string>
+    <string name="menu_queue">Queue</string>
 
     <string name="videos">Videos</string>
     <string name="share_app">Share App</string>
@@ -58,4 +59,5 @@
     <string name="sort_by_date">Sort by :Date</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
+    <string name="queue_tag_item">queue-tag-item</string>
 </resources>

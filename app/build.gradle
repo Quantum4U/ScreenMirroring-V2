@@ -82,4 +82,5 @@ dependencies {
 
     //remove after engine integeration
     api "com.airbnb.android:lottie:4.2.0"
+    implementation 'com.android.volley:volley:1.2.1'
 }

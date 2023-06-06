@@ -4,14 +4,14 @@ import com.example.projectorcasting.models.MediaData
 
 object MediaListSingleton {
 
-    private var galleryVideoFileList: HashMap<Int, List<MediaData>>? = null
+    private var galleryVideoFileList: HashMap<String, List<MediaData>>? = null
 
 
-    fun setGalleryVideoList(list: HashMap<Int, List<MediaData>>?) {
+    fun setGalleryVideoList(list: HashMap<String, List<MediaData>>?) {
         this.galleryVideoFileList = list?.let { HashMap(it) }
     }
 
-    fun getGalleryVideoList(): HashMap<Int, List<MediaData>>? {
+    fun getGalleryVideoList(): HashMap<String, List<MediaData>>? {
         return galleryVideoFileList
     }
 

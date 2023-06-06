@@ -21,7 +21,8 @@ object AppUtils {
 
     fun openWifiPopUpInApp(activity: Activity) {
         try {
-            val wifiManager = activity.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            val wifiManager =
+                activity.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 wifiManager.isWifiEnabled = true
             } else {
@@ -60,7 +61,7 @@ object AppUtils {
 
     fun getAllGalleryImages(context: Context): ArrayList<File>? {
 
-        var list:ArrayList<File>? = arrayListOf()
+        var list: ArrayList<File>? = arrayListOf()
 
         try {
             context.contentResolver.query(
@@ -91,14 +92,16 @@ object AppUtils {
 
         }
 
-        Log.d("Utils", "getAllGalleryImages A13 : >> exception"+list?.size)
+        Log.d("Utils", "getAllGalleryImages A13 : >> exception" + list?.size)
 
         return list
     }
 
     fun getAllGalleryVideos(context: Context): ArrayList<MediaData>? {
 
-        var list:ArrayList<MediaData>? = arrayListOf()
+        var count = 1
+        var list: ArrayList<MediaData>? = arrayListOf()
+        var mapList: ArrayList<MediaData>? = arrayListOf()
 
         try {
             context.contentResolver.query(
@@ -106,7 +109,7 @@ object AppUtils {
                 projectionVideo,
                 vidSelection,
                 null,
-                MediaStore.Images.Media.DATE_TAKEN + " DESC"
+                MediaStore.Images.Media.DATE_TAKEN + " ASC"
             ).use { galCursor ->
                 Log.d("Utils", "getAllGalleryVideos A13 : >> 33")
                 if (galCursor != null) {
@@ -119,8 +122,12 @@ object AppUtils {
 //                        val date = galCursor.getString(3)
 //                        val galData = GalleryData(id, name, path, date)
 
-                        list?.add(MediaData(file,convertDate(file.lastModified().toString()),getMediaDuration(context, Uri.fromFile(file))))
-
+                        if (count <= AppConstants.MAX_HORIZONTAL_ITEM) {
+                            list?.add(MediaData(file, convertDate(file.lastModified().toString()), getMediaDuration(context, Uri.fromFile(file))))
+                        }else{
+                            mapList?.add(MediaData(file, convertDate(file.lastModified().toString()), getMediaDuration(context, Uri.fromFile(file))))
+                        }
+                        count+=1
                     }
                 }
             }
@@ -129,15 +136,20 @@ object AppUtils {
 
         }
 
-        Log.d("Utils", "getAllGalleryVideos A13 : >> exception"+list?.size)
+        Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + list?.size)
+        Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + mapList?.size)
 
         Collections.sort(list,
-            Comparator<MediaData> { o1, o2 -> o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!! })
+            Comparator<MediaData> { o1, o2 ->
+                o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
+            })
 
-        MediaListSingleton.setGalleryVideoList(list?.let { getSortedMap(it) })
+        MediaListSingleton.setGalleryVideoList(mapList?.let { getSortedMap(it) })
 
+        mapList?.let { list?.addAll(it) }
         return list
     }
+
     private fun convertDate(dateInMilliseconds: String): String? {
         var s: String? = null
         s = if (isSameDay(System.currentTimeMillis().toString(), dateInMilliseconds))
@@ -207,14 +219,14 @@ object AppUtils {
 //        if(ss == 0L)
 //            ss = standardValue.toLong()
 
-        Log.d("AppUtils", "getMediaDuration A13 : >>" + hh + ":" + mm+":"+ss)
+        Log.d("AppUtils", "getMediaDuration A13 : >>" + hh + ":" + mm + ":" + ss)
 
         return "$hh:$mm:$ss"
     }
 
-    private fun getSortedMap(mList: List<MediaData>): HashMap<Int, List<MediaData>>? {
+    private fun getSortedMap(mList: List<MediaData>): HashMap<String, List<MediaData>>? {
 
-        val mMap: HashMap<Int, List<MediaData>>? = HashMap<Int, List<MediaData>>()
+        val mMap: HashMap<String, List<MediaData>>? = HashMap<String, List<MediaData>>()
         var mDateHolder = System.currentTimeMillis().toString()
         var mCounter = 0
         var mHolderList: MutableList<MediaData> = ArrayList<MediaData>()
@@ -222,14 +234,15 @@ object AppUtils {
             if (isSameDay(mDateHolder, mList[i].file?.lastModified().toString())) {
                 mHolderList.add(mList[i])
             } else {
-                mMap?.set(mCounter, mHolderList)
+                if (mHolderList.isNotEmpty())
+                    mMap?.set(convertDate(mDateHolder).toString(), mHolderList)
                 mCounter++
                 mHolderList = ArrayList<MediaData>()
                 mHolderList.add(mList[i])
                 mDateHolder = mList[i].file?.lastModified().toString()
             }
             if (i == mList.size - 1) {
-                mMap?.set(mCounter, mHolderList)
+                mMap?.set(convertDate(mDateHolder).toString(), mHolderList)
             }
         }
         return mMap

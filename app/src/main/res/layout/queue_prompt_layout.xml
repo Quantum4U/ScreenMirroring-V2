@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/rl_root"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:layout_marginTop="@dimen/padding30dp"
+        android:layout_marginLeft="@dimen/padding20dp"
+        android:layout_marginBottom="@dimen/padding10dp"
+        android:id="@+id/tv_play_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_queued_icon"
+        android:drawablePadding="@dimen/padding15dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/play_now"
+        android:textColor="@color/nav_text_color"
+        android:textSize="@dimen/textsize15sp"/>
+
+
+    <View
+        android:layout_margin="@dimen/padding10dp"
+        android:background="#1A000000"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding1dp"/>
+
+    <TextView
+        android:layout_marginTop="@dimen/padding10dp"
+        android:layout_marginBottom="@dimen/padding10dp"
+        android:layout_marginLeft="@dimen/padding20dp"
+        android:id="@+id/tv_play_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_queued_icon"
+        android:drawablePadding="@dimen/padding15dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/play_next"
+        android:textColor="@color/nav_text_color"
+        android:textSize="@dimen/textsize15sp"/>
+
+    <View
+        android:id="@+id/view"
+        android:layout_margin="@dimen/padding10dp"
+        android:background="#1A000000"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding1dp"/>
+
+    <TextView
+        android:layout_marginTop="@dimen/padding10dp"
+        android:layout_marginLeft="@dimen/padding20dp"
+        android:layout_marginBottom="@dimen/padding10dp"
+        android:id="@+id/tv_add_to_queue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_queued_icon"
+        android:drawablePadding="@dimen/padding15dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/add_to_queue"
+        android:textColor="@color/nav_text_color"
+        android:textSize="@dimen/textsize15sp"/>
+
+
+</LinearLayout>

@@ -23,7 +23,7 @@ class ScanViewModel @Inject constructor() : ViewModel() {
         deviceList.postValue(CastHelper.getAvailableDevices(mediaRouter))
     }
 
-    fun showConnectionPrompt(context: Context?,actionPerform: KFunction2<Boolean, CastModel, Unit>, isConnect: Boolean, castModel: CastModel){
+    fun showConnectionPrompt(context: Context?,actionPerform: KFunction2<Boolean, CastModel?, Unit>, isConnect: Boolean, castModel: CastModel?){
         PromptHelper.showConnectionPrompt(context,actionPerform,isConnect,castModel)
     }
 }

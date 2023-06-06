@@ -2,7 +2,6 @@ package com.example.projectorcasting.casting.utils
 
 import android.content.Context
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.mediarouter.media.MediaRouter
 import androidx.work.ExistingWorkPolicy
@@ -11,7 +10,9 @@ import com.example.projectorcasting.R
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.service.WebService
 import com.google.android.gms.cast.CastDevice
+import java.io.File
 import kotlin.reflect.KFunction2
+import kotlin.reflect.KFunction1
 
 object CastHelper {
 
@@ -63,7 +64,14 @@ object CastHelper {
         return routeInfo.id.contains(CHROMECAST_SIGNATURE)
     }
 
-    fun playMedia(context: Context?, view: View, path: String, thumb: String, type: Int) {
+    fun playMedia(
+        context: Context?,
+        file: File,
+        path: String,
+        thumb: String,
+        type: Int,
+        checkForQueue: KFunction1<Int, Unit>
+    ) {
         /** Find the IpAddress of the device and save it to [deviceIpAddress]
          *  so that Service class can pick it up to create a small http server */
         deviceIpAddress = context?.let { Utils.findIPAddress(it) }
@@ -87,6 +95,6 @@ object CastHelper {
             exampleWorkRequest
         )
 
-        Utils.showQueuePopup(context, view, Utils.buildMediaInfo(path, thumb, type))
+        Utils.showQueuePopup(context,Utils.buildMediaInfo(file,path, thumb, type),checkForQueue)
     }
 }

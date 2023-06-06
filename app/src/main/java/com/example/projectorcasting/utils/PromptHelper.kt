@@ -10,7 +10,7 @@ import kotlin.reflect.KFunction2
 
 object PromptHelper {
 
-    fun showConnectionPrompt(context: Context?, actionPerform: KFunction2<Boolean, CastModel, Unit>, isConnect: Boolean, castModel: CastModel) {
+    fun showConnectionPrompt(context: Context?, actionPerform: KFunction2<Boolean, CastModel?, Unit>, isConnect: Boolean, castModel: CastModel?) {
         val sheetDialog = context?.let { BottomSheetDialog(it, R.style.BottomSheetDialog) }
         sheetDialog?.setContentView(R.layout.connecton_prompt_layout)
         val title: TextView? = sheetDialog?.findViewById(R.id.tv_heading)
@@ -20,7 +20,7 @@ object PromptHelper {
         val cardView: RelativeLayout? = sheetDialog?.findViewById(R.id.rl_root)
         cardView?.setBackgroundResource(R.drawable.sheet_dialog_bg)
 
-        val name = castModel.castDevice?.modelName
+        val name = castModel?.castDevice?.modelName
 
         if (isConnect){
             title?.text = context?.getString(R.string.connect_to,name)

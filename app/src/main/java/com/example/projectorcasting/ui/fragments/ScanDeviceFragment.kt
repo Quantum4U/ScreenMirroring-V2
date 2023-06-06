@@ -130,9 +130,9 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
         scanViewModel.showConnectionPrompt(context,::actionPerform,isConnect,castModel)
     }
 
-    private fun actionPerform(isConnect: Boolean,castModel: CastModel){
+    private fun actionPerform(isConnect: Boolean,castModel: CastModel?){
         if(isConnect)
-            startCasting(castModel.routeInfo, castModel.castDevice)
+            startCasting(castModel?.routeInfo, castModel?.castDevice)
         else
             stopCasting()
     }

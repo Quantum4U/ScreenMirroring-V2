@@ -16,9 +16,9 @@ import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.utils.AppConstants
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.reflect.KFunction2
+import kotlin.reflect.KFunction1
 
-class VideoHorizontalAdapter(private val mediaList: List<MediaData>, private val itemClick: KFunction2<Boolean, MediaData, Unit>) :
+class VideoHorizontalAdapter(private val mediaList: List<MediaData>, private val itemClick: KFunction1<MediaData, Unit>) :
     RecyclerView.Adapter<VideoHorizontalAdapter.ViewHolder>() {
 
     private var ctx:Context?=null
@@ -56,7 +56,7 @@ class VideoHorizontalAdapter(private val mediaList: List<MediaData>, private val
             albumDuration.text = item.duration
 
             card.setOnClickListener {
-
+                itemClick(item)
             }
         }
     }

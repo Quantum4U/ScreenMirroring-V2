@@ -4,13 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.net.wifi.WifiManager
-import android.provider.MediaStore
-import android.text.TextUtils
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.PopupMenu
 import com.example.projectorcasting.R
 import com.example.projectorcasting.casting.activities.ExpandedControlsActivity
 import com.example.projectorcasting.casting.queue.QueueDataProvider
@@ -19,11 +17,13 @@ import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.images.WebImage
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.json.JSONObject
 import java.io.File
 import java.net.InetAddress
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import kotlin.reflect.KFunction1
 
 object Utils {
 
@@ -58,7 +58,7 @@ object Utils {
      * about the media file and media subtitle which will be used for
      * playing in the cast device.
      */
-    fun buildMediaInfo(path: String, thumb: String, type: Int): MediaInfo? {
+    fun buildMediaInfo(file: File,path: String, thumb: String, type: Int): MediaInfo? {
 
         /** Here we are setting the web server url for our
          *  media files.
@@ -80,20 +80,20 @@ object Utils {
          *  track by using this builder. */
 
         return when (type) {
-            VIDEO -> mediaInfoForVideo(sampleVideoStream, sampleVideoSubtitle, imageUrl1, imageUrl2)
-            IMAGE -> mediaInfoForImage(imageUrl1, imageUrl2)
-            AUDIO -> mediaInfoForAudio(sampleVideoStream, imageUrl1, imageUrl2)
-            else -> mediaInfoForVideo(sampleVideoStream, sampleVideoSubtitle, imageUrl1, imageUrl2)
+            VIDEO -> mediaInfoForVideo(file,sampleVideoStream, sampleVideoSubtitle, imageUrl1, imageUrl2)
+            IMAGE -> mediaInfoForImage(file,imageUrl1, imageUrl2)
+            AUDIO -> mediaInfoForAudio(file,sampleVideoStream, imageUrl1, imageUrl2)
+            else -> mediaInfoForVideo(file,sampleVideoStream, sampleVideoSubtitle, imageUrl1, imageUrl2)
         }
 
     }
 
-    private fun mediaInfoForVideo(
+    private fun mediaInfoForVideo(file: File,
         sampleVideoStream: String,
         sampleVideoSubtitle: String, imageUrl1: String, imageUrl2: String
     ): MediaInfo {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
-        setMediaData(movieMetadata, imageUrl1, imageUrl2)
+        setMediaData(file,movieMetadata, imageUrl1, imageUrl2)
 
         val mediaTrack = MediaTrack.Builder(1, MediaTrack.TYPE_TEXT)
             .setName("English")
@@ -111,13 +111,13 @@ object Utils {
             .build()
     }
 
-    private fun mediaInfoForAudio(
+    private fun mediaInfoForAudio(file: File,
         sampleVideoStream: String,
         imageUrl1: String,
         imageUrl2: String
     ): MediaInfo {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK)
-        setMediaData(movieMetadata, imageUrl1, imageUrl2)
+        setMediaData(file,movieMetadata, imageUrl1, imageUrl2)
 
         return MediaInfo.Builder(sampleVideoStream)
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
@@ -128,9 +128,9 @@ object Utils {
             .build()
     }
 
-    private fun mediaInfoForImage(imageUrl1: String, imageUrl2: String): MediaInfo {
+    private fun mediaInfoForImage(file: File,imageUrl1: String, imageUrl2: String): MediaInfo {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_PHOTO)
-        setMediaData(movieMetadata, imageUrl1, imageUrl2)
+        setMediaData(file,movieMetadata, imageUrl1, imageUrl2)
 
         return MediaInfo.Builder(imageUrl1)
             .setStreamType(MediaInfo.STREAM_TYPE_NONE)
@@ -142,15 +142,15 @@ object Utils {
 
     }
 
-    private fun setMediaData(
+    private fun setMediaData(file:File,
         movieMetadata: MediaMetadata,
         imageUrl1: String,
         imageUrl2: String
     ) {
-        movieMetadata.putString(MediaMetadata.KEY_TITLE, "Alcoholia") // Set title for video
+        movieMetadata.putString(MediaMetadata.KEY_TITLE, file.name) // Set title for video
         movieMetadata.putString(
             MediaMetadata.KEY_SUBTITLE,
-            "Google developers"
+            ""
         ) // Set sub-title for video
 //        movieMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, "My Video")
 //        movieMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, testImageUrl1)
@@ -163,7 +163,7 @@ object Utils {
      * Show a popup to select whether the selected item should play immediately, be added to the
      * end of queue or be added to the queue right after the current item.
      */
-    fun showQueuePopup(context: Context?, view: View?, mediaInfo: MediaInfo?) {
+    fun showQueuePopup(context: Context?, mediaInfo: MediaInfo?, checkForQueue: KFunction1<Int, Unit>) {
         val castSession: CastSession? =
             context?.let { CastContext.getSharedInstance(it).sessionManager.currentCastSession }
         if (castSession == null || !castSession.isConnected) {
@@ -175,124 +175,186 @@ object Utils {
             Log.w(TAG, "showQueuePopup(): null RemoteMediaClient")
             return
         }
-        val provider: QueueDataProvider? = QueueDataProvider.Companion.getInstance(context)
-        val popup = PopupMenu((context)!!, (view)!!)
-        popup.menuInflater.inflate(
-            if (provider!!.isQueueDetached || provider!!.count == 0) R.menu.detached_popup_add_to_queue else R.menu.popup_add_to_queue,
-            popup.menu
-        )
-        val clickListener: PopupMenu.OnMenuItemClickListener =
-            object : PopupMenu.OnMenuItemClickListener {
-                override fun onMenuItemClick(menuItem: MenuItem): Boolean {
-                    val queueItem: MediaQueueItem =
-                        MediaQueueItem.Builder((mediaInfo)!!).setAutoplay(
-                            true
-                        ).setPreloadTime(PRELOAD_TIME_S.toDouble()).build()
-                    val newItemArray: Array<MediaQueueItem> = arrayOf(queueItem)
-                    var toastMessage: String? = null
-                    if (provider?.count == 0) {
-                        remoteMediaClient.queueLoad(
-                            newItemArray, 0,
-                            MediaStatus.REPEAT_MODE_REPEAT_OFF, JSONObject()
-                        )
-                    } else {
-                        val currentId: Int = provider!!.currentItemId
-                        if (menuItem.itemId == R.id.action_play_now) {
-                            remoteMediaClient.queueInsertAndPlayItem(
-                                queueItem,
-                                currentId,
-                                JSONObject()
-                            )
-                        } else if (menuItem.itemId == R.id.action_play_next) {
-                            val currentPosition: Int = provider!!.getPositionByItemId(currentId)
-                            if (currentPosition == provider!!.count - 1) {
-                                //we are adding to the end of queue
-                                remoteMediaClient.queueAppendItem(queueItem, JSONObject())
-                            } else {
-                                val nextItem: MediaQueueItem? =
-                                    provider.getItem(currentPosition + 1)
-                                if (nextItem != null) {
-                                    val nextItemId: Int = nextItem.itemId
-                                    remoteMediaClient.queueInsertItems(
-                                        newItemArray,
-                                        nextItemId,
-                                        JSONObject()
-                                    )
-                                } else {
-                                    //remote queue is not ready with item; try again.
-                                    return false
-                                }
-                            }
-                            toastMessage = context.getString(
-                                R.string.queue_item_added_to_play_next
-                            )
-                        } else if (menuItem.itemId == R.id.action_add_to_queue) {
-                            remoteMediaClient.queueAppendItem(queueItem, JSONObject())
-                            toastMessage = context.getString(R.string.queue_item_added_to_queue)
-                        } else {
-                            return false
-                        }
-                    }
-                    if (menuItem.itemId == R.id.action_play_now) {
-                        val intent: Intent = Intent(context, ExpandedControlsActivity::class.java)
-                        context.startActivity(intent)
-                    }
-                    if (!TextUtils.isEmpty(toastMessage)) {
-                        Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
-                    }
-                    return true
-                }
-            }
-        popup.setOnMenuItemClickListener(clickListener)
-        popup.show()
+
+        showQueuePrompt(context,mediaInfo,remoteMediaClient,checkForQueue)
+
+//        val provider: QueueDataProvider? = QueueDataProvider.Companion.getInstance(context)
+//
+//
+//        val popup = PopupMenu((context)!!, (view)!!)
+//        popup.menuInflater.inflate(
+//            if (provider!!.isQueueDetached || provider!!.count == 0) R.menu.detached_popup_add_to_queue else R.menu.popup_add_to_queue,
+//            popup.menu
+//        )
+//        val clickListener: PopupMenu.OnMenuItemClickListener =
+//            object : PopupMenu.OnMenuItemClickListener {
+//                override fun onMenuItemClick(menuItem: MenuItem): Boolean {
+//                    val queueItem: MediaQueueItem =
+//                        MediaQueueItem.Builder((mediaInfo)!!).setAutoplay(
+//                            true
+//                        ).setPreloadTime(PRELOAD_TIME_S.toDouble()).build()
+//                    val newItemArray: Array<MediaQueueItem> = arrayOf(queueItem)
+//                    var toastMessage: String? = null
+//                    if (provider?.count == 0) {
+//                        remoteMediaClient.queueLoad(
+//                            newItemArray, 0,
+//                            MediaStatus.REPEAT_MODE_REPEAT_OFF, JSONObject()
+//                        )
+//                    } else {
+//                        val currentId: Int = provider!!.currentItemId
+//                        if (menuItem.itemId == R.id.action_play_now) {
+//                            remoteMediaClient.queueInsertAndPlayItem(
+//                                queueItem,
+//                                currentId,
+//                                JSONObject()
+//                            )
+//                        } else if (menuItem.itemId == R.id.action_play_next) {
+//                            val currentPosition: Int = provider!!.getPositionByItemId(currentId)
+//                            if (currentPosition == provider!!.count - 1) {
+//                                //we are adding to the end of queue
+//                                remoteMediaClient.queueAppendItem(queueItem, JSONObject())
+//                            } else {
+//                                val nextItem: MediaQueueItem? =
+//                                    provider.getItem(currentPosition + 1)
+//                                if (nextItem != null) {
+//                                    val nextItemId: Int = nextItem.itemId
+//                                    remoteMediaClient.queueInsertItems(
+//                                        newItemArray,
+//                                        nextItemId,
+//                                        JSONObject()
+//                                    )
+//                                } else {
+//                                    //remote queue is not ready with item; try again.
+//                                    return false
+//                                }
+//                            }
+//                            toastMessage = context.getString(
+//                                R.string.queue_item_added_to_play_next
+//                            )
+//                        } else if (menuItem.itemId == R.id.action_add_to_queue) {
+//                            remoteMediaClient.queueAppendItem(queueItem, JSONObject())
+//                            toastMessage = context.getString(R.string.queue_item_added_to_queue)
+//                        } else {
+//                            return false
+//                        }
+//                    }
+//                    if (menuItem.itemId == R.id.action_play_now) {
+//                        val intent: Intent = Intent(context, ExpandedControlsActivity::class.java)
+//                        context.startActivity(intent)
+//                    }
+//                    if (!TextUtils.isEmpty(toastMessage)) {
+//                        Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+//                    }
+//                    return true
+//                }
+//            }
+//        popup.setOnMenuItemClickListener(clickListener)
+//        popup.show()
     }
 
-    private val queryUri = MediaStore.Files.getContentUri("external")
-    private const val imgselection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-            + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
-    private val projection = arrayOf(
-        MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME,
-        MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN,
-        MediaStore.Images.Media.MIME_TYPE,
-        MediaStore.Images.Media.BUCKET_ID,
-        MediaStore.Images.Media.BUCKET_DISPLAY_NAME
-    )
+    private fun showQueuePrompt(
+        context: Context?,
+        mediaInfo: MediaInfo?,
+        remoteMediaClient: RemoteMediaClient?,
+        checkForQueue: KFunction1<Int, Unit>
+    ) {
+        val sheetDialog = context?.let { BottomSheetDialog(it, R.style.BottomSheetDialog) }
+        sheetDialog?.setContentView(R.layout.queue_prompt_layout)
+        val playNow: TextView? = sheetDialog?.findViewById(R.id.tv_play_now)
+        val playNext: TextView? = sheetDialog?.findViewById(R.id.tv_play_next)
+        val addToQueue: TextView? = sheetDialog?.findViewById(R.id.tv_add_to_queue)
+        val view: View? = sheetDialog?.findViewById(R.id.view)
 
-    fun getAllGalleryImages(context: Context): ArrayList<File>? {
+        val cardView: LinearLayout? = sheetDialog?.findViewById(R.id.rl_root)
+        cardView?.setBackgroundResource(R.drawable.sheet_dialog_bg)
 
-        var list: ArrayList<File>? = arrayListOf()
-
-        try {
-            context.contentResolver.query(
-                queryUri,
-                projection,
-                imgselection,
-                null,
-                MediaStore.Images.Media.DATE_TAKEN + " DESC"
-            ).use { galCursor ->
-                Log.d("Utils", "getAllGalleryImages A13 : >> 33")
-                if (galCursor != null) {
-                    Log.d("Utils", "getAllGalleryImages A13 : >> 44")
-                    while (galCursor.moveToNext()) {
-//                        val id = galCursor.getString(0)
-//                        val name = galCursor.getString(1)
-                        val path = galCursor.getString(2)
-                        val file = File(path)
-//                        val date = galCursor.getString(3)
-//                        val galData = GalleryData(id, name, path, date)
-
-                        list?.add(file)
-
-                    }
-                }
-            }
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-
+        val provider: QueueDataProvider? = QueueDataProvider.Companion.getInstance(context)
+        if (provider!!.isQueueDetached || provider.count == 0) {
+            playNext?.visibility = View.GONE
+            view?.visibility = View.GONE
+        } else {
+            playNext?.visibility = View.VISIBLE
+            view?.visibility = View.VISIBLE
         }
 
-        Log.d("Utils", "getAllGalleryImages A13 : >> exception" + list?.size)
+        val queueItem: MediaQueueItem =
+            MediaQueueItem.Builder((mediaInfo)!!).setAutoplay(
+                true
+            ).setPreloadTime(PRELOAD_TIME_S.toDouble()).build()
+        val newItemArray: Array<MediaQueueItem> = arrayOf(queueItem)
+        var toastMessage: String? = null
 
-        return list
+        val currentId: Int = provider.currentItemId
+
+        playNow?.setOnClickListener {
+            if (provider.count == 0) {
+                remoteMediaClient?.queueLoad(
+                    newItemArray, 0,
+                    MediaStatus.REPEAT_MODE_REPEAT_OFF, JSONObject()
+                )
+            }else{
+                remoteMediaClient?.queueInsertAndPlayItem(
+                    queueItem,
+                    currentId,
+                    JSONObject())
+            }
+
+            val intent = Intent(context, ExpandedControlsActivity::class.java)
+            context.startActivity(intent)
+            sheetDialog.cancel()
+        }
+
+        playNext?.setOnClickListener {
+            if (provider.count == 0) {
+                remoteMediaClient?.queueLoad(
+                    newItemArray, 0,
+                    MediaStatus.REPEAT_MODE_REPEAT_OFF, JSONObject()
+                )
+            }else{
+                val currentPosition: Int = provider.getPositionByItemId(currentId)
+                if (currentPosition == provider.count - 1) {
+                    //we are adding to the end of queue
+                    remoteMediaClient?.queueAppendItem(queueItem, JSONObject())
+                } else {
+                    val nextItem: MediaQueueItem? =
+                        provider.getItem(currentPosition + 1)
+                    if (nextItem != null) {
+                        val nextItemId: Int = nextItem.itemId
+                        remoteMediaClient?.queueInsertItems(
+                            newItemArray,
+                            nextItemId,
+                            JSONObject()
+                        )
+                    }
+                }
+                toastMessage = context.getString(
+                    R.string.queue_item_added_to_play_next
+                )
+                Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+            }
+
+            sheetDialog.cancel()
+        }
+
+        addToQueue?.setOnClickListener {
+            if (provider.count == 0) {
+                remoteMediaClient?.queueLoad(
+                    newItemArray, 0,
+                    MediaStatus.REPEAT_MODE_REPEAT_OFF, JSONObject()
+                )
+            }else{
+                remoteMediaClient?.queueAppendItem(queueItem, JSONObject())
+                toastMessage = context.getString(R.string.queue_item_added_to_queue)
+                Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+            }
+
+            checkForQueue(provider.count)
+
+            sheetDialog.cancel()
+        }
+
+        sheetDialog?.show()
+
     }
+
 }
