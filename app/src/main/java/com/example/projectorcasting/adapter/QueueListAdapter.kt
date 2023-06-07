@@ -15,6 +15,7 @@
  */
 package com.example.projectorcasting.adapter
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
@@ -40,6 +41,7 @@ import com.example.projectorcasting.R
 import com.example.projectorcasting.casting.listener.QueueItemTouchHelperCallback
 import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CustomVolleyRequest
+import com.example.projectorcasting.utils.AppUtils
 import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.cast.MediaStatus
@@ -89,6 +91,7 @@ class QueueListAdapter(
         return QueueItemViewHolder(view)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: QueueItemViewHolder, position: Int) {
         holder.setIsRecyclable(false)
         val item = getItem(position)
@@ -130,8 +133,9 @@ class QueueListAdapter(
             mImageLoader = CustomVolleyRequest.Companion.getInstance(mAppContext)?.imageLoader
             val imageListener: ImageLoader.ImageListener = object : ImageLoader.ImageListener {
                 override fun onErrorResponse(error: VolleyError) {
+                    Log.d("QueueListAdapter", "onErrorResponse A13 : >>"+error+"//"+error.message)
                     holder.mProgressLoading.visibility = View.GONE
-//                    holder.mImageView.setErrorImageResId(R.drawable.ic_action_alerts_and_states_warning)
+                    holder.mImageView.setErrorImageResId(R.drawable.ic_queue_item_placeholder)
                 }
 
                 override fun onResponse(response: ImageLoader.ImageContainer, isImmediate: Boolean) {
@@ -156,6 +160,7 @@ class QueueListAdapter(
             if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
                 mDragStartListener.onStartDrag(holder)
             } else if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_BUTTON_RELEASE) {
+                Log.d("QueueListAdapter", "onBindViewHolder A13 : >>")
                 view.clearFocus()
                 view.clearAnimation()
                 holder.setIsRecyclable(false)
@@ -258,7 +263,7 @@ class QueueListAdapter(
         }
 
         override fun onItemClear() {
-            itemView.setBackgroundColor(0)
+//            itemView.setBackgroundColor(0)
         }
 
         @Retention(RetentionPolicy.SOURCE)
@@ -301,7 +306,8 @@ class QueueListAdapter(
                     mPlayPause.visibility = View.GONE
                     mUpcomingControls.visibility = View.VISIBLE
 //                    mDragHandle.setImageResource(DRAG_HANDLER_LIGHT_RESOURCE)
-                    bgResId = R.drawable.bg_item_upcoming_state
+                    //bg color for upcoming video
+//                    bgResId = R.drawable.bg_item_upcoming_state
 //                    mTitleView.setTextAppearance(
 //                        mContext,
 //                        R.style.TextAppearance_AppCompat_Small_Inverse

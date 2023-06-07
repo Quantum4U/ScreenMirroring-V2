@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.example.projectorcasting.R
 import com.example.projectorcasting.casting.activities.ExpandedControlsActivity
 import com.example.projectorcasting.casting.queue.QueueDataProvider
+import com.example.projectorcasting.models.MediaData
 import com.google.android.gms.cast.*
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
@@ -58,7 +59,7 @@ object Utils {
      * about the media file and media subtitle which will be used for
      * playing in the cast device.
      */
-    fun buildMediaInfo(file: File,path: String, thumb: String, type: Int): MediaInfo? {
+    fun buildMediaInfo(mediaData: MediaData?, path: String, thumb: String, type: Int): MediaInfo? {
 
         /** Here we are setting the web server url for our
          *  media files.
@@ -80,20 +81,20 @@ object Utils {
          *  track by using this builder. */
 
         return when (type) {
-            VIDEO -> mediaInfoForVideo(file,sampleVideoStream, sampleVideoSubtitle, imageUrl1, imageUrl2)
-            IMAGE -> mediaInfoForImage(file,imageUrl1, imageUrl2)
-            AUDIO -> mediaInfoForAudio(file,sampleVideoStream, imageUrl1, imageUrl2)
-            else -> mediaInfoForVideo(file,sampleVideoStream, sampleVideoSubtitle, imageUrl1, imageUrl2)
+            VIDEO -> mediaInfoForVideo(mediaData,sampleVideoStream, sampleVideoSubtitle, imageUrl1, imageUrl2)
+            IMAGE -> mediaInfoForImage(mediaData,imageUrl1, imageUrl2)
+            AUDIO -> mediaInfoForAudio(mediaData,sampleVideoStream, imageUrl1, imageUrl2)
+            else -> mediaInfoForVideo(mediaData,sampleVideoStream, sampleVideoSubtitle, imageUrl1, imageUrl2)
         }
 
     }
 
-    private fun mediaInfoForVideo(file: File,
+    private fun mediaInfoForVideo(mediaData: MediaData?,
         sampleVideoStream: String,
         sampleVideoSubtitle: String, imageUrl1: String, imageUrl2: String
     ): MediaInfo {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
-        setMediaData(file,movieMetadata, imageUrl1, imageUrl2)
+        setMediaData(mediaData,movieMetadata, imageUrl1, imageUrl2)
 
         val mediaTrack = MediaTrack.Builder(1, MediaTrack.TYPE_TEXT)
             .setName("English")
@@ -111,13 +112,13 @@ object Utils {
             .build()
     }
 
-    private fun mediaInfoForAudio(file: File,
+    private fun mediaInfoForAudio(mediaData: MediaData?,
         sampleVideoStream: String,
         imageUrl1: String,
         imageUrl2: String
     ): MediaInfo {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK)
-        setMediaData(file,movieMetadata, imageUrl1, imageUrl2)
+        setMediaData(mediaData,movieMetadata, imageUrl1, imageUrl2)
 
         return MediaInfo.Builder(sampleVideoStream)
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
@@ -128,9 +129,9 @@ object Utils {
             .build()
     }
 
-    private fun mediaInfoForImage(file: File,imageUrl1: String, imageUrl2: String): MediaInfo {
+    private fun mediaInfoForImage(mediaData: MediaData?,imageUrl1: String, imageUrl2: String): MediaInfo {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_PHOTO)
-        setMediaData(file,movieMetadata, imageUrl1, imageUrl2)
+        setMediaData(mediaData,movieMetadata, imageUrl1, imageUrl2)
 
         return MediaInfo.Builder(imageUrl1)
             .setStreamType(MediaInfo.STREAM_TYPE_NONE)
@@ -142,15 +143,15 @@ object Utils {
 
     }
 
-    private fun setMediaData(file:File,
+    private fun setMediaData(mediaData: MediaData?,
         movieMetadata: MediaMetadata,
         imageUrl1: String,
         imageUrl2: String
     ) {
-        movieMetadata.putString(MediaMetadata.KEY_TITLE, file.name) // Set title for video
+        movieMetadata.putString(MediaMetadata.KEY_TITLE, mediaData?.file?.name.toString()) // Set title for video
         movieMetadata.putString(
             MediaMetadata.KEY_SUBTITLE,
-            ""
+            mediaData?.duration.toString()
         ) // Set sub-title for video
 //        movieMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, "My Video")
 //        movieMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, testImageUrl1)

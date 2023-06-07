@@ -23,7 +23,7 @@ import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.viewmodels.VideoViewModel
 import com.google.android.gms.cast.framework.CastState
 
-class VideosFragment : BaseFragment(R.layout.fragment_videos){
+class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
     private val videoViewModel: VideoViewModel by viewModels()
     private var binding: FragmentVideosBinding? = null
@@ -31,6 +31,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos){
     private var videoAdapter: VideoHorizontalAdapter? = null
     private var videoSectionalAdapter: VideoSectionalAdapter? = null
     private var mediaMapList: HashMap<String, List<MediaData>>? = null
+    private var selectedMediaFile: MediaData? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,6 +41,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos){
         observeCastingLiveData()
         observeVideoList()
         doFetchingWork()
+        observeMediaThumbnailCreated()
 
         binding?.llSorting?.setOnClickListener {
             sortMediaList()
@@ -121,6 +123,28 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos){
         })
     }
 
+    private fun observeMediaThumbnailCreated() {
+        videoViewModel.thumbFile.observe(viewLifecycleOwner, Observer { thumbFile ->
+            hideLoader()
+
+            val thumbPath = thumbFile?.path?.split("0/")?.get(1)
+
+            val path = selectedMediaFile?.file?.path?.split("0/")?.get(1)
+            path?.let {
+                CastHelper.playMedia(context, selectedMediaFile, it,
+                    thumbPath.toString(), Utils.VIDEO, ::checkForQueue)
+            }
+
+//            videoViewModel.setThumbFile()
+        })
+    }
+
+    private fun itemClick(mediaData: MediaData) {
+        showLoader()
+        selectedMediaFile = mediaData
+        videoViewModel.saveThumbnailAndPlayMedia(mediaData.bitmap)
+    }
+
     private fun setSectionAdapter() {
         mediaMapList = MediaListSingleton.getGalleryVideoList()
         videoSectionalAdapter =
@@ -131,11 +155,6 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos){
         binding?.rvVertical?.hasFixedSize()
         binding?.rvVertical?.layoutManager = layoutManager
         binding?.rvVertical?.adapter = videoSectionalAdapter
-    }
-
-    private fun itemClick(mediaData: MediaData) {
-        val path = mediaData.file?.path?.split("0/")?.get(1)
-        path?.let { CastHelper.playMedia(context, mediaData.file, it, "", Utils.VIDEO,::checkForQueue) }
     }
 
     private fun sortMediaList() {
@@ -169,8 +188,8 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos){
             stopCasting()
     }
 
-    private fun checkForQueue(count: Int){
-        Log.d("VideosFragment", "onViewCreated A13 : ><<<"+count)
+    private fun checkForQueue(count: Int) {
+        Log.d("VideosFragment", "onViewCreated A13 : ><<<" + count)
         binding?.tvQueued?.visibility = View.VISIBLE
     }
 

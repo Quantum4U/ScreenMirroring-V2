@@ -3,21 +3,34 @@ package com.example.projectorcasting.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.media.MediaScannerConnection
+import android.media.ThumbnailUtils
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.format.DateFormat
 import android.util.Log
 import com.example.projectorcasting.models.MediaData
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 object AppUtils {
+
+    fun createTempImagePath(): File {
+        return File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+            ".CastDemoFolder"
+        )
+    }
 
     fun openWifiPopUpInApp(activity: Activity) {
         try {
@@ -123,11 +136,25 @@ object AppUtils {
 //                        val galData = GalleryData(id, name, path, date)
 
                         if (count <= AppConstants.MAX_HORIZONTAL_ITEM) {
-                            list?.add(MediaData(file, convertDate(file.lastModified().toString()), getMediaDuration(context, Uri.fromFile(file))))
-                        }else{
-                            mapList?.add(MediaData(file, convertDate(file.lastModified().toString()), getMediaDuration(context, Uri.fromFile(file))))
+                            list?.add(
+                                MediaData(
+                                    file,
+                                    convertDate(file.lastModified().toString()),
+                                    getMediaDuration(context, Uri.fromFile(file)),
+                                    getMediaBitmap(file)
+                                )
+                            )
+                        } else {
+                            mapList?.add(
+                                MediaData(
+                                    file,
+                                    convertDate(file.lastModified().toString()),
+                                    getMediaDuration(context, Uri.fromFile(file)),
+                                    getMediaBitmap(file)
+                                )
+                            )
                         }
-                        count+=1
+                        count += 1
                     }
                 }
             }
@@ -150,7 +177,11 @@ object AppUtils {
         return list
     }
 
-    private fun convertDate(dateInMilliseconds: String): String? {
+    private fun getMediaBitmap(file: File): Bitmap? {
+        return ThumbnailUtils.createVideoThumbnail(file.path, MediaStore.Video.Thumbnails.MINI_KIND)
+    }
+
+    fun convertDate(dateInMilliseconds: String): String? {
         var s: String? = null
         s = if (isSameDay(System.currentTimeMillis().toString(), dateInMilliseconds))
             "Today"
@@ -248,5 +279,59 @@ object AppUtils {
         return mMap
     }
 
+    fun saveTempThumb(bitmap: Bitmap?): File {
+        val path = createTempImagePath()
+
+        if (!path.exists()) {
+            path.mkdir()
+        }
+
+        val targetFile =
+            File(path, System.currentTimeMillis().toString() + AppConstants.TEMP_IMAGE_NAME)
+        var out: FileOutputStream? = null
+        try {
+            out = FileOutputStream(targetFile)
+            val imageSaved = bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            Objects.requireNonNull(out).close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+
+        return targetFile
+    }
+
+    fun deleteTempThumbFile(context: Context): Boolean {
+        var result = true
+        val path = createTempImagePath()
+        println("")
+        if (path != null) {
+            if (path.exists()) {
+//                if (path.isDirectory) {
+//                    for (child in path.listFiles()) {
+//                        result = result and deleteTempThumbFile(context)
+//                    }
+//                    result = result and path.delete() // Delete empty directory.
+//                } else if (path.isFile) {
+//                    result = result and path.delete()
+//                }
+                result = path.delete()
+                scanMedia(context)
+                return result
+            }
+        } else {
+            return false
+        }
+        return false
+    }
+
+    private fun scanMedia(context: Context?) {
+        if (context != null) {
+            MediaScannerConnection.scanFile(context,
+                arrayOf(Environment.getExternalStorageDirectory().toString()),
+                null,
+                MediaScannerConnection.OnScanCompletedListener { path, uri -> })
+        }
+    }
 
 }

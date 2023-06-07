@@ -9,6 +9,7 @@ import androidx.work.WorkManager
 import com.example.projectorcasting.R
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.service.WebService
+import com.example.projectorcasting.models.MediaData
 import com.google.android.gms.cast.CastDevice
 import java.io.File
 import kotlin.reflect.KFunction2
@@ -66,7 +67,7 @@ object CastHelper {
 
     fun playMedia(
         context: Context?,
-        file: File,
+        mediaData: MediaData?,
         path: String,
         thumb: String,
         type: Int,
@@ -95,6 +96,6 @@ object CastHelper {
             exampleWorkRequest
         )
 
-        Utils.showQueuePopup(context,Utils.buildMediaInfo(file,path, thumb, type),checkForQueue)
+        Utils.showQueuePopup(context,Utils.buildMediaInfo(mediaData,path, thumb, type),checkForQueue)
     }
 }

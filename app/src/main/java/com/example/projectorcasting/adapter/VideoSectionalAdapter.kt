@@ -18,13 +18,12 @@ class VideoSectionalAdapter(
     private val context: Context,
     private var mediaMap: HashMap<String, List<MediaData>>?,
     private val itemClick: KFunction1<MediaData, Unit>
-) :
-    SectionedRecyclerViewAdapter<RecyclerView.ViewHolder>() {
+) : SectionedRecyclerViewAdapter<RecyclerView.ViewHolder>() {
 
     private val sectionKeysList = mediaMap?.keys
     private val VIEW_TYPE_HEADER = -2
 
-    fun refreshList(mediaList: HashMap<String, List<MediaData>>?){
+    fun refreshList(mediaList: HashMap<String, List<MediaData>>?) {
         mediaMap = mediaList?.let { HashMap(it) }
         notifyDataSetChanged()
     }
@@ -72,20 +71,21 @@ class VideoSectionalAdapter(
     }
 
     override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder?,
-        section: Int,
-        relativePosition: Int,
-        absolutePosition: Int
+        holder: RecyclerView.ViewHolder?, section: Int, relativePosition: Int, absolutePosition: Int
     ) {
         val holderItem = holder as ItemViewHolder
 
         val key = sectionKeysList?.elementAt(section)
         val list = mediaMap?.get(key)
-        val media =list?.get(relativePosition)
+        val media = list?.get(relativePosition)
 
 
-        holderItem.imgFile?.let {
-            Glide.with(context).load(media?.file).into(it)
+        if (media?.bitmap != null) {
+            holderItem.imgFile?.setImageBitmap(media.bitmap)
+        } else {
+            holderItem.imgFile?.let {
+                Glide.with(context).load(media?.file).into(it)
+            }
         }
 
         holderItem.albumName?.text = media?.file?.name

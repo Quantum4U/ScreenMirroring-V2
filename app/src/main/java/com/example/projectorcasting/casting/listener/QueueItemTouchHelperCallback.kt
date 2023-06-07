@@ -12,7 +12,8 @@ import com.example.projectorcasting.adapter.QueueListAdapter
 class QueueItemTouchHelperCallback constructor(private val mAdapter: ItemTouchHelperAdapter) :
     ItemTouchHelper.Callback() {
     override fun isLongPressDragEnabled(): Boolean {
-        return true
+        //true for drag up and down
+        return false
     }
 
     override fun isItemViewSwipeEnabled(): Boolean {
@@ -24,7 +25,7 @@ class QueueItemTouchHelperCallback constructor(private val mAdapter: ItemTouchHe
         viewHolder: RecyclerView.ViewHolder
     ): Int {
         val dragFlags: Int = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-        val swipeFlags: Int = ItemTouchHelper.END
+        val swipeFlags: Int = ItemTouchHelper.START
         return makeMovementFlags(dragFlags, swipeFlags)
     }
 

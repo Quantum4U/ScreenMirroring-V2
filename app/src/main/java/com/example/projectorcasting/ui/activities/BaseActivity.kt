@@ -125,6 +125,7 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
             }
 
             override fun onSessionEnded(p0: CastSession, p1: Int) {
+                Log.d("MySessionManagerener", "onSessionEnded A13 11: >.")
                 onApplicationDisconnected()
             }
 
@@ -194,6 +195,10 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
     fun getConnectedCastDevice(): CastDevice? {
         return castDevice
+    }
+
+    fun getCastContext(): CastContext? {
+        return mCastContext
     }
 
     override fun attachBaseContext(newBase: Context?) {

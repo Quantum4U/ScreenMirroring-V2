@@ -21,6 +21,7 @@ import kotlin.jvm.Synchronized
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.ImageLoader.ImageCache
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.collection.LruCache
 import com.android.volley.Cache
 import com.android.volley.Network

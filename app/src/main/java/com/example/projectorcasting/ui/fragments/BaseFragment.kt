@@ -8,6 +8,7 @@ import androidx.mediarouter.media.MediaRouter
 import com.example.projectorcasting.ui.activities.BaseActivity
 import com.example.projectorcasting.viewmodels.DashboardViewModel
 import com.google.android.gms.cast.CastDevice
+import com.google.android.gms.cast.framework.CastContext
 import java.io.File
 
 open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
@@ -85,5 +86,9 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
 
     fun getConnectedCastDevice(): CastDevice? {
         return (activity as BaseActivity).getConnectedCastDevice()
+    }
+
+    fun getCastContext(): CastContext? {
+        return (activity as BaseActivity).getCastContext()
     }
 }

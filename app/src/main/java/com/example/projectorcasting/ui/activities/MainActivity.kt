@@ -13,7 +13,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import com.example.projectorcasting.R
 import com.example.projectorcasting.databinding.ActivityMainBinding
+import com.example.projectorcasting.utils.AppUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity(), View.OnClickListener {
@@ -173,6 +177,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        GlobalScope.launch(Dispatchers.IO) {
+            AppUtils.deleteTempThumbFile(this@MainActivity)
+        }
+
 
 //        try {
 //            LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)

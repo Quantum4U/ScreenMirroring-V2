@@ -1,6 +1,8 @@
 package com.example.projectorcasting.adapter
 
 import android.content.Context
+import android.media.ThumbnailUtils
+import android.provider.MediaStore
 import android.text.format.DateFormat
 import android.util.Log
 import android.view.LayoutInflater
@@ -50,7 +52,12 @@ class VideoHorizontalAdapter(private val mediaList: List<MediaData>, private val
 
         fun updateData(item: MediaData) {
 
-            ctx?.let { Glide.with(it).load(item.file).into(icon) }
+            if(item.bitmap != null) {
+                icon.setImageBitmap(item.bitmap)
+            }else{
+                ctx?.let { Glide.with(it).load(item.file).into(icon) }
+            }
+
             albumName.text = item.file?.name
             albumDate.text = item.date
             albumDuration.text = item.duration

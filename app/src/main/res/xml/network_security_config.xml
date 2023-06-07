@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<network-security-config>-->
+<!--    <domain-config cleartextTrafficPermitted="true">-->
+<!--        <domain includeSubdomains="true">quantum4you.com</domain>-->
+<!--        <domain includeSubdomains="true">192.168.1</domain>-->
+<!--        <domain includeSubdomains="true">192.168.1.17</domain>-->
+<!--        <domain includeSubdomains="true">192.168.1.36</domain>-->
+<!--        <domain includeSubdomains="true">192.168.1.51</domain>-->
+<!--        <domain includeSubdomains="true">192.168.1.44</domain>-->
+<!--        <domain includeSubdomains="true">192.168.1.2</domain>-->
+<!--        <domain includeSubdomains="true">192.168.1.12</domain>-->
+<!--        <domain includeSubdomains="true">192.168.1.0/24</domain>-->
+<!--        <domain includeSubdomains="true">192.168.0.0/16</domain>-->
+<!--        <domain includeSubdomains="true">appservices.in</domain>-->
+<!--        <domain includeSubdomains="true">https://livedio.in</domain>-->
+<!--        <domain includeSubdomains="true">http://apis.appnxt.net</domain>-->
+<!--        <domain includeSubdomains="true">connectivitycheck.gstatic.com</domain>-->
+<!--    </domain-config>-->
+<!--</network-security-config>-->
