@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import com.example.projectorcasting.R
+import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.databinding.ActivityMainBinding
 import com.example.projectorcasting.utils.AppUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +30,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private var drawerLayout: DrawerLayout? = null
 
     private var isVideoPageBtnClicked = false
+    private var isAudioPageBtnClicked = false
     private var checkForPermission = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,12 +142,23 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     fun openVideoPage(){
-        if (!checkStoragePermission()) {
+        if (!checkStoragePermission(Utils.VIDEO)) {
             checkForPermission = true
             isVideoPageBtnClicked = true
-            verifyPermissions()
+            verifyPermissions(Utils.VIDEO)
         } else {
             navController?.navigate(R.id.nav_video)
+            showFullAds(this)
+        }
+    }
+
+    fun openAudioPage(){
+        if (!checkStoragePermission(Utils.AUDIO)) {
+            checkForPermission = true
+            isAudioPageBtnClicked = true
+            verifyPermissions(Utils.AUDIO)
+        } else {
+            navController?.navigate(R.id.nav_audio)
             showFullAds(this)
         }
     }
@@ -154,14 +167,18 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         super.onResume()
 //        inAppUpdateManager?.checkNewAppVersionState()
 
-        if(checkForPermission && checkStoragePermission()) {
+        if(checkForPermission) {
             checkForPermission = false
 
-            if (isVideoPageBtnClicked) {
+            if (isVideoPageBtnClicked && checkStoragePermission(Utils.VIDEO)) {
                 isVideoPageBtnClicked = false
                 openVideoPage()
             }
 
+            if (isAudioPageBtnClicked && checkStoragePermission(Utils.AUDIO)) {
+                isAudioPageBtnClicked = false
+                openAudioPage()
+            }
         }
     }
 
@@ -178,9 +195,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     override fun onDestroy() {
         super.onDestroy()
 
-        GlobalScope.launch(Dispatchers.IO) {
-            AppUtils.deleteTempThumbFile(this@MainActivity)
-        }
+//        GlobalScope.launch(Dispatchers.IO) {
+//            AppUtils.deleteTempThumbFile(this@MainActivity)
+//        }
 
 
 //        try {

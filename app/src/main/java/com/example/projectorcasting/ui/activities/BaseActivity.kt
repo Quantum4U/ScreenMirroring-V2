@@ -28,6 +28,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.mediarouter.media.MediaRouter
 import androidx.viewbinding.BuildConfig
 import com.example.projectorcasting.R
+import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.viewmodels.DashboardViewModel
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastContext
@@ -50,6 +51,7 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
     private var dialog: Dialog? = null
 
     private val REQUEST_CODE = 100
+    private var type = 0
 
     //casting variables
     private var mSessionManagerListener: SessionManagerListener<CastSession>? = null
@@ -238,9 +240,10 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
         return alertDialogProgressBar?.isShowing == true
     }
 
-    fun checkStoragePermission(): Boolean {
+    fun checkStoragePermission(type: Int): Boolean {
+        this.type = type
         val readImagePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            Manifest.permission.READ_MEDIA_IMAGES
+            getPermissionString(type)
         else Manifest.permission.READ_EXTERNAL_STORAGE
 
         if (ContextCompat.checkSelfPermission(
@@ -263,7 +266,7 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty()) {
             if (requestCode == REQUEST_CODE) {
-                if (!checkStoragePermission()) {
+                if (!checkStoragePermission(type)) {
                     var message = ""
                     message = if (!shouldRequestPermissionRationale(permissions)) {
                         resources.getString(R.string.dont_ask_permission_header)
@@ -353,15 +356,26 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
         }
     }
 
-    fun verifyPermissions() {
+    fun verifyPermissions(type: Int) {
+        this.type = type
         val readImagePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            Manifest.permission.READ_MEDIA_IMAGES
+            getPermissionString(type)
         else Manifest.permission.READ_EXTERNAL_STORAGE
 
         ActivityCompat.requestPermissions(
             this,
             arrayOf(readImagePermission), REQUEST_CODE
         )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun getPermissionString(type: Int): String {
+       return when (type) {
+            Utils.VIDEO -> Manifest.permission.READ_MEDIA_VIDEO
+            Utils.AUDIO -> Manifest.permission.READ_MEDIA_AUDIO
+            Utils.IMAGE -> Manifest.permission.READ_MEDIA_IMAGES
+           else -> {Manifest.permission.READ_MEDIA_VIDEO}
+       }
     }
 
     fun hideKeyBoard(view: View?) {

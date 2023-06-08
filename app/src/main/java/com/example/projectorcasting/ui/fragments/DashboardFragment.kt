@@ -7,9 +7,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.projectorcasting.R
+import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.databinding.FragmentDashboardBinding
 import com.example.projectorcasting.ui.activities.MainActivity
+import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.viewmodels.DashboardViewModel
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastState
@@ -42,6 +44,14 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
 
         binding?.cvCastVideos?.setOnClickListener {
             (activity as MainActivity?)?.openVideoPage()
+        }
+
+        binding?.cvCastAudios?.setOnClickListener {
+            (activity as MainActivity?)?.openAudioPage()
+        }
+
+        binding?.tvDisconnect?.setOnClickListener {
+            getDashViewModel()?.showConnectionPrompt(context,::actionPerform,false,null)
         }
 
     }
@@ -84,6 +94,9 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
             binding?.llConnectedDeviceName?.visibility = View.INVISIBLE
             binding?.tvDisconnect?.visibility = View.GONE
             binding?.tvNoDeviceConnected?.visibility = View.VISIBLE
+
+            //delete videos thumbs created for casting media if it presents
+            AppUtils.deleteTempThumbFile(context)
         }
     }
 
@@ -95,6 +108,13 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
 
         Log.d("TAG", "getConnectionStatus: >>22" + isConnected + "//" + deviceName)
         checkCastConnection(isConnected, deviceName)
+    }
+
+    private fun actionPerform(isConnect: Boolean, castModel: CastModel?) {
+        if (isConnect)
+            startCasting(castModel?.routeInfo, castModel?.castDevice)
+        else
+            stopCasting()
     }
 
     override fun onDestroyView() {

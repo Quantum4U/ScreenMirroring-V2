@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.media.MediaScannerConnection
 import android.media.ThumbnailUtils
@@ -15,6 +16,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.text.format.DateFormat
 import android.util.Log
+import com.example.projectorcasting.R
 import com.example.projectorcasting.models.MediaData
 import java.io.File
 import java.io.FileOutputStream
@@ -28,8 +30,16 @@ object AppUtils {
     fun createTempImagePath(): File {
         return File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-            ".CastDemoFolder"
+            ".CastingFolder/VideoThumb"
         )
+    }
+
+    fun createAudioThumbPath(context: Context?): File {
+        return File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+            ".CastingFolder/AudioThumb"
+        )
+//        return File(context?.filesDir, "AudioThumb")
     }
 
     fun openWifiPopUpInApp(activity: Activity) {
@@ -53,6 +63,8 @@ object AppUtils {
             + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
     private const val vidSelection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
             + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
+    private const val audioSelection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+            + MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO)
 
     private val projection = arrayOf(
         MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME,
@@ -63,6 +75,15 @@ object AppUtils {
     )
 
     private val projectionVideo = arrayOf(
+        MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME,
+        MediaStore.Video.Media.DATA, MediaStore.Video.Media.DATE_TAKEN,
+        MediaStore.Video.Media.MIME_TYPE,
+        MediaStore.Video.Media.BUCKET_ID,
+        MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
+        MediaStore.Video.VideoColumns.DURATION
+    )
+
+    private val projectionAudio = arrayOf(
         MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME,
         MediaStore.Video.Media.DATA, MediaStore.Video.Media.DATE_TAKEN,
         MediaStore.Video.Media.MIME_TYPE,
@@ -171,9 +192,72 @@ object AppUtils {
                 o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
             })
 
-        MediaListSingleton.setGalleryVideoList(mapList?.let { getSortedMap(it) })
-
+        MediaListSingleton.setGalleryVideoHashMap(mapList?.let { getSortedMap(it) })
         mapList?.let { list?.addAll(it) }
+        MediaListSingleton.setGalleryVideoList(list)
+        return list
+    }
+
+    fun getAllGalleryAudios(context: Context): ArrayList<MediaData>? {
+
+        var count = 1
+        var list: ArrayList<MediaData>? = arrayListOf()
+        var mapList: ArrayList<MediaData>? = arrayListOf()
+
+        try {
+            context.contentResolver.query(
+                queryUri,
+                projectionAudio,
+                audioSelection,
+                null,
+                MediaStore.Images.Media.DATE_TAKEN + " ASC"
+            ).use { galCursor ->
+                if (galCursor != null) {
+                    while (galCursor.moveToNext()) {
+                        val path = galCursor.getString(2)
+                        val file = File(path)
+
+//                        if (count <= AppConstants.MAX_HORIZONTAL_ITEM) {
+                        list?.add(
+                            MediaData(
+                                file,
+                                convertDate(file.lastModified().toString()),
+                                getMediaDuration(context, Uri.fromFile(file)),
+                            )
+                        )
+//                        } else {
+//                            mapList?.add(
+//                                MediaData(
+//                                    file,
+//                                    convertDate(file.lastModified().toString()),
+//                                    getMediaDuration(context, Uri.fromFile(file)),
+//                                    getMediaBitmap(file)
+//                                )
+//                            )
+//                        }
+//                        count += 1
+                    }
+                }
+            }
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+
+        }
+
+        Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + list?.size)
+        Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + mapList?.size)
+
+        Collections.sort(list,
+            Comparator<MediaData> { o1, o2 ->
+                o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
+            })
+
+        saveAudioThumb(
+            context,
+            BitmapFactory.decodeResource(context.resources, R.drawable.ic_audio_placeholder)
+        )
+        MediaListSingleton.setGalleryAudioList(list)
+
         return list
     }
 
@@ -283,7 +367,7 @@ object AppUtils {
         val path = createTempImagePath()
 
         if (!path.exists()) {
-            path.mkdir()
+            path.mkdirs()
         }
 
         val targetFile =
@@ -301,7 +385,30 @@ object AppUtils {
         return targetFile
     }
 
-    fun deleteTempThumbFile(context: Context): Boolean {
+    fun saveAudioThumb(context: Context?, bitmap: Bitmap?): File {
+        val path = createAudioThumbPath(context)
+
+        if (!path.exists()) {
+            path.mkdirs()
+        }
+
+        val targetFile = File(path, AppConstants.AUDIO_THUMB)
+
+        if (!targetFile.exists()) {
+            var out: FileOutputStream? = null
+            try {
+                out = FileOutputStream(targetFile)
+                val imageSaved = bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                Objects.requireNonNull(out).close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        scanMedia(context)
+        return targetFile
+    }
+
+    fun deleteTempThumbFile(context: Context?): Boolean {
         var result = true
         val path = createTempImagePath()
         println("")

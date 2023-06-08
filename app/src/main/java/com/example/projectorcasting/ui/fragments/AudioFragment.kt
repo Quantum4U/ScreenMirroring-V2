@@ -1,52 +1,42 @@
 package com.example.projectorcasting.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.projectorcasting.R
-import com.example.projectorcasting.adapter.VideoHorizontalAdapter
-import com.example.projectorcasting.adapter.VideoSectionalAdapter
+import com.example.projectorcasting.adapter.AudioAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
-import com.example.projectorcasting.databinding.FragmentVideosBinding
+import com.example.projectorcasting.databinding.FragmentAudioBinding
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
-import com.example.projectorcasting.viewmodels.VideoViewModel
+import com.example.projectorcasting.viewmodels.AudioViewModel
 import com.google.android.gms.cast.framework.CastState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 
-class VideosFragment : BaseFragment(R.layout.fragment_videos) {
+class AudioFragment : BaseFragment(R.layout.fragment_audio) {
 
-    private val videoViewModel: VideoViewModel by viewModels()
-    private var binding: FragmentVideosBinding? = null
+    private val audioViewModel: AudioViewModel by viewModels()
 
-    private var videoAdapter: VideoHorizontalAdapter? = null
-    private var videoSectionalAdapter: VideoSectionalAdapter? = null
-    private var mediaMapList: HashMap<String, List<MediaData>>? = null
+    private var binding: FragmentAudioBinding? = null
+    private var audioAdapter: AudioAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding = FragmentVideosBinding.bind(view)
+        binding = FragmentAudioBinding.bind(view)
 
         observeCastingLiveData()
-        observeVideoList()
+        observeAudioList()
         doFetchingWork()
-//        observeMediaThumbnailCreated(thumb)
 
         binding?.llSorting?.setOnClickListener {
             sortMediaList()
@@ -57,7 +47,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         }
 
         binding?.llConnected?.setOnClickListener {
-            videoViewModel.showConnectionPrompt(context, ::actionPerform, false, null)
+            audioViewModel.showConnectionPrompt(context, ::actionPerform, false, null)
         }
 
         binding?.ivBack?.setOnClickListener {
@@ -76,16 +66,6 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
     }
 
-    private fun doFetchingWork() {
-        val pathList = MediaListSingleton.getGalleryVideoList()
-        if(pathList != null && pathList.isNotEmpty()) {
-            setAdapters(pathList)
-        }else{
-            showLoader()
-            context?.let { videoViewModel.fetchVideoList(it) }
-        }
-    }
-
     private fun observeCastingLiveData() {
         castingLiveData().observe(viewLifecycleOwner, Observer { state ->
             if (state == CastState.CONNECTED) {
@@ -96,81 +76,49 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
                 binding?.llConnected?.visibility = View.GONE
                 binding?.llConnect?.visibility = View.VISIBLE
             }
-
         })
     }
 
-    private fun observeVideoList() {
-        videoViewModel.videosList.observe(viewLifecycleOwner, Observer { videoList ->
+
+    private fun observeAudioList() {
+        audioViewModel.audiosList.observe(viewLifecycleOwner, Observer { audioList ->
             hideLoader()
-            setAdapters(videoList)
+            setAdapter(audioList)
         })
     }
 
-    private fun setAdapters(videoList: List<MediaData>) {
-        if (videoList.isNotEmpty()) {
-
+    private fun setAdapter(audioList: List<MediaData>) {
+        if (audioList.isNotEmpty()) {
             binding?.rlView?.visibility = View.VISIBLE
-            binding?.tvNoVideosFound?.visibility = View.GONE
+            binding?.tvNoAudiosFound?.visibility = View.GONE
 
-            if (videoList.size <= AppConstants.MAX_HORIZONTAL_ITEM) {
-                binding?.rlSorting?.visibility = View.GONE
-                binding?.rvVertical?.visibility = View.GONE
-            } else {
-                binding?.rlSorting?.visibility = View.VISIBLE
-                binding?.rvVertical?.visibility = View.VISIBLE
+            binding?.rvAudio?.layoutManager = LinearLayoutManager(context)
+            audioAdapter = AudioAdapter(::itemClick)
+            binding?.rvAudio?.adapter = audioAdapter
+            audioAdapter?.refreshList(audioList)
 
-                setSectionAdapter()
-            }
-
-            var layoutManagerTopProducts = object : LinearLayoutManager(requireContext()) {
-
-            }
-
-            layoutManagerTopProducts.orientation = LinearLayoutManager.HORIZONTAL
-            binding?.rvHorizontal?.layoutManager = layoutManagerTopProducts
-            videoAdapter = VideoHorizontalAdapter(videoList, ::itemClick)
-            binding?.rvHorizontal?.adapter = videoAdapter
         } else {
             binding?.rlView?.visibility = View.GONE
-            binding?.tvNoVideosFound?.visibility = View.VISIBLE
+            binding?.tvNoAudiosFound?.visibility = View.VISIBLE
         }
-
     }
 
-    private fun playMedia(thumbFile: File?, mediaData: MediaData?) {
-        hideLoader()
-        val thumbPath = thumbFile?.path?.split("0/")?.get(1)
-        val path = mediaData?.file?.path?.split("0/")?.get(1)
-        path?.let {
-            CastHelper.playMedia(
-                context, mediaData, it,
-                thumbPath.toString(), Utils.VIDEO, ::checkForQueue
-            )
+    private fun doFetchingWork() {
+        val pathList = MediaListSingleton.getGalleryAudioList()
+        if(pathList != null && pathList.isNotEmpty()) {
+            setAdapter(pathList)
+        }else{
+            showLoader()
+            context?.let { audioViewModel.fetchVideoList(it) }
         }
     }
 
     private fun itemClick(mediaData: MediaData) {
-        showLoader()
-        CoroutineScope(Dispatchers.IO).launch {
-            val thumb = AppUtils.saveTempThumb(mediaData.bitmap)
-
-            withContext(Dispatchers.Main) {
-                playMedia(thumb,mediaData)
-            }
+        val thumb = File(AppUtils.createAudioThumbPath(context), AppConstants.AUDIO_THUMB).path.split("0/")[1]
+        val path = mediaData.file?.path?.split("0/")?.get(1)
+        path?.let {
+            CastHelper.playMedia(context, mediaData, it, thumb, Utils.AUDIO, ::checkForQueue)
         }
-    }
-
-    private fun setSectionAdapter() {
-        mediaMapList = MediaListSingleton.getGalleryVideoHashMap()
-        videoSectionalAdapter =
-            VideoSectionalAdapter(requireContext(), mediaMapList, ::itemClick)
-        val layoutManager = GridLayoutManager(requireContext(), 1)
-        videoSectionalAdapter?.setLayoutManager(layoutManager)
-        videoSectionalAdapter?.shouldShowHeadersForEmptySections(true)
-        binding?.rvVertical?.hasFixedSize()
-        binding?.rvVertical?.layoutManager = layoutManager
-        binding?.rvVertical?.adapter = videoSectionalAdapter
     }
 
     private fun sortMediaList() {
@@ -194,7 +142,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
             binding?.tvSortingText?.text = getString(R.string.ascending)
         }
 
-        videoSectionalAdapter?.refreshList(mediaMapList)
+        audioAdapter?.refreshList(audioAdapter?.getAudioList()?.reversed())
     }
 
     private fun actionPerform(isConnect: Boolean, castModel: CastModel?) {
@@ -205,7 +153,6 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     }
 
     private fun checkForQueue(count: Int) {
-        Log.d("VideosFragment", "onViewCreated A13 : ><<<" + count)
         binding?.tvQueued?.visibility = View.VISIBLE
     }
 
@@ -217,5 +164,4 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     private fun exitPage() {
         findNavController().navigateUp()
     }
-
 }

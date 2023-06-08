@@ -11,6 +11,8 @@
     <!-- Required permission to start http server -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
 
     <uses-feature
         android:name="android.hardware.wifi"
@@ -19,6 +21,7 @@
 
 
     <application
+        android:requestLegacyExternalStorage="true"
         android:name=".MainApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"

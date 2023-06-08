@@ -16,24 +16,21 @@
 package com.example.projectorcasting.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
-import android.view.ViewGroup
-import android.view.View
+import android.util.Log
 import android.view.LayoutInflater
-import com.google.android.gms.cast.framework.CastContext
-import android.widget.TextView
-import android.widget.ImageView
-import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.view.View.OnTouchListener
 import android.view.MotionEvent
-import com.google.android.gms.cast.framework.media.MediaQueue
-import com.google.android.gms.cast.framework.media.MediaQueueRecyclerViewAdapter
-import androidx.core.view.MotionEventCompat
+import android.view.View
+import android.view.View.OnTouchListener
+import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.annotation.IntDef
+import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.ImageLoader
 import com.android.volley.toolbox.NetworkImageView
@@ -41,10 +38,12 @@ import com.example.projectorcasting.R
 import com.example.projectorcasting.casting.listener.QueueItemTouchHelperCallback
 import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CustomVolleyRequest
-import com.example.projectorcasting.utils.AppUtils
 import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.cast.MediaStatus
+import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.media.MediaQueue
+import com.google.android.gms.cast.framework.media.MediaQueueRecyclerViewAdapter
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 
@@ -116,6 +115,10 @@ class QueueListAdapter(
         holder.mPlayUpcoming.setOnClickListener(mItemViewOnClickListener)
         holder.mStopUpcoming.setOnClickListener(mItemViewOnClickListener)
         val info = item?.media
+        val mediaType = info?.metadata?.mediaType
+
+        Log.d("QueueListAdapter", "onBindViewHolder A13 : >>" + info?.metadata?.mediaType)
+
         var imageUrl: String? = null
         if (info != null && info.metadata != null) {
             val metaData = info.metadata
@@ -129,32 +132,52 @@ class QueueListAdapter(
             holder.mTitleView.text = null
             holder.mDescriptionView.text = null
         }
-        if (imageUrl != null) {
-            mImageLoader = CustomVolleyRequest.Companion.getInstance(mAppContext)?.imageLoader
-            val imageListener: ImageLoader.ImageListener = object : ImageLoader.ImageListener {
-                override fun onErrorResponse(error: VolleyError) {
-                    Log.d("QueueListAdapter", "onErrorResponse A13 : >>"+error+"//"+error.message)
-                    holder.mProgressLoading.visibility = View.GONE
-                    holder.mImageView.setErrorImageResId(R.drawable.ic_queue_item_placeholder)
-                }
+        if (mediaType == MediaMetadata.MEDIA_TYPE_MOVIE) {
 
-                override fun onResponse(response: ImageLoader.ImageContainer, isImmediate: Boolean) {
-                    if (response.bitmap != null) {
+
+            holder.mProgressLoading.visibility = View.VISIBLE
+            holder.mImageView.visibility = View.VISIBLE
+            holder.audioIcon.visibility = View.GONE
+
+            if (imageUrl != null) {
+                mImageLoader = CustomVolleyRequest.Companion.getInstance(mAppContext)?.imageLoader
+                val imageListener: ImageLoader.ImageListener = object : ImageLoader.ImageListener {
+                    override fun onErrorResponse(error: VolleyError) {
+                        Log.d(
+                            "QueueListAdapter",
+                            "onErrorResponse A13 : >>" + error + "//" + error.message
+                        )
                         holder.mProgressLoading.visibility = View.GONE
-                        holder.mImageView.setImageBitmap(response.bitmap)
+                        holder.mImageView.setErrorImageResId(R.drawable.ic_queue_item_placeholder)
+                    }
+
+                    override fun onResponse(
+                        response: ImageLoader.ImageContainer,
+                        isImmediate: Boolean
+                    ) {
+                        if (response.bitmap != null) {
+                            holder.mProgressLoading.visibility = View.GONE
+                            holder.mImageView.setImageBitmap(response.bitmap)
+                        }
                     }
                 }
-            }
-            holder.mImageView.setImageUrl(
-                mImageLoader!![imageUrl, imageListener].requestUrl,
-                mImageLoader
-            )
-        } else {
-            holder.mProgressLoading.postDelayed({
-                holder.mProgressLoading.visibility = View.GONE
+                holder.mImageView.setImageUrl(
+                    mImageLoader!![imageUrl, imageListener].requestUrl,
+                    mImageLoader
+                )
+            } else {
+                holder.mProgressLoading.postDelayed({
+                    holder.mProgressLoading.visibility = View.GONE
 //                holder.mImageView.setDefaultImageResId(R.drawable.cast_album_art_placeholder)
 //                holder.mImageView.setImageResource(R.drawable.cast_album_art_placeholder)
-            }, 3000)
+                }, 3000)
+            }
+
+        } else {
+            holder.mProgressLoading.visibility = View.GONE
+            holder.mImageView.visibility = View.GONE
+            holder.audioIcon.visibility = View.VISIBLE
+            holder.audioIcon.setImageDrawable(mAppContext.getDrawable(R.drawable.ic_audio_icon))
         }
         holder.mDragHandle.setOnTouchListener(OnTouchListener { view, event ->
             if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
@@ -254,6 +277,7 @@ class QueueListAdapter(
         val mPlayUpcoming: ImageButton
         val mStopUpcoming: ImageButton
         var mImageView: NetworkImageView
+        var audioIcon: ImageView
         var mContainer: ViewGroup
         var mDragHandle: ImageView
         var mTitleView: TextView
@@ -277,6 +301,7 @@ class QueueListAdapter(
             mTitleView = itemView.findViewById<View>(R.id.textView1) as TextView
             mDescriptionView = itemView.findViewById<View>(R.id.textView2) as TextView
             mImageView = itemView.findViewById<View>(R.id.imageView1) as NetworkImageView
+            audioIcon = itemView.findViewById<View>(R.id.iv_audio_icon) as ImageView
             mPlayPause = itemView.findViewById<View>(R.id.play_pause) as ImageButton
             mControls = itemView.findViewById(R.id.controls)
             mUpcomingControls = itemView.findViewById(R.id.controls_upcoming)

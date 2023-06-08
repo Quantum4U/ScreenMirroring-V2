@@ -9,10 +9,12 @@
 
     <string name="menu_dash">Dashboard</string>
     <string name="menu_video">Videos</string>
+    <string name="menu_audio">Audios</string>
     <string name="menu_scan_device">Scan Device</string>
     <string name="menu_queue">Queue</string>
 
     <string name="videos">Videos</string>
+    <string name="audios">Audios</string>
     <string name="share_app">Share App</string>
     <string name="feedback">Feedback</string>
     <string name="more_app">More App</string>
@@ -56,6 +58,7 @@
     <string name="disconnect_to">Disconnect %s</string>
     <string name="queued">Queued</string>
     <string name="no_videos_found">No videos found</string>
+    <string name="no_audios_found">No audios found</string>
     <string name="sort_by_date">Sort by :Date</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>

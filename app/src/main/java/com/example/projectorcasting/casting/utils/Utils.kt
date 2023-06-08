@@ -33,7 +33,7 @@ object Utils {
 
     const val IMAGE: Int = 1
     const val VIDEO: Int = 2
-    const val AUDIO: Int = 1
+    const val AUDIO: Int = 3
 
     fun findIPAddress(context: Context): String? {
         val wifiManager =
