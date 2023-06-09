@@ -9,7 +9,7 @@ import com.example.projectorcasting.adapter.QueueListAdapter
 /**
  * An implementation of the [androidx.recyclerview.widget.ItemTouchHelper.Callback].
  */
-class QueueItemTouchHelperCallback constructor(private val mAdapter: ItemTouchHelperAdapter) :
+class QueueItemTouchHelperCallback constructor(private val mAdapter: ItemTouchHelperAdapter?) :
     ItemTouchHelper.Callback() {
     override fun isLongPressDragEnabled(): Boolean {
         //true for drag up and down
@@ -33,15 +33,15 @@ class QueueItemTouchHelperCallback constructor(private val mAdapter: ItemTouchHe
         recyclerView: RecyclerView, source: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        if (source.getItemViewType() != target.getItemViewType()) {
+        if (source.itemViewType != target.itemViewType) {
             return false
         }
-        mAdapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition())
+        mAdapter?.onItemMove(source.adapterPosition, target.adapterPosition)
         return true
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
-        mAdapter.onItemDismiss(viewHolder.getAdapterPosition())
+        mAdapter?.onItemDismiss(viewHolder.adapterPosition)
     }
 
     override fun onChildDraw(

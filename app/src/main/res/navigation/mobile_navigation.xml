@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
+        android:id="@+id/nav_image"
+        android:name="com.example.projectorcasting.ui.fragments.ImagesFragment"
+        android:label="@string/images"
+        tools:layout="@layout/fragment_images" />
+
+    <fragment
         android:id="@+id/nav_video"
         android:name="com.example.projectorcasting.ui.fragments.VideosFragment"
         android:label="@string/menu_video"

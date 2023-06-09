@@ -66,7 +66,7 @@ object Utils {
          */
         val sampleVideoStream =
             "http://${CastHelper.deviceIpAddress}:9999/${path}"
-        val sampleVideoSubtitle = "this is demo video"
+        val sampleVideoSubtitle = ""
 //            "http://${deviceIpAddress}:9999/${edt_subtitle.text}"
 
         Log.d("MainActivity", "buildMediaInfo A13 : >>$sampleVideoStream")
@@ -83,7 +83,7 @@ object Utils {
         return when (type) {
             VIDEO -> mediaInfoForVideo(mediaData,sampleVideoStream, sampleVideoSubtitle, imageUrl1, imageUrl2)
             IMAGE -> mediaInfoForImage(mediaData,imageUrl1, imageUrl2)
-            AUDIO -> mediaInfoForAudio(mediaData,sampleVideoStream, imageUrl1, imageUrl2)
+            AUDIO -> mediaInfoForAudio(mediaData,sampleVideoStream, sampleVideoSubtitle,imageUrl1, imageUrl2)
             else -> mediaInfoForVideo(mediaData,sampleVideoStream, sampleVideoSubtitle, imageUrl1, imageUrl2)
         }
 
@@ -96,29 +96,40 @@ object Utils {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
         setMediaData(mediaData,movieMetadata, imageUrl1, imageUrl2)
 
-        val mediaTrack = MediaTrack.Builder(1, MediaTrack.TYPE_TEXT)
-            .setName("English")
-            .setSubtype(MediaTrack.SUBTYPE_SUBTITLES)
-            .setContentId(sampleVideoSubtitle)
-            .setLanguage("en-US")
-            .build()
+        //for subtitles
+//        val mediaTrack = MediaTrack.Builder(1, MediaTrack.TYPE_TEXT)
+//            .setName("English")
+//            .setSubtype(MediaTrack.SUBTYPE_SUBTITLES)
+//            .setContentId(sampleVideoSubtitle)
+//            .setLanguage("en-US")
+//            .build()
 
         return MediaInfo.Builder(sampleVideoStream)
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
             .setContentType("videos/mp4")
             .setMetadata(movieMetadata)
             .setStreamDuration(42 * 1000) // 5:33 means 333 seconds
-            .setMediaTracks(listOf(mediaTrack)) // (Optional) Set list of subtitles.
+//            .setMediaTracks(listOf(mediaTrack)) // (Optional) Set list of subtitles.
             .build()
     }
 
     private fun mediaInfoForAudio(mediaData: MediaData?,
-        sampleVideoStream: String,
+        sampleVideoStream: String,sampleVideoSubtitle: String,
         imageUrl1: String,
         imageUrl2: String
     ): MediaInfo {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK)
         setMediaData(mediaData,movieMetadata, imageUrl1, imageUrl2)
+
+        Log.d("Utils", "setMediaData A13 :>> "+movieMetadata.getString(MediaMetadata.KEY_SUBTITLE))
+
+        //for subtitles
+//        val mediaTrack = MediaTrack.Builder(1, MediaTrack.TYPE_TEXT)
+//            .setName("English")
+//            .setSubtype(MediaTrack.SUBTYPE_SUBTITLES)
+//            .setContentId(mediaData?.duration)
+//            .setLanguage("en-US")
+//            .build()
 
         return MediaInfo.Builder(sampleVideoStream)
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
@@ -149,10 +160,12 @@ object Utils {
         imageUrl2: String
     ) {
         movieMetadata.putString(MediaMetadata.KEY_TITLE, mediaData?.file?.name.toString()) // Set title for video
+        Log.d("Utils", "setMediaData A13 :>> "+mediaData?.duration.toString())
         movieMetadata.putString(
             MediaMetadata.KEY_SUBTITLE,
             mediaData?.duration.toString()
         ) // Set sub-title for video
+
 //        movieMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, "My Video")
 //        movieMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, testImageUrl1)
 

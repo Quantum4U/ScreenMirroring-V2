@@ -42,6 +42,10 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
             findNavController().navigate(R.id.nav_scan_device)
         }
 
+        binding?.cvCastPhotos?.setOnClickListener {
+            (activity as MainActivity?)?.openImagePage()
+        }
+
         binding?.cvCastVideos?.setOnClickListener {
             (activity as MainActivity?)?.openVideoPage()
         }

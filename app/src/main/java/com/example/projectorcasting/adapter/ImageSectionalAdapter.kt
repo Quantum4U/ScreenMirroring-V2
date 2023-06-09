@@ -1,20 +1,21 @@
 package com.example.projectorcasting.adapter
 
 import android.content.Context
+import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.projectorcasting.R
 import com.example.projectorcasting.models.MediaData
 import kotlin.reflect.KFunction1
 
-
-class VideoSectionalAdapter(
+class ImageSectionalAdapter(
     private val context: Context,
     private var mediaMap: LinkedHashMap<String, List<MediaData>>?,
     private val itemClick: KFunction1<MediaData, Unit>
@@ -35,7 +36,7 @@ class VideoSectionalAdapter(
             ViewHolder(view)
         } else {
             val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.media_item_vertical_layout, parent, false)
+                .inflate(R.layout.image_item_layout, parent, false)
             ItemViewHolder(view)
         }
     }
@@ -47,10 +48,9 @@ class VideoSectionalAdapter(
 
     inner class ItemViewHolder internal constructor(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        val card: CardView? = itemView.findViewById(R.id.cv_parent)
-        val imgFile: ImageView? = itemView.findViewById(R.id.iv_album_icon)
-        val albumName: TextView? = itemView.findViewById(R.id.tv_album_name)
-        val albumDuration: TextView? = itemView.findViewById(R.id.tv_album_duration)
+        val card: RelativeLayout? = itemView.findViewById(R.id.cv_parent)
+        val imgFile: ImageView? = itemView.findViewById(R.id.iv_image)
+
     }
 
     override fun getSectionCount(): Int {
@@ -80,16 +80,7 @@ class VideoSectionalAdapter(
         val media = list?.get(relativePosition)
 
 
-        if (media?.bitmap != null) {
-            holderItem.imgFile?.setImageBitmap(media.bitmap)
-        } else {
-            holderItem.imgFile?.let {
-                Glide.with(context).load(media?.file).into(it)
-            }
-        }
-
-        holderItem.albumName?.text = media?.file?.name
-        holderItem.albumDuration?.text = media?.duration
+        holderItem.imgFile?.let { Glide.with(context).load(media?.path).into(it) }
 
         holderItem.card?.setOnClickListener {
             media?.let { it1 -> itemClick(it1) }

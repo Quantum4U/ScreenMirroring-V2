@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/rl_toolbar"
@@ -45,54 +45,55 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:visibility="gone"
         android:id="@+id/rl_view"
-        android:layout_below="@+id/rl_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/cast_mini_controller"
+        android:layout_below="@+id/rl_toolbar"
+        android:visibility="visible">
 
         <RelativeLayout
-            android:visibility="visible"
-            android:layout_marginBottom="@dimen/padding10dp"
-            android:padding="@dimen/padding10dp"
             android:id="@+id/rl_sorting"
-            android:background="#0D000000"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding10dp"
+            android:background="#0D000000"
+            android:padding="@dimen/padding10dp"
+            android:visibility="visible">
 
             <TextView
-                android:layout_marginLeft="@dimen/padding10dp"
-                android:textSize="@dimen/textsize16sp"
-                android:textColor="@color/heading"
-                android:text="@string/sort_by_date"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding10dp"
+                android:text="@string/sort_by_date"
+                android:textColor="@color/heading"
+                android:textSize="@dimen/textsize16sp" />
 
             <LinearLayout
                 android:id="@+id/ll_sorting"
-                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/padding10dp"
-                android:layout_alignParentRight="true"
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_sorting_icon"
-                    app:srcCompat="@drawable/ic_ascending_icon"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_ascending_icon" />
 
                 <TextView
                     android:id="@+id/tv_sorting_text"
-                    android:layout_marginLeft="@dimen/padding10dp"
-                    android:text="@string/ascending"
-                    android:textSize="@dimen/textsize16sp"
-                    android:fontFamily="@font/inter_medium"
-                    android:textColor="@color/heading"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padding10dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="@string/ascending"
+                    android:textColor="@color/heading"
+                    android:textSize="@dimen/textsize16sp" />
 
             </LinearLayout>
 
@@ -102,75 +103,77 @@
             android:id="@+id/rv_audio"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/rl_sorting"
             android:layout_above="@+id/rl_connected"
+            android:layout_below="@+id/rl_sorting"
             android:clipToPadding="false"
-            android:padding="@dimen/padding10dp"/>
+            android:padding="@dimen/padding10dp" />
 
         <RelativeLayout
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             android:id="@+id/rl_connected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true">
 
             <LinearLayout
-                android:visibility="gone"
-                android:gravity="center"
                 android:id="@+id/ll_connected"
-                android:background="@drawable/splash_btn_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/padding10dp"
                 android:layout_marginBottom="@dimen/padding10dp"
-                android:paddingLeft="@dimen/padding15dp"
-                android:paddingRight="@dimen/padding15dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:background="@drawable/splash_btn_bg"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:paddingLeft="@dimen/padding15dp"
+                android:paddingTop="8dp"
+                android:paddingRight="@dimen/padding15dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone">
 
                 <View
-                    android:layout_marginRight="@dimen/padding5dp"
-                    android:background="@drawable/active_dot_bg"
                     android:layout_width="@dimen/padding10dp"
-                    android:layout_height="@dimen/padding10dp"/>
+                    android:layout_height="@dimen/padding10dp"
+                    android:layout_marginRight="@dimen/padding5dp"
+                    android:background="@drawable/active_dot_bg" />
 
                 <TextView
                     android:id="@+id/tv_connected"
-                    android:text="@string/connected"
                     android:layout_width="wrap_content"
-                    android:textColor="@color/white"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:text="@string/connected"
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="visible"
-                android:gravity="center"
                 android:id="@+id/ll_connect"
-                android:background="@drawable/cast_btn_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/padding10dp"
                 android:layout_marginBottom="@dimen/padding10dp"
-                android:paddingLeft="@dimen/padding15dp"
-                android:paddingRight="@dimen/padding15dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:background="@drawable/cast_btn_bg"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:paddingLeft="@dimen/padding15dp"
+                android:paddingTop="8dp"
+                android:paddingRight="@dimen/padding15dp"
+                android:paddingBottom="8dp"
+                android:visibility="visible">
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/padding15dp"
                     app:srcCompat="@drawable/ic_cast_icon"
-                    app:tint="#FC654B"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    app:tint="#FC654B" />
 
                 <TextView
-                    android:text="@string/connect"
                     android:layout_width="wrap_content"
-                    android:textColor="#FC654B"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:text="@string/connect"
+                    android:textColor="#FC654B" />
 
             </LinearLayout>
 
@@ -179,13 +182,21 @@
     </RelativeLayout>
 
     <TextView
-        android:visibility="visible"
         android:id="@+id/tv_no_audios_found"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="@string/no_audios_found"
-        android:textSize="@dimen/textsize20sp" />
+        android:textSize="@dimen/textsize20sp"
+        android:visibility="visible" />
 
+    <fragment
+        android:id="@+id/cast_mini_controller"
+        class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        app:castShowImageThumbnail="true" />
 
 </RelativeLayout>

@@ -117,13 +117,13 @@ class QueueListAdapter(
         val info = item?.media
         val mediaType = info?.metadata?.mediaType
 
-        Log.d("QueueListAdapter", "onBindViewHolder A13 : >>" + info?.metadata?.mediaType)
 
         var imageUrl: String? = null
         if (info != null && info.metadata != null) {
             val metaData = info.metadata
-            holder.mTitleView.text = metaData!!.getString(MediaMetadata.KEY_TITLE)
-            holder.mDescriptionView.text = metaData.getString(MediaMetadata.KEY_SUBTITLE)
+            holder.mTitleView.text = metaData?.getString(MediaMetadata.KEY_TITLE)
+            Log.d("QueueListAdapter", "onBindViewHolder A13 : >>"+metaData?.getString(MediaMetadata.KEY_SUBTITLE))
+            holder.mDescriptionView.text = metaData?.getString(MediaMetadata.KEY_SUBTITLE)
             val images = metaData.images
             if (images != null && images.isNotEmpty()) {
                 imageUrl = images[0].url.toString()

@@ -25,7 +25,7 @@ import kotlin.jvm.Synchronized
  */
 class QueueDataProvider private constructor(context: Context?) {
     private val mAppContext: Context
-    private val  castExecutor: Executor = Executors.newSingleThreadExecutor();
+    private val  castExecutor: Executor = Executors.newSingleThreadExecutor()
     // Locks modification to the remove queue.
     private val mLock: Any = Any()
     private val mSessionManagerListener: SessionManagerListener<CastSession> =

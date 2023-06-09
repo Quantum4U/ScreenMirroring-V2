@@ -36,7 +36,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
     private var videoAdapter: VideoHorizontalAdapter? = null
     private var videoSectionalAdapter: VideoSectionalAdapter? = null
-    private var mediaMapList: HashMap<String, List<MediaData>>? = null
+    private var mediaMapList: LinkedHashMap<String, List<MediaData>>? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -78,9 +78,9 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
     private fun doFetchingWork() {
         val pathList = MediaListSingleton.getGalleryVideoList()
-        if(pathList != null && pathList.isNotEmpty()) {
+        if (pathList != null && pathList.isNotEmpty()) {
             setAdapters(pathList)
-        }else{
+        } else {
             showLoader()
             context?.let { videoViewModel.fetchVideoList(it) }
         }
@@ -156,7 +156,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
             val thumb = AppUtils.saveTempThumb(mediaData.bitmap)
 
             withContext(Dispatchers.Main) {
-                playMedia(thumb,mediaData)
+                playMedia(thumb, mediaData)
             }
         }
     }

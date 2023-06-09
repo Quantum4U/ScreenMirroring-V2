@@ -29,6 +29,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private var drawerLayout: DrawerLayout? = null
 
+    private var isImagePageBtnClicked = false
     private var isVideoPageBtnClicked = false
     private var isAudioPageBtnClicked = false
     private var checkForPermission = false
@@ -141,6 +142,17 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 //        }
     }
 
+    fun openImagePage(){
+        if (!checkStoragePermission(Utils.IMAGE)) {
+            checkForPermission = true
+            isImagePageBtnClicked = true
+            verifyPermissions(Utils.IMAGE)
+        } else {
+            navController?.navigate(R.id.nav_image)
+            showFullAds(this)
+        }
+    }
+
     fun openVideoPage(){
         if (!checkStoragePermission(Utils.VIDEO)) {
             checkForPermission = true
@@ -169,6 +181,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
         if(checkForPermission) {
             checkForPermission = false
+
+            if (isImagePageBtnClicked && checkStoragePermission(Utils.IMAGE)) {
+                isImagePageBtnClicked = false
+                openImagePage()
+            }
 
             if (isVideoPageBtnClicked && checkStoragePermission(Utils.VIDEO)) {
                 isVideoPageBtnClicked = false

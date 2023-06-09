@@ -24,6 +24,8 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.LinkedHashMap
+
 
 object AppUtils {
 
@@ -93,9 +95,9 @@ object AppUtils {
     )
 
 
-    fun getAllGalleryImages(context: Context): ArrayList<File>? {
+    fun getAllGalleryImages(context: Context): ArrayList<MediaData>? {
 
-        var list: ArrayList<File>? = arrayListOf()
+        var list: ArrayList<MediaData>? = arrayListOf()
 
         try {
             context.contentResolver.query(
@@ -103,21 +105,35 @@ object AppUtils {
                 projection,
                 imgSelection,
                 null,
-                MediaStore.Images.Media.DATE_TAKEN + " DESC"
+                 MediaStore.Images.Media.DATE_TAKEN + " ASC"
             ).use { galCursor ->
                 Log.d("Utils", "getAllGalleryImages A13 : >> 33")
                 if (galCursor != null) {
-                    Log.d("Utils", "getAllGalleryImages A13 : >> 44")
                     while (galCursor.moveToNext()) {
 //                        val id = galCursor.getString(0)
 //                        val name = galCursor.getString(1)
                         val path = galCursor.getString(2)
                         val file = File(path)
-//                        val date = galCursor.getString(3)
-//                        val galData = GalleryData(id, name, path, date)
+                        val id = galCursor.getString(5)
+                        val folderName = galCursor.getString(6)
 
-                        list?.add(file)
-
+                        Log.d(
+                            "Utils",
+                            "getAllGalleryImages A13 : >> 44" + galCursor.getString(5) + "//" + galCursor.getString(
+                                6
+                            )
+                        )
+                        list?.add(
+                            MediaData(
+                                file,
+                                null,
+                                null,
+                                null,
+                                id,
+                                folderName,
+                                path
+                            )
+                        )
                     }
                 }
             }
@@ -126,14 +142,21 @@ object AppUtils {
 
         }
 
+        Collections.sort(list,
+            Comparator<MediaData> { o1, o2 ->
+                o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
+            })
+
         Log.d("Utils", "getAllGalleryImages A13 : >> exception" + list?.size)
 
+        MediaListSingleton.setGalleryImageHashMap(list?.let { getSortedHashMap(it) })
+
+        MediaListSingleton.getGalleryImageHashMap()?.let { getFilesWithFolderName(it) }
         return list
     }
 
     fun getAllGalleryVideos(context: Context): ArrayList<MediaData>? {
 
-        var count = 1
         var list: ArrayList<MediaData>? = arrayListOf()
         var mapList: ArrayList<MediaData>? = arrayListOf()
 
@@ -156,26 +179,14 @@ object AppUtils {
 //                        val date = galCursor.getString(3)
 //                        val galData = GalleryData(id, name, path, date)
 
-                        if (count <= AppConstants.MAX_HORIZONTAL_ITEM) {
-                            list?.add(
-                                MediaData(
-                                    file,
-                                    convertDate(file.lastModified().toString()),
-                                    getMediaDuration(context, Uri.fromFile(file)),
-                                    getMediaBitmap(file)
-                                )
+                        mapList?.add(
+                            MediaData(
+                                file,
+                                convertDate(file.lastModified().toString()),
+                                getMediaDuration(context, Uri.fromFile(file)),
+                                getMediaBitmap(file)
                             )
-                        } else {
-                            mapList?.add(
-                                MediaData(
-                                    file,
-                                    convertDate(file.lastModified().toString()),
-                                    getMediaDuration(context, Uri.fromFile(file)),
-                                    getMediaBitmap(file)
-                                )
-                            )
-                        }
-                        count += 1
+                        )
                     }
                 }
             }
@@ -187,14 +198,20 @@ object AppUtils {
         Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + list?.size)
         Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + mapList?.size)
 
-        Collections.sort(list,
+        Collections.sort(mapList,
             Comparator<MediaData> { o1, o2 ->
                 o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
             })
 
-        MediaListSingleton.setGalleryVideoHashMap(mapList?.let { getSortedMap(it) })
         mapList?.let { list?.addAll(it) }
+
+        for (i in 1..AppConstants.MAX_HORIZONTAL_ITEM) {
+            mapList?.removeAt(0)
+        }
+
+        MediaListSingleton.setGalleryVideoHashMap(mapList?.let { getSortedHashMap(it) })
         MediaListSingleton.setGalleryVideoList(list)
+
         return list
     }
 
@@ -361,6 +378,47 @@ object AppUtils {
             }
         }
         return mMap
+    }
+
+    private fun getSortedHashMap(mList: List<MediaData>): LinkedHashMap<String, List<MediaData>> {
+
+
+        val mMap: LinkedHashMap<String, List<MediaData>> = LinkedHashMap()
+        var mDateHolder = System.currentTimeMillis().toString()
+        var mHolderList: MutableList<MediaData> = ArrayList()
+        for (i in mList.indices) {
+            if (isSameDay(mDateHolder, mList[i].file?.lastModified().toString())) {
+                mHolderList.add(mList[i])
+            } else {
+                mMap[convertDate(mDateHolder).toString()] = mHolderList
+                mHolderList = ArrayList()
+                mHolderList.add(mList[i])
+                mDateHolder = mList[i].file?.lastModified().toString()
+            }
+            if (i == mList.size - 1) {
+                mMap[convertDate(mDateHolder).toString()] = mHolderList
+            }
+
+            println("here is the final size owngallery" + " " + mMap)
+        }
+
+        println("here is the final size holder" + " " + mHolderList.size)
+        return mMap
+    }
+
+    private fun getFilesWithFolderName(map: HashMap<String, List<MediaData>>) {
+        val mMap: HashMap<String, HashMap<String, List<MediaData>>>? =
+            HashMap<String, HashMap<String, List<MediaData>>>()
+
+        for (e1 in map.entries) {
+            var mkey = e1.key
+            var mvalue = e1.value
+            Log.d("AppUtils", "getFilesWithFolderName A13 : >>" + mkey)
+            for (data in mvalue) {
+
+            }
+        }
+
     }
 
     fun saveTempThumb(bitmap: Bitmap?): File {

@@ -100,7 +100,7 @@ class QueueFragment : BaseFragment(R.layout.fragment_queue),QueueListAdapter.OnS
 
         mProvider = QueueDataProvider.Companion.getInstance(context)
         Log.d("QueueFragment", "onViewCreated A13 :<<< "+mProvider?.mediaQueue)
-        val adapter = QueueListAdapter(mProvider?.mediaQueue!! , requireContext(), this)
+        val adapter = mProvider?.mediaQueue?.let { QueueListAdapter(it, requireContext(), this) }
         binding?.rvQueue?.setHasFixedSize(true)
         binding?.rvQueue?.adapter = adapter
         binding?.rvQueue?.layoutManager = LinearLayoutManager(activity)
@@ -109,7 +109,7 @@ class QueueFragment : BaseFragment(R.layout.fragment_queue),QueueListAdapter.OnS
         mItemTouchHelper = ItemTouchHelper(callback)
         mItemTouchHelper?.attachToRecyclerView(binding?.rvQueue)
 
-        adapter.setEventListener( object: QueueListAdapter.EventListener {
+        adapter?.setEventListener( object: QueueListAdapter.EventListener {
             override fun onItemViewClicked(view: View) {
                 when (view.id) {
                     R.id.container -> {
@@ -132,7 +132,7 @@ class QueueFragment : BaseFragment(R.layout.fragment_queue),QueueListAdapter.OnS
         mProvider?.setOnQueueDataChangedListener(
             object: QueueDataProvider.OnQueueDataChangedListener {
                 override fun onQueueDataChanged() {
-                    adapter.notifyDataSetChanged()
+                    adapter?.notifyDataSetChanged()
                 }
             })
 

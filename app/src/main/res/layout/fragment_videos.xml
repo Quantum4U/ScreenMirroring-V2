@@ -47,6 +47,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:layout_above="@+id/cast_mini_controller"
         android:visibility="gone"
         android:id="@+id/rl_view"
         android:layout_below="@+id/rl_toolbar"
@@ -199,5 +200,13 @@
         android:text="@string/no_videos_found"
         android:textSize="@dimen/textsize20sp" />
 
+    <fragment
+        android:id="@+id/cast_mini_controller"
+        class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        app:castShowImageThumbnail="true" />
 
 </RelativeLayout>
