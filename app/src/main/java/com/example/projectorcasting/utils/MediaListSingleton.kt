@@ -1,28 +1,38 @@
 package com.example.projectorcasting.utils
 
+import com.example.projectorcasting.models.FolderModel
 import com.example.projectorcasting.models.MediaData
+import com.example.projectorcasting.models.SectionModel
 
 object MediaListSingleton {
 
-    private var galleryImageFileHashMap: LinkedHashMap<String, List<MediaData>>? = null
-    private var galleryVideoFileHashMap: LinkedHashMap<String, List<MediaData>>? = null
+    private var galleryImageFolderList: ArrayList<FolderModel>? = null
+    private var galleryImageSectionedList: ArrayList<MediaData>? = arrayListOf()
+    private var galleryVideoSectionedList: ArrayList<SectionModel>? = null
     private var galleryVideoFileList: List<MediaData>? = null
     private var galleryAudioFileList: List<MediaData>? = null
 
-    fun setGalleryImageHashMap(list: LinkedHashMap<String, List<MediaData>>?) {
-        this.galleryImageFileHashMap = list?.let { LinkedHashMap(it) }
+    fun setGalleryImageFolderList(list: ArrayList<FolderModel>?) {
+        this.galleryImageFolderList = list?.let { ArrayList(it) }
     }
 
-    fun getGalleryImageHashMap(): LinkedHashMap<String, List<MediaData>>? {
-        return galleryImageFileHashMap
+    fun getGalleryImageFolderList(): ArrayList<FolderModel>? {
+        return galleryImageFolderList
+    }
+    fun setGalleryImageList(list: ArrayList<MediaData>?) {
+        this.galleryImageSectionedList?.addAll(list!!)
     }
 
-    fun setGalleryVideoHashMap(list: LinkedHashMap<String, List<MediaData>>?) {
-        this.galleryVideoFileHashMap = list?.let { LinkedHashMap(it) }
+    fun getGalleryImageList(): ArrayList<MediaData>? {
+        return galleryImageSectionedList
     }
 
-    fun getGalleryVideoHashMap(): LinkedHashMap<String, List<MediaData>>? {
-        return galleryVideoFileHashMap
+    fun setGalleryVideoSectionedList(list: ArrayList<SectionModel>?) {
+        this.galleryVideoSectionedList = list?.let { ArrayList(it) }
+    }
+
+    fun getGalleryVideoSectionedList(): ArrayList<SectionModel>? {
+        return galleryVideoSectionedList
     }
 
     fun setGalleryVideoList(list: List<MediaData>?) {

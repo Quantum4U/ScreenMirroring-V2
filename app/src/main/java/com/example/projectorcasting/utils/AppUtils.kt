@@ -17,14 +17,15 @@ import android.provider.Settings
 import android.text.format.DateFormat
 import android.util.Log
 import com.example.projectorcasting.R
+import com.example.projectorcasting.models.FolderModel
 import com.example.projectorcasting.models.MediaData
+import com.example.projectorcasting.models.SectionModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.LinkedHashMap
 
 
 object AppUtils {
@@ -61,24 +62,28 @@ object AppUtils {
 
     private val queryUri = MediaStore.Files.getContentUri("external")
 
-    private const val imgSelection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-            + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
-    private const val vidSelection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-            + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
-    private const val audioSelection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-            + MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO)
+    private const val imgSelection =
+        (MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
+    private const val vidSelection =
+        (MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
+    private const val audioSelection =
+        (MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO)
 
     private val projection = arrayOf(
-        MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME,
-        MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN,
+        MediaStore.Images.Media._ID,
+        MediaStore.Images.Media.DISPLAY_NAME,
+        MediaStore.Images.Media.DATA,
+        MediaStore.Images.Media.DATE_TAKEN,
         MediaStore.Images.Media.MIME_TYPE,
         MediaStore.Images.Media.BUCKET_ID,
         MediaStore.Images.Media.BUCKET_DISPLAY_NAME
     )
 
     private val projectionVideo = arrayOf(
-        MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME,
-        MediaStore.Video.Media.DATA, MediaStore.Video.Media.DATE_TAKEN,
+        MediaStore.Video.Media._ID,
+        MediaStore.Video.Media.DISPLAY_NAME,
+        MediaStore.Video.Media.DATA,
+        MediaStore.Video.Media.DATE_TAKEN,
         MediaStore.Video.Media.MIME_TYPE,
         MediaStore.Video.Media.BUCKET_ID,
         MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
@@ -86,54 +91,113 @@ object AppUtils {
     )
 
     private val projectionAudio = arrayOf(
-        MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME,
-        MediaStore.Video.Media.DATA, MediaStore.Video.Media.DATE_TAKEN,
+        MediaStore.Video.Media._ID,
+        MediaStore.Video.Media.DISPLAY_NAME,
+        MediaStore.Video.Media.DATA,
+        MediaStore.Video.Media.DATE_TAKEN,
         MediaStore.Video.Media.MIME_TYPE,
         MediaStore.Video.Media.BUCKET_ID,
         MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
         MediaStore.Video.VideoColumns.DURATION
     )
 
+    val folderProjection = arrayOf(
+        MediaStore.Images.ImageColumns.BUCKET_ID,
+        MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+        MediaStore.Images.ImageColumns.DATA
+    )
 
-    fun getAllGalleryImages(context: Context): ArrayList<MediaData>? {
+    val whereSelection = "${MediaStore.Images.Media.BUCKET_ID} IS NOT NULL"
+
+
+    fun fetchImages(context: Context?): ArrayList<FolderModel>? {
+
+        var listOfFolder: ArrayList<String>? = arrayListOf()
+        var folderMap: ArrayList<FolderModel>? = ArrayList()
+        var lastBucketId = ""
+        val cursor = context?.contentResolver?.query(
+            queryUri,
+            projection,
+            whereSelection,
+            null,
+            MediaStore.Images.Media.DATE_MODIFIED + " ASC",
+            null
+        )
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                val bucketId = cursor.getString(
+                    cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID)
+                )
+                var bucketName = cursor.getString(
+                    cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
+                )
+
+                if (bucketName == null) {
+                    bucketName = "root"
+                }
+
+                if (listOfFolder?.contains(bucketName) == false) {
+                    listOfFolder.add(bucketName)
+                    val sortedList = getAllGalleryImages(context, bucketId, bucketName)
+                    folderMap?.add(
+                        FolderModel(
+                            bucketId, bucketName, sortedList
+                        )
+                    )
+
+                }
+            }
+        }
+
+        Log.d("AppUtils", "fetchImages A13 <<<<: "+MediaListSingleton.getGalleryImageList()?.size)
+
+//        val allList = MediaListSingleton.getGalleryImageList()
+//                Collections.sort(allList,
+//            Comparator<MediaData> { o1, o2 ->
+//                o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
+//            })
+//
+//
+//        //add all images list
+//        folderMap?.add(0,FolderModel("all",context?.getString(R.string.all_photos),
+//            allList?.let { getSortedMap(it) }))
+
+        MediaListSingleton.setGalleryImageFolderList(folderMap)
+
+        return folderMap
+    }
+
+
+    fun getAllGalleryImages(
+        context: Context, bucketId: String, bucketName: String
+    ): ArrayList<SectionModel>? {
 
         var list: ArrayList<MediaData>? = arrayListOf()
+
+        val searchParams = MediaStore.Images.Media.BUCKET_ID + "=? "
 
         try {
             context.contentResolver.query(
                 queryUri,
-                projection,
-                imgSelection,
                 null,
-                 MediaStore.Images.Media.DATE_TAKEN + " ASC"
+                searchParams,
+                arrayOf(bucketId),
+                MediaStore.Images.Media.DATE_MODIFIED + " DESC",null
             ).use { galCursor ->
-                Log.d("Utils", "getAllGalleryImages A13 : >> 33")
                 if (galCursor != null) {
                     while (galCursor.moveToNext()) {
-//                        val id = galCursor.getString(0)
-//                        val name = galCursor.getString(1)
-                        val path = galCursor.getString(2)
+                        val path = galCursor.getString(
+                            galCursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+                        )
                         val file = File(path)
-                        val id = galCursor.getString(5)
-                        val folderName = galCursor.getString(6)
+//                        val id = galCursor.getString(5)
+//                        val folderName = galCursor.getString(6)
 
-                        Log.d(
-                            "Utils",
-                            "getAllGalleryImages A13 : >> 44" + galCursor.getString(5) + "//" + galCursor.getString(
-                                6
-                            )
-                        )
-                        list?.add(
-                            MediaData(
-                                file,
-                                null,
-                                null,
-                                null,
-                                id,
-                                folderName,
-                                path
-                            )
-                        )
+                        Log.d("Utils", "getAllGalleryImages A13 : >> 33" + bucketName)
+
+                        list?.add(MediaData(file, null, null, null, bucketId, bucketName, path))
+
                     }
                 }
             }
@@ -142,17 +206,12 @@ object AppUtils {
 
         }
 
-        Collections.sort(list,
-            Comparator<MediaData> { o1, o2 ->
-                o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
-            })
-
+//        MediaListSingleton.setGalleryImageSectionedList(list?.let { getSortedMap(it) })
         Log.d("Utils", "getAllGalleryImages A13 : >> exception" + list?.size)
 
-        MediaListSingleton.setGalleryImageHashMap(list?.let { getSortedHashMap(it) })
 
-        MediaListSingleton.getGalleryImageHashMap()?.let { getFilesWithFolderName(it) }
-        return list
+        MediaListSingleton.setGalleryImageList(list)
+        return list?.let { getSortedMap(it) }
     }
 
     fun getAllGalleryVideos(context: Context): ArrayList<MediaData>? {
@@ -187,6 +246,7 @@ object AppUtils {
                                 getMediaBitmap(file)
                             )
                         )
+
                     }
                 }
             }
@@ -198,10 +258,9 @@ object AppUtils {
         Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + list?.size)
         Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + mapList?.size)
 
-        Collections.sort(mapList,
-            Comparator<MediaData> { o1, o2 ->
-                o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
-            })
+        Collections.sort(mapList, Comparator<MediaData> { o1, o2 ->
+            o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
+        })
 
         mapList?.let { list?.addAll(it) }
 
@@ -209,7 +268,7 @@ object AppUtils {
             mapList?.removeAt(0)
         }
 
-        MediaListSingleton.setGalleryVideoHashMap(mapList?.let { getSortedHashMap(it) })
+        MediaListSingleton.setGalleryVideoSectionedList(mapList?.let { getSortedHashMap(it) })
         MediaListSingleton.setGalleryVideoList(list)
 
         return list
@@ -264,10 +323,9 @@ object AppUtils {
         Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + list?.size)
         Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + mapList?.size)
 
-        Collections.sort(list,
-            Comparator<MediaData> { o1, o2 ->
-                o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
-            })
+        Collections.sort(list, Comparator<MediaData> { o1, o2 ->
+            o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
+        })
 
         saveAudioThumb(
             context,
@@ -284,10 +342,8 @@ object AppUtils {
 
     fun convertDate(dateInMilliseconds: String): String? {
         var s: String? = null
-        s = if (isSameDay(System.currentTimeMillis().toString(), dateInMilliseconds))
-            "Today"
-        else
-            DateFormat.format("dd/MM/yyyy", dateInMilliseconds.toLong()).toString()
+        s = if (isSameDay(System.currentTimeMillis().toString(), dateInMilliseconds)) "Today"
+        else DateFormat.format("dd/MM/yyyy", dateInMilliseconds.toLong()).toString()
         if (s !== "Today") {
             val str = s.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             var month: String? = null
@@ -319,8 +375,10 @@ object AppUtils {
         val cal2: Calendar = Calendar.getInstance()
         cal1.time = date
         cal2.time = date1
-        isSameDay = cal1.get(Calendar.YEAR) === cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.DAY_OF_YEAR) === cal2.get(Calendar.DAY_OF_YEAR)
+        isSameDay =
+            cal1.get(Calendar.YEAR) === cal2.get(Calendar.YEAR) && cal1.get(Calendar.DAY_OF_YEAR) === cal2.get(
+                Calendar.DAY_OF_YEAR
+            )
         return isSameDay
     }
 
@@ -356,47 +414,66 @@ object AppUtils {
         return "$hh:$mm:$ss"
     }
 
-    private fun getSortedMap(mList: List<MediaData>): HashMap<String, List<MediaData>>? {
+    private fun getSortedMap(mList: List<MediaData>): ArrayList<SectionModel> {
 
-        val mMap: HashMap<String, List<MediaData>>? = HashMap<String, List<MediaData>>()
+        val mMap: ArrayList<SectionModel> = ArrayList()
         var mDateHolder = System.currentTimeMillis().toString()
-        var mCounter = 0
-        var mHolderList: MutableList<MediaData> = ArrayList<MediaData>()
+        var mHolderList: MutableList<MediaData> = ArrayList()
+
+        var folderMap: HashMap<String, ArrayList<SectionModel>> = HashMap()
+        val folderSectionedList: ArrayList<SectionModel> = ArrayList()
+        var folderName = ""
+        var mHolderFolderList: MutableList<MediaData> = ArrayList()
+
         for (i in mList.indices) {
             if (isSameDay(mDateHolder, mList[i].file?.lastModified().toString())) {
                 mHolderList.add(mList[i])
+
             } else {
-                if (mHolderList.isNotEmpty())
-                    mMap?.set(convertDate(mDateHolder).toString(), mHolderList)
-                mCounter++
-                mHolderList = ArrayList<MediaData>()
+
+                if (mHolderList.isNotEmpty()) {
+                    mMap.add(SectionModel(convertDate(mDateHolder), mHolderList))
+                }
+                mHolderList = ArrayList()
                 mHolderList.add(mList[i])
                 mDateHolder = mList[i].file?.lastModified().toString()
+
             }
             if (i == mList.size - 1) {
-                mMap?.set(convertDate(mDateHolder).toString(), mHolderList)
+//                mMap[convertDate(mDateHolder).toString()] = mHolderList
+                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList))
             }
+
         }
+
+        println("here is the final size holder" + " " + mHolderList.size)
         return mMap
     }
 
-    private fun getSortedHashMap(mList: List<MediaData>): LinkedHashMap<String, List<MediaData>> {
+    private fun getSortedHashMap(mList: List<MediaData>): ArrayList<SectionModel> {
 
 
-        val mMap: LinkedHashMap<String, List<MediaData>> = LinkedHashMap()
+        val mMap: ArrayList<SectionModel> = ArrayList()
         var mDateHolder = System.currentTimeMillis().toString()
         var mHolderList: MutableList<MediaData> = ArrayList()
         for (i in mList.indices) {
             if (isSameDay(mDateHolder, mList[i].file?.lastModified().toString())) {
                 mHolderList.add(mList[i])
             } else {
-                mMap[convertDate(mDateHolder).toString()] = mHolderList
+//                mMap[convertDate(mDateHolder).toString()] = mHolderList
+                if (mHolderList.isNotEmpty()) mMap.add(
+                    SectionModel(
+                        convertDate(mDateHolder),
+                        mHolderList
+                    )
+                )
                 mHolderList = ArrayList()
                 mHolderList.add(mList[i])
                 mDateHolder = mList[i].file?.lastModified().toString()
             }
             if (i == mList.size - 1) {
-                mMap[convertDate(mDateHolder).toString()] = mHolderList
+//                mMap[convertDate(mDateHolder).toString()] = mHolderList
+                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList))
             }
 
             println("here is the final size owngallery" + " " + mMap)

@@ -18,6 +18,7 @@ import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.databinding.FragmentVideosBinding
 import com.example.projectorcasting.models.MediaData
+import com.example.projectorcasting.models.SectionModel
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
@@ -36,7 +37,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
     private var videoAdapter: VideoHorizontalAdapter? = null
     private var videoSectionalAdapter: VideoSectionalAdapter? = null
-    private var mediaMapList: LinkedHashMap<String, List<MediaData>>? = null
+    private var mediaMapList: ArrayList<SectionModel>? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -162,7 +163,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     }
 
     private fun setSectionAdapter() {
-        mediaMapList = MediaListSingleton.getGalleryVideoHashMap()
+        mediaMapList = MediaListSingleton.getGalleryVideoSectionedList()
         videoSectionalAdapter =
             VideoSectionalAdapter(requireContext(), mediaMapList, ::itemClick)
         val layoutManager = GridLayoutManager(requireContext(), 1)
@@ -194,7 +195,8 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
             binding?.tvSortingText?.text = getString(R.string.ascending)
         }
 
-        videoSectionalAdapter?.refreshList(mediaMapList)
+        val adapterList = videoSectionalAdapter?.getItemList()?.reversed()
+        videoSectionalAdapter?.refreshList(adapterList as ArrayList<SectionModel>?)
     }
 
     private fun actionPerform(isConnect: Boolean, castModel: CastModel?) {

@@ -1,11 +1,11 @@
 package com.example.projectorcasting.viewmodels
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projectorcasting.casting.model.CastModel
+import com.example.projectorcasting.models.FolderModel
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.PromptHelper
@@ -16,7 +16,7 @@ import kotlin.reflect.KFunction2
 class DashboardViewModel : ViewModel() {
 
     val imagesList by lazy {
-        MutableLiveData<ArrayList<MediaData>>()
+        MutableLiveData<ArrayList<FolderModel>>()
     }
 
     fun showConnectionPrompt(
@@ -30,7 +30,8 @@ class DashboardViewModel : ViewModel() {
 
     fun fetchImages(context: Context?){
         viewModelScope.launch(Dispatchers.Default) {
-            imagesList.postValue(context?.let { AppUtils.getAllGalleryImages(it) })
+            imagesList.postValue(context?.let { AppUtils.fetchImages(it) })
         }
     }
+
 }

@@ -4,12 +4,12 @@ import android.content.Context
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.projectorcasting.R
+import com.example.projectorcasting.adapter.FolderSelectionAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlin.reflect.KFunction2
 
 object PromptHelper {
-
     fun showConnectionPrompt(context: Context?, actionPerform: KFunction2<Boolean, CastModel?, Unit>, isConnect: Boolean, castModel: CastModel?) {
         val sheetDialog = context?.let { BottomSheetDialog(it, R.style.BottomSheetDialog) }
         sheetDialog?.setContentView(R.layout.connecton_prompt_layout)
@@ -42,4 +42,5 @@ object PromptHelper {
         }
         sheetDialog?.show()
     }
+
 }

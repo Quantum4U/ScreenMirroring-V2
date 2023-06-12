@@ -65,4 +65,5 @@
     <string name="descending">Descending</string>
     <string name="queue_tag_item">queue-tag-item</string>
     <string name="queue_empty">Queue is empty!</string>
+    <string name="all_photos">All Photos</string>
 </resources>

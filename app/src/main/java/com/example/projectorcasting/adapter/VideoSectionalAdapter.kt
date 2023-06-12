@@ -11,20 +11,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.projectorcasting.R
 import com.example.projectorcasting.models.MediaData
+import com.example.projectorcasting.models.SectionModel
 import kotlin.reflect.KFunction1
 
 
 class VideoSectionalAdapter(
     private val context: Context,
-    private var mediaMap: LinkedHashMap<String, List<MediaData>>?,
+    private var mediaMap: ArrayList<SectionModel>?,
     private val itemClick: KFunction1<MediaData, Unit>
 ) : SectionedRecyclerViewAdapter<RecyclerView.ViewHolder>() {
 
-    private val sectionKeysList = mediaMap?.keys
+    private val sectionKeysList = mediaMap?.size
     private val VIEW_TYPE_HEADER = -2
 
-    fun refreshList(mediaList: LinkedHashMap<String, List<MediaData>>?) {
-        mediaMap = mediaList?.let { LinkedHashMap(it) }
+    fun refreshList(mediaList: ArrayList<SectionModel>?) {
+        mediaMap = mediaList?.let { ArrayList(it) }
         notifyDataSetChanged()
     }
 
@@ -54,20 +55,20 @@ class VideoSectionalAdapter(
     }
 
     override fun getSectionCount(): Int {
-        return sectionKeysList?.size ?: 0
+        return sectionKeysList?: 0
     }
 
     override fun getItemCount(section: Int): Int {
-        val key = sectionKeysList?.elementAt(section)
-        val list = mediaMap?.get(key)
+//        val key = sectionKeysList?.elementAt(section)
+        val list = mediaMap?.get(section)?.sectionList
 
         return list?.size ?: 0
     }
 
     override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder?, section: Int) {
         val holderHeader = holder as ViewHolder
-        val key = sectionKeysList?.elementAt(section)
-        holderHeader.txtHeader?.text = key.toString()
+//        val key = sectionKeysList?.elementAt(section)
+        holderHeader.txtHeader?.text = mediaMap?.get(section)?.date
     }
 
     override fun onBindViewHolder(
@@ -75,8 +76,8 @@ class VideoSectionalAdapter(
     ) {
         val holderItem = holder as ItemViewHolder
 
-        val key = sectionKeysList?.elementAt(section)
-        val list = mediaMap?.get(key)
+//        val key = sectionKeysList?.elementAt(section)
+        val list = mediaMap?.get(section)?.sectionList
         val media = list?.get(relativePosition)
 
 
@@ -95,5 +96,9 @@ class VideoSectionalAdapter(
             media?.let { it1 -> itemClick(it1) }
         }
 
+    }
+
+    fun getItemList(): ArrayList<SectionModel>? {
+        return mediaMap
     }
 }
