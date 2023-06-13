@@ -11,6 +11,8 @@ import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.service.WebService
 import com.example.projectorcasting.models.MediaData
 import com.google.android.gms.cast.CastDevice
+import com.google.android.gms.cast.MediaLoadRequestData
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import java.io.File
 import kotlin.reflect.KFunction2
 import kotlin.reflect.KFunction1
@@ -97,5 +99,16 @@ object CastHelper {
         )
 
         Utils.showQueuePopup(context,Utils.buildMediaInfo(mediaData,path, thumb, type),checkForQueue)
+    }
+
+    fun castPhotos(remoteMediaClient:RemoteMediaClient?,mediaData: MediaData?,path: String,type: Int){
+        remoteMediaClient?.load(
+            MediaLoadRequestData.Builder()
+                .setMediaInfo(Utils.buildMediaInfo(mediaData,path,path,type))
+                /** Use the [MediaInfo] generated from [buildMediaInfo]. */
+//                .setAutoplay(true)
+//                .setCurrentTime(0.toLong())
+                .build()
+        )
     }
 }

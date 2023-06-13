@@ -13,6 +13,7 @@
     <string name="menu_scan_device">Scan Device</string>
     <string name="menu_queue">Queue</string>
 
+    <string name="preview">Preview</string>
     <string name="images">Photos</string>
     <string name="videos">Videos</string>
     <string name="audios">Audios</string>

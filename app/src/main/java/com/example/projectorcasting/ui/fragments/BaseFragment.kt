@@ -9,6 +9,7 @@ import com.example.projectorcasting.ui.activities.BaseActivity
 import com.example.projectorcasting.viewmodels.DashboardViewModel
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import java.io.File
 
 open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
@@ -90,5 +91,9 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
 
     fun getCastContext(): CastContext? {
         return (activity as BaseActivity).getCastContext()
+    }
+
+    fun getRemoteMediaClient(): RemoteMediaClient? {
+        return (activity as BaseActivity).getRemoteMediaClient()
     }
 }

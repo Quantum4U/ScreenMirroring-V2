@@ -1,0 +1,52 @@
+package com.example.projectorcasting.adapter
+
+import android.net.Uri
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.example.projectorcasting.R
+import com.example.projectorcasting.models.MediaData
+
+
+class ImagePreviewAdapter(private val pathList: ArrayList<MediaData>?): PagerAdapter() {
+
+    override fun getCount(): Int {
+        return pathList?.size?:0
+    }
+
+    override fun isViewFromObject(view: View, `object`: Any): Boolean {
+        return view === `object` as View
+    }
+
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val holder = ViewHolder()
+        val itemView = LayoutInflater.from(container.context).inflate(R.layout.image_preview_item, container, false)
+
+        holder.imageView = itemView?.findViewById(R.id.iv_image_preview) as ImageView
+        holder.imageView.setImageURI(Uri.fromFile(pathList?.get(position)?.file))
+
+        (container as ViewPager).addView(itemView)
+        return itemView
+    }
+
+    internal class ViewHolder {
+        lateinit var imageView: ImageView
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+        container.removeView(`object` as RelativeLayout)
+    }
+
+    fun getImagePath(pos: Int):String?{
+       return pathList?.get(pos)?.path?.split("0/")?.get(1)
+    }
+
+    fun getList(): ArrayList<MediaData>? {
+        return pathList
+    }
+
+}

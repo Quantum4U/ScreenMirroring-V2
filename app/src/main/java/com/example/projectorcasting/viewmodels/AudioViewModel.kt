@@ -16,18 +16,6 @@ import kotlin.reflect.KFunction2
 
 class AudioViewModel @Inject constructor() : ViewModel() {
 
-    val audiosList by lazy {
-        MutableLiveData<ArrayList<MediaData>>()
-    }
-
-
-    fun fetchVideoList(context: Context) {
-        viewModelScope.launch(Dispatchers.IO) {
-            audiosList.postValue(AppUtils.getAllGalleryAudios(context))
-        }
-
-    }
-
     fun showConnectionPrompt(
         context: Context?,
         actionPerform: KFunction2<Boolean, CastModel?, Unit>,

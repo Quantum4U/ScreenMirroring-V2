@@ -7,7 +7,7 @@ import com.example.projectorcasting.models.SectionModel
 object MediaListSingleton {
 
     private var galleryImageFolderList: ArrayList<FolderModel>? = null
-    private var galleryImageSectionedList: ArrayList<MediaData>? = arrayListOf()
+    private var galleryImageSectionedList: ArrayList<SectionModel>? = arrayListOf()
     private var galleryVideoSectionedList: ArrayList<SectionModel>? = null
     private var galleryVideoFileList: List<MediaData>? = null
     private var galleryAudioFileList: List<MediaData>? = null
@@ -19,11 +19,11 @@ object MediaListSingleton {
     fun getGalleryImageFolderList(): ArrayList<FolderModel>? {
         return galleryImageFolderList
     }
-    fun setGalleryImageList(list: ArrayList<MediaData>?) {
+    fun setGalleryImageList(list: ArrayList<SectionModel>?) {
         this.galleryImageSectionedList?.addAll(list!!)
     }
 
-    fun getGalleryImageList(): ArrayList<MediaData>? {
+    fun getGalleryImageList(): ArrayList<SectionModel>? {
         return galleryImageSectionedList
     }
 

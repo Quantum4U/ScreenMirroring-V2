@@ -145,6 +145,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginRight="@dimen/padding12dp"
                 android:layout_alignParentRight="true"
                 android:visibility="visible"
                 android:gravity="center"
@@ -177,6 +178,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginLeft="@dimen/padding12dp"
                 android:visibility="visible"
                 android:gravity="center"
                 android:id="@+id/ll_folder"

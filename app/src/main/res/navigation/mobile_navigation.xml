@@ -40,4 +40,10 @@
         android:name="com.example.projectorcasting.ui.fragments.QueueFragment"
         android:label="@string/menu_queue"
         tools:layout="@layout/fragment_queue" />
+
+    <fragment
+        android:id="@+id/nav_image_preview"
+        android:name="com.example.projectorcasting.ui.fragments.ImagePreviewFragment"
+        android:label="@string/preview"
+        tools:layout="@layout/fragment_image_preview" />
 </navigation>

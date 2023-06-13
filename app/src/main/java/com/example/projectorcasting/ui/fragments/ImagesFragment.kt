@@ -17,16 +17,20 @@ import com.example.projectorcasting.databinding.FragmentImagesBinding
 import com.example.projectorcasting.models.FolderModel
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.models.SectionModel
+import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.utils.SpacesItemDecoration
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.material.bottomsheet.BottomSheetDialog
+
 
 class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 
     private var binding: FragmentImagesBinding? = null
     private var imageSectionalAdapter: ImageSectionalAdapter? = null
     private var folderDialog: BottomSheetDialog? = null
+    private val DOCUMENT_BUFFER = 50
+    private var imgFolder: FolderModel? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,7 +63,21 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     }
 
     private fun doFetchingWork() {
+        if (MediaListSingleton.getGalleryImageFolderList() == null || MediaListSingleton.getGalleryImageFolderList()
+                ?.isEmpty() == true
+        ) {
+            if (getDashViewModel()?.isLoading == true)
+                showLoader()
+            else
+                fetchImages()
+        } else {
+            setAdapter()
+        }
+    }
+
+    private fun fetchImages() {
         showLoader()
+        getDashViewModel()?.getAllGalleryImages(context)
         getDashViewModel()?.fetchImages(context)
     }
 
@@ -78,25 +96,30 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     }
 
     private fun observeImageList() {
-        getDashViewModel()?.imagesList?.observe(viewLifecycleOwner, Observer { imageList ->
+        getDashViewModel()?.imagesFolderList?.observe(viewLifecycleOwner, Observer { imageList ->
             hideLoader()
             if (imageList != null && imageList.isNotEmpty()) {
-                imageSectionalAdapter = ImageSectionalAdapter(
-                    requireContext(),
-                    ::itemClick
-                )
-                val layoutManager = GridLayoutManager(requireContext(), 3)
-                imageSectionalAdapter?.setLayoutManager(layoutManager)
-                imageSectionalAdapter?.shouldShowHeadersForEmptySections(true)
-                binding?.rvImages?.hasFixedSize()
-                binding?.rvImages?.layoutManager = layoutManager
-                binding?.rvImages?.adapter = imageSectionalAdapter
-                binding?.rvImages?.addItemDecoration(SpacesItemDecoration(1))
-
-                imageSectionalAdapter?.refreshList(MediaListSingleton.getGalleryImageFolderList()?.get(0)?.sectionList)
-
+                setAdapter()
             }
         })
+    }
+
+    private fun setAdapter() {
+        imageSectionalAdapter = ImageSectionalAdapter(
+            requireContext(),
+            ::itemClick
+        )
+        val layoutManager = GridLayoutManager(requireContext(), 3)
+        imageSectionalAdapter?.setLayoutManager(layoutManager)
+        imageSectionalAdapter?.shouldShowHeadersForEmptySections(true)
+        binding?.rvImages?.hasFixedSize()
+        binding?.rvImages?.layoutManager = layoutManager
+        binding?.rvImages?.adapter = imageSectionalAdapter
+        binding?.rvImages?.addItemDecoration(SpacesItemDecoration(1))
+
+        imageSectionalAdapter?.refreshList(
+            MediaListSingleton.getGalleryImageFolderList()?.get(0)?.sectionList
+        )
     }
 
     private fun sortMediaList() {
@@ -125,7 +148,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     }
 
     private fun itemClick(mediaData: MediaData) {
-
+        findNavController().navigate(R.id.nav_image_preview)
     }
 
     private fun actionPerform(isConnect: Boolean, castModel: CastModel?) {
@@ -156,6 +179,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     }
 
     private fun folderClick(folderModel: FolderModel) {
+        imgFolder = folderModel
         folderDialog?.cancel()
         binding?.tvFolderName?.text = folderModel.folderName
         imageSectionalAdapter?.refreshList(folderModel.sectionList as ArrayList<SectionModel>?)

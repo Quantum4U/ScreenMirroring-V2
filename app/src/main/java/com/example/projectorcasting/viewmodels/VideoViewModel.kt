@@ -17,19 +17,8 @@ import kotlin.reflect.KFunction2
 
 class VideoViewModel @Inject constructor() : ViewModel() {
 
-    val videosList by lazy {
-        MutableLiveData<ArrayList<MediaData>>()
-    }
-
     val thumbFile by lazy {
         MutableLiveData<File?>()
-    }
-
-    fun fetchVideoList(context: Context) {
-        viewModelScope.launch(Dispatchers.IO) {
-            videosList.postValue(AppUtils.getAllGalleryVideos(context))
-        }
-
     }
 
     fun showConnectionPrompt(

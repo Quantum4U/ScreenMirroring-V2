@@ -35,6 +35,7 @@ import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.SessionManagerListener
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import java.util.*
@@ -61,6 +62,7 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
     private var isConnected: Boolean? = null
     private var connectedDeviceName: String? = null
     private var castDevice: CastDevice? = null
+    private var remoteMediaClient: RemoteMediaClient? = null
 
     private val isCastingEnabledLiveData = MutableLiveData<Int>()
     val data: LiveData<Int> = isCastingEnabledLiveData
@@ -114,6 +116,26 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
         if (mMediaRouter == null)
             mMediaRouter = MediaRouter.getInstance(this)
+
+
+        //for image casting
+        remoteMediaClient = mCastSession?.remoteMediaClient
+        if (remoteMediaClient == null) {
+            Log.w("Utils.TAG", "showQueuePopup(): null RemoteMediaClient")
+            return
+        }
+
+//                val remoteMediaClient = mCastSession?.remoteMediaClient ?: return
+        remoteMediaClient?.registerCallback(object : RemoteMediaClient.Callback() {
+            override fun onStatusUpdated() {
+                /** When media loaded we will start the fullscreen player activity. */
+//                val intent =
+//                    Intent(this@MainActivity, ImagePreviewActivity::class.java)
+//                startActivity(intent)
+                remoteMediaClient?.unregisterCallback(this)
+            }
+        })
+
     }
 
     private fun setUpCastListener() {
@@ -149,7 +171,7 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
             private fun onApplicationConnected(castSession: CastSession) {
                 mCastSession = castSession
-                Log.d("CastHelper", "getCastEnabled A13 : >>"+ castSession.castDevice.deviceId)
+                Log.d("CastHelper", "getCastEnabled A13 : >>" + castSession.castDevice.deviceId)
                 castDevice = castSession.castDevice
                 connectedDeviceName = castSession.castDevice?.modelName
 //                invalidateOptionsMenu() // This is required to refresh the activity toolbar to display cast connect button.
@@ -201,6 +223,10 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
     fun getCastContext(): CastContext? {
         return mCastContext
+    }
+
+    fun getRemoteMediaClient(): RemoteMediaClient? {
+        return remoteMediaClient
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -370,12 +396,14 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun getPermissionString(type: Int): String {
-       return when (type) {
+        return when (type) {
             Utils.VIDEO -> Manifest.permission.READ_MEDIA_VIDEO
             Utils.AUDIO -> Manifest.permission.READ_MEDIA_AUDIO
             Utils.IMAGE -> Manifest.permission.READ_MEDIA_IMAGES
-           else -> {Manifest.permission.READ_MEDIA_VIDEO}
-       }
+            else -> {
+                Manifest.permission.READ_MEDIA_VIDEO
+            }
+        }
     }
 
     fun hideKeyBoard(view: View?) {

@@ -81,7 +81,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
 
 
     private fun observeAudioList() {
-        audioViewModel.audiosList.observe(viewLifecycleOwner, Observer { audioList ->
+        getDashViewModel()?.audiosList?.observe(viewLifecycleOwner, Observer { audioList ->
             hideLoader()
             setAdapter(audioList)
         })
@@ -108,8 +108,12 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
         if(pathList != null && pathList.isNotEmpty()) {
             setAdapter(pathList)
         }else{
-            showLoader()
-            context?.let { audioViewModel.fetchVideoList(it) }
+            if (getDashViewModel()?.isLoading == true)
+                showLoader()
+            else {
+                showLoader()
+                context?.let { getDashViewModel()?.fetchAudioList(it) }
+            }
         }
     }
 

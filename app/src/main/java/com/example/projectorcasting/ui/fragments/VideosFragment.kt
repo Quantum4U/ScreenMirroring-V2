@@ -82,8 +82,12 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         if (pathList != null && pathList.isNotEmpty()) {
             setAdapters(pathList)
         } else {
-            showLoader()
-            context?.let { videoViewModel.fetchVideoList(it) }
+            if (getDashViewModel()?.isLoading == true)
+                showLoader()
+            else {
+                showLoader()
+                context?.let { getDashViewModel()?.fetchVideoList(it) }
+            }
         }
     }
 
@@ -102,7 +106,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     }
 
     private fun observeVideoList() {
-        videoViewModel.videosList.observe(viewLifecycleOwner, Observer { videoList ->
+        getDashViewModel()?.videosList?.observe(viewLifecycleOwner, Observer { videoList ->
             hideLoader()
             setAdapters(videoList)
         })
