@@ -33,6 +33,10 @@ class DashboardViewModel : ViewModel() {
         MutableLiveData<ArrayList<MediaData>>()
     }
 
+    val imageListForPreview by lazy {
+        MutableLiveData<ArrayList<MediaData>>()
+    }
+
     var isLoading = false
 
     fun showConnectionPrompt(
@@ -85,6 +89,18 @@ class DashboardViewModel : ViewModel() {
 
     }
 
+    fun setImageListForPreview(list:ArrayList<SectionModel>){
+        var allList :ArrayList<MediaData> = arrayListOf()
+        viewModelScope.launch(Dispatchers.Default) {
+            for(i in 0 until list.size){
+                list[i].sectionList?.let { allList.addAll(it) }
+            }
+
+            withContext(Dispatchers.IO){
+                imageListForPreview.postValue(allList)
+            }
+        }
+    }
 
 
 }

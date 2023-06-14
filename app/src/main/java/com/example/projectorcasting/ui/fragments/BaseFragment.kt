@@ -93,7 +93,4 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
         return (activity as BaseActivity).getCastContext()
     }
 
-    fun getRemoteMediaClient(): RemoteMediaClient? {
-        return (activity as BaseActivity).getRemoteMediaClient()
-    }
 }

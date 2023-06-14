@@ -203,7 +203,7 @@ object AppUtils {
 //                        val id = galCursor.getString(5)
 //                        val folderName = galCursor.getString(6)
 
-                        list?.add(MediaData(file, null, null, null, bucketId, bucketName, path))
+                        list?.add(MediaData(file, null, null, null, bucketId, bucketName, path,false))
                     }
 
                 }
@@ -238,7 +238,7 @@ object AppUtils {
                         val folderName = galCursor.getString(6)
 
                         Log.d("Utils", "getAllGalleryImages A13 : >>check for all" + folderName)
-                        list?.add(MediaData(file, null, null, null, id, folderName, path))
+                        list?.add(MediaData(file, null, null, null, id, folderName, path,false))
 
                     }
 
@@ -477,7 +477,7 @@ object AppUtils {
             } else {
 
                 if (mHolderList.isNotEmpty()) {
-                    mMap.add(SectionModel(convertDate(mDateHolder), mHolderList))
+                    mMap.add(SectionModel(convertDate(mDateHolder), mHolderList,false))
                 }
                 mHolderList = ArrayList()
                 mHolderList.add(mList[i])
@@ -486,7 +486,7 @@ object AppUtils {
             }
             if (i == mList.size - 1) {
 //                mMap[convertDate(mDateHolder).toString()] = mHolderList
-                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList))
+                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList,false))
             }
 
         }
@@ -518,7 +518,7 @@ object AppUtils {
             }
             if (i == mList.size - 1) {
 //                mMap[convertDate(mDateHolder).toString()] = mHolderList
-                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList))
+                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList,false))
             }
 
             println("here is the final size owngallery" + " " + mMap)

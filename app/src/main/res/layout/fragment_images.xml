@@ -19,6 +19,7 @@
             app:srcCompat="@drawable/ic_back_arrow" />
 
         <TextView
+            android:id="@+id/tv_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -28,16 +29,16 @@
             android:textSize="@dimen/textsize20sp" />
 
         <TextView
-            android:id="@+id/tv_queued"
+            android:id="@+id/tv_slideshow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/padding20dp"
-            android:drawableLeft="@drawable/ic_queued_icon"
+            android:drawableLeft="@drawable/ic_slideshow_icon"
             android:drawablePadding="@dimen/padding5dp"
             android:fontFamily="@font/inter_medium"
-            android:text="@string/queued"
+            android:text="@string/slideshow"
             android:textColor="@color/text_orange"
             android:textSize="@dimen/textsize15sp"
             android:visibility="gone" />

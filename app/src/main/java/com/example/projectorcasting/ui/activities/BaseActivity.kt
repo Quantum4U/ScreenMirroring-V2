@@ -62,7 +62,6 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
     private var isConnected: Boolean? = null
     private var connectedDeviceName: String? = null
     private var castDevice: CastDevice? = null
-    private var remoteMediaClient: RemoteMediaClient? = null
 
     private val isCastingEnabledLiveData = MutableLiveData<Int>()
     val data: LiveData<Int> = isCastingEnabledLiveData
@@ -116,25 +115,6 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
         if (mMediaRouter == null)
             mMediaRouter = MediaRouter.getInstance(this)
-
-
-        //for image casting
-        remoteMediaClient = mCastSession?.remoteMediaClient
-        if (remoteMediaClient == null) {
-            Log.w("Utils.TAG", "showQueuePopup(): null RemoteMediaClient")
-            return
-        }
-
-//                val remoteMediaClient = mCastSession?.remoteMediaClient ?: return
-        remoteMediaClient?.registerCallback(object : RemoteMediaClient.Callback() {
-            override fun onStatusUpdated() {
-                /** When media loaded we will start the fullscreen player activity. */
-//                val intent =
-//                    Intent(this@MainActivity, ImagePreviewActivity::class.java)
-//                startActivity(intent)
-                remoteMediaClient?.unregisterCallback(this)
-            }
-        })
 
     }
 
@@ -223,10 +203,6 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
     fun getCastContext(): CastContext? {
         return mCastContext
-    }
-
-    fun getRemoteMediaClient(): RemoteMediaClient? {
-        return remoteMediaClient
     }
 
     override fun attachBaseContext(newBase: Context?) {

@@ -12,10 +12,11 @@ import com.example.projectorcasting.casting.service.WebService
 import com.example.projectorcasting.models.MediaData
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.MediaLoadRequestData
+import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
-import java.io.File
-import kotlin.reflect.KFunction2
 import kotlin.reflect.KFunction1
+import kotlin.reflect.KFunction2
 
 object CastHelper {
 
@@ -28,7 +29,7 @@ object CastHelper {
         var devices = ArrayList<CastModel>()
 
         for (routeInfo in routes) {
-            Log.d("CastHelper", "getAvailableDevices A13 : >>"+routeInfo)
+            Log.d("CastHelper", "getAvailableDevices A13 : >>" + routeInfo)
             val device = CastDevice.getFromBundle(routeInfo.extras)
             if (device != null) {
                 devices.add(CastModel(routeInfo, device))
@@ -46,12 +47,12 @@ object CastHelper {
         var isConnected = false
         var device: CastDevice? = null
         for (route in mMediaRouter.routes) {
-            Log.d("CastHelper", "getCastEnabled A13 : >>"+isCastDevice(route))
+            Log.d("CastHelper", "getCastEnabled A13 : >>" + isCastDevice(route))
             if (isCastDevice(route)) {
                 if (route.connectionState == MediaRouter.RouteInfo.CONNECTION_STATE_CONNECTED) {
-                    Log.d("CastHelper", "getCastEnabled A13 : "+route.name)
+                    Log.d("CastHelper", "getCastEnabled A13 : " + route.name)
                     device = CastDevice.getFromBundle(route.extras)
-                    Log.d("CastHelper", "getCastEnabled A13 : "+device)
+                    Log.d("CastHelper", "getCastEnabled A13 : " + device)
                     isConnected = true
                     break
                 } else {
@@ -75,8 +76,35 @@ object CastHelper {
         type: Int,
         checkForQueue: KFunction1<Int, Unit>
     ) {
+        startServer(context)
+
+        Utils.showQueuePopup(
+            context,
+            Utils.buildMediaInfo(mediaData, path, thumb, type),
+            checkForQueue
+        )
+    }
+
+    fun castPhotos(
+        remoteMediaClient: RemoteMediaClient?,
+        mediaData: MediaData?,
+        path: String,
+        type: Int
+    ) {
+        remoteMediaClient?.load(
+            MediaLoadRequestData.Builder()
+                .setMediaInfo(Utils.buildMediaInfo(mediaData, path, path, type))
+                /** Use the [MediaInfo] generated from [buildMediaInfo]. */
+                .setAutoplay(true)
+//                .setCurrentTime(0.toLong())
+                .build()
+        )
+    }
+
+    fun startServer(context: Context?) {
         /** Find the IpAddress of the device and save it to [deviceIpAddress]
          *  so that Service class can pick it up to create a small http server */
+
         deviceIpAddress = context?.let { Utils.findIPAddress(it) }
 
         if (deviceIpAddress == null) {
@@ -88,6 +116,8 @@ object CastHelper {
             return
         }
 
+        //        startService(Intent(this, WebService::class.java))
+
         /** Start a http server. */
         val workManager = context?.let { WorkManager.getInstance(it) }
 
@@ -98,17 +128,5 @@ object CastHelper {
             exampleWorkRequest
         )
 
-        Utils.showQueuePopup(context,Utils.buildMediaInfo(mediaData,path, thumb, type),checkForQueue)
-    }
-
-    fun castPhotos(remoteMediaClient:RemoteMediaClient?,mediaData: MediaData?,path: String,type: Int){
-        remoteMediaClient?.load(
-            MediaLoadRequestData.Builder()
-                .setMediaInfo(Utils.buildMediaInfo(mediaData,path,path,type))
-                /** Use the [MediaInfo] generated from [buildMediaInfo]. */
-//                .setAutoplay(true)
-//                .setCurrentTime(0.toLong())
-                .build()
-        )
     }
 }

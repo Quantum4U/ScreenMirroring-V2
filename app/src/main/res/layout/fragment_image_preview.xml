@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="#262626">
 
     <RelativeLayout
         android:id="@+id/rl_toolbar"
@@ -17,94 +17,149 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/padding20dp"
             android:padding="@dimen/padding5dp"
-            app:tint="@color/white"
             android:rotation="270"
-            app:srcCompat="@drawable/ic_back_arrow" />
+            app:srcCompat="@drawable/ic_back_arrow"
+            app:tint="@color/white" />
 
         <TextView
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:fontFamily="@font/inter_semibold"
             android:text="@string/preview"
             android:textColor="@color/heading"
-            android:textSize="@dimen/textsize20sp" />
+            android:textSize="@dimen/textsize20sp"
+            android:visibility="gone" />
 
         <LinearLayout
-            android:layout_marginRight="@dimen/padding12dp"
+            android:id="@+id/ll_connected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:visibility="gone"
-            android:gravity="center"
-            android:id="@+id/ll_connected"
+            android:layout_marginTop="@dimen/padding10dp"
+            android:layout_marginRight="@dimen/padding12dp"
+            android:layout_marginBottom="@dimen/padding10dp"
             android:background="@drawable/cast_btn_bg"
             android:backgroundTint="@color/white"
-            android:layout_marginTop="@dimen/padding10dp"
-            android:layout_marginBottom="@dimen/padding10dp"
-            android:paddingLeft="@dimen/padding15dp"
-            android:paddingRight="@dimen/padding15dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:paddingLeft="@dimen/padding15dp"
+            android:paddingTop="8dp"
+            android:paddingRight="@dimen/padding15dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone">
 
             <View
-                android:layout_marginRight="@dimen/padding5dp"
-                android:background="@drawable/active_dot_bg"
                 android:layout_width="@dimen/padding10dp"
-                android:layout_height="@dimen/padding10dp"/>
+                android:layout_height="@dimen/padding10dp"
+                android:layout_marginRight="@dimen/padding5dp"
+                android:background="@drawable/active_dot_bg" />
 
             <TextView
                 android:id="@+id/tv_connected"
-                android:text="@string/connected"
                 android:layout_width="wrap_content"
-                android:textColor="@color/white"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/connected"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginRight="@dimen/padding12dp"
-            android:layout_alignParentRight="true"
-            android:visibility="visible"
-            android:gravity="center"
             android:id="@+id/ll_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/padding10dp"
+            android:layout_marginRight="@dimen/padding12dp"
+            android:layout_marginBottom="@dimen/padding10dp"
             android:background="@drawable/cast_btn_bg"
             android:backgroundTint="@color/white"
-            android:layout_marginTop="@dimen/padding10dp"
-            android:layout_marginBottom="@dimen/padding10dp"
-            android:paddingLeft="@dimen/padding15dp"
-            android:paddingRight="@dimen/padding15dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:paddingLeft="@dimen/padding15dp"
+            android:paddingTop="8dp"
+            android:paddingRight="@dimen/padding15dp"
+            android:paddingBottom="8dp"
+            android:visibility="visible">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_marginRight="@dimen/padding15dp"
-                app:srcCompat="@drawable/ic_cast_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/padding15dp"
+                app:srcCompat="@drawable/ic_cast_icon" />
 
             <TextView
-                android:text="@string/connect"
                 android:layout_width="wrap_content"
-                android:textColor="@color/white"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/connect"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
     </RelativeLayout>
 
     <androidx.viewpager.widget.ViewPager
-        android:layout_below="@+id/rl_toolbar"
+        android:layout_marginTop="@dimen/padding30dp"
+        android:layout_marginBottom="@dimen/padding30dp"
         android:id="@+id/vp_img_preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rl_bottom"
+        android:layout_below="@+id/rl_toolbar" />
 
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:id="@+id/ll_slideshow"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/padding15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginBottom="@dimen/padding30dp"
+                android:id="@+id/tv_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/folder_btn_bg"
+                android:backgroundTint="#80FFFFFF"
+                android:paddingStart="@dimen/padding25dp"
+                android:paddingEnd="@dimen/padding25dp"
+                android:paddingTop="@dimen/padding5dp"
+                android:paddingBottom="@dimen/padding5dp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize15sp"/>
+
+            <TextView
+                android:id="@+id/tv_slideshow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/cast_btn_bg"
+                android:drawablePadding="@dimen/padding5dp"
+                android:padding="@dimen/padding10dp"
+                android:fontFamily="@font/inter_medium"
+                android:text="@string/stop_slideshow"
+                android:textColor="@color/text_orange"
+                android:textSize="@dimen/textsize15sp"
+                app:drawableLeftCompat="@drawable/ic_preview_slideshow_icon" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/ll_mini_preview"
+            android:layout_marginBottom="@dimen/padding15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

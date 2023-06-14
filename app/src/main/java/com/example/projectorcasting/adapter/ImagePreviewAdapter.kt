@@ -12,7 +12,7 @@ import com.example.projectorcasting.R
 import com.example.projectorcasting.models.MediaData
 
 
-class ImagePreviewAdapter(private val pathList: ArrayList<MediaData>?): PagerAdapter() {
+class ImagePreviewAdapter(private val pathList: List<MediaData>?): PagerAdapter() {
 
     override fun getCount(): Int {
         return pathList?.size?:0
@@ -45,8 +45,12 @@ class ImagePreviewAdapter(private val pathList: ArrayList<MediaData>?): PagerAda
        return pathList?.get(pos)?.path?.split("0/")?.get(1)
     }
 
-    fun getList(): ArrayList<MediaData>? {
+    fun getList(): List<MediaData>? {
         return pathList
+    }
+
+    fun getItem(position: Int): MediaData? {
+        return pathList?.get(position)
     }
 
 }

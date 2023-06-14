@@ -15,7 +15,13 @@
         android:id="@+id/nav_image"
         android:name="com.example.projectorcasting.ui.fragments.ImagesFragment"
         android:label="@string/images"
-        tools:layout="@layout/fragment_images" />
+        tools:layout="@layout/fragment_images">
+
+        <action
+            android:id="@+id/action_image_to_preview"
+            app:destination="@id/nav_image_preview"/>
+
+    </fragment>
 
     <fragment
         android:id="@+id/nav_video"
@@ -45,5 +51,15 @@
         android:id="@+id/nav_image_preview"
         android:name="com.example.projectorcasting.ui.fragments.ImagePreviewFragment"
         android:label="@string/preview"
-        tools:layout="@layout/fragment_image_preview" />
+        tools:layout="@layout/fragment_image_preview">
+
+        <argument
+            android:name="from_slideshow"
+            app:argType="boolean" />
+
+        <argument
+            android:name="file_position"
+            app:argType="integer" />
+
+    </fragment>
 </navigation>

@@ -11,6 +11,8 @@ object MediaListSingleton {
     private var galleryVideoSectionedList: ArrayList<SectionModel>? = null
     private var galleryVideoFileList: List<MediaData>? = null
     private var galleryAudioFileList: List<MediaData>? = null
+    private var selectedImageList: List<MediaData>? = null
+    private var allImageListForPreview: List<MediaData>? = null
 
     fun setGalleryImageFolderList(list: ArrayList<FolderModel>?) {
         this.galleryImageFolderList = list?.let { ArrayList(it) }
@@ -49,6 +51,22 @@ object MediaListSingleton {
 
     fun getGalleryAudioList(): List<MediaData>? {
         return galleryAudioFileList
+    }
+
+    fun setSelectedImageList(list: List<MediaData>?) {
+        this.selectedImageList = list?.let { ArrayList(it) }
+    }
+
+    fun getSelectedImageList(): List<MediaData>? {
+        return selectedImageList
+    }
+
+    fun setAllImageListForPreview(list: List<MediaData>?) {
+        this.allImageListForPreview = list?.let { ArrayList(it) }
+    }
+
+    fun getAllImageListForPreview(): List<MediaData>? {
+        return allImageListForPreview
     }
 
 }

@@ -10,5 +10,6 @@ data class MediaData(
     val bitmap: Bitmap? = null,
     val folderId: String? = null,
     val folderName: String? = null,
-    val path: String? = null
+    val path: String? = null,
+    var isCheck:Boolean?=null
 )

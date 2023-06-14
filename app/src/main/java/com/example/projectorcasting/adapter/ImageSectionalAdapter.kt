@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -16,15 +17,21 @@ import kotlin.reflect.KFunction1
 
 class ImageSectionalAdapter(
     private val context: Context,
-    private val itemClick: KFunction1<MediaData, Unit>
+    private val itemClick: KFunction1<MediaData, Unit>,
+    private val onLongClick: KFunction1<Boolean, Unit>,
+    private val totalSelectedSize: KFunction1<Int, Unit>
 ) : SectionedRecyclerViewAdapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_TYPE_HEADER = -2
     private var mediaMap: ArrayList<SectionModel>? = ArrayList()
-
+    private var mLongClick = false
+    private var selectedList: ArrayList<MediaData> = arrayListOf()
+    private var selectedSectionList: ArrayList<SectionModel>? = arrayListOf()
+    private var count = 0
 
     fun refreshList(mediaList: List<SectionModel>?) {
         mediaMap = mediaList?.let { ArrayList(it) }
+        selectedSectionList = mediaList?.let { ArrayList(it) }
         notifyDataSetChanged()
     }
 
@@ -43,17 +50,19 @@ class ImageSectionalAdapter(
     inner class ViewHolder internal constructor(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         val txtHeader: TextView? = itemView.findViewById(R.id.tv_date)
+        val headerCb: CheckBox? = itemView.findViewById(R.id.header_checkbox)
     }
 
     inner class ItemViewHolder internal constructor(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         val card: RelativeLayout? = itemView.findViewById(R.id.cv_parent)
         val imgFile: ImageView? = itemView.findViewById(R.id.iv_image)
+        val checkBox: CheckBox? = itemView.findViewById(R.id.checkbox)
 
     }
 
     override fun getSectionCount(): Int {
-        return mediaMap?.size?: 0
+        return mediaMap?.size ?: 0
     }
 
     override fun getItemCount(section: Int): Int {
@@ -66,7 +75,23 @@ class ImageSectionalAdapter(
     override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder?, section: Int) {
         val holderHeader = holder as ViewHolder
 //        val key = sectionKeysList?.elementAt(section)
-        holderHeader.txtHeader?.text = mediaMap?.get(section)?.date
+        val headerItem = mediaMap?.get(section)
+        holderHeader.txtHeader?.text = headerItem?.date
+
+        holderHeader.headerCb?.isChecked = headerItem?.isCheck == true
+
+        holderHeader.headerCb?.setOnClickListener {
+            headerItem?.isCheck = !headerItem?.isCheck!!
+            holderHeader.headerCb.isChecked = headerItem.isCheck!!
+
+            selectAll(section, headerItem.sectionList, headerItem.isCheck)
+        }
+
+        if (mLongClick) {
+            holderHeader.headerCb?.visibility = View.VISIBLE
+        } else {
+            holderHeader.headerCb?.visibility = View.GONE
+        }
     }
 
     override fun onBindViewHolder(
@@ -74,19 +99,113 @@ class ImageSectionalAdapter(
     ) {
         val holderItem = holder as ItemViewHolder
 
-//        val key = sectionKeysList?.elementAt(section)
         val list = mediaMap?.get(section)?.sectionList
         val media = list?.get(relativePosition)
 
+        holderItem.checkBox?.isChecked = media?.isCheck == true
 
         holderItem.imgFile?.let { Glide.with(context).load(media?.path).into(it) }
 
+        holderItem.card?.setOnLongClickListener {
+            mLongClick = true
+            media?.isCheck = !media?.isCheck!!
+            holderItem.checkBox?.isChecked = media.isCheck!!
+            removeAddItem(section, media, media.isCheck)
+            notifyDataSetChanged()
+
+            onLongClick(mLongClick)
+            true
+        }
+
         holderItem.card?.setOnClickListener {
-            media?.let { it1 -> itemClick(it1) }
+            if (mLongClick) {
+                media?.isCheck = !media?.isCheck!!
+                holderItem.checkBox?.isChecked = media.isCheck!!
+
+                removeAddItem(section, media, media.isCheck)
+            } else {
+                media?.let { it1 -> itemClick(it1) }
+            }
+        }
+
+        holderItem.checkBox?.setOnClickListener {
+            media?.isCheck = !media?.isCheck!!
+            holderItem.checkBox.isChecked = media.isCheck!!
+
+            removeAddItem(section, media, media.isCheck)
+        }
+
+        if (mLongClick) {
+            holderItem.checkBox?.visibility = View.VISIBLE
+        } else {
+            holderItem.checkBox?.visibility = View.GONE
         }
     }
 
     fun getItemList(): ArrayList<SectionModel>? {
         return mediaMap
+    }
+
+    fun isLongClickEnable(): Boolean {
+        return mLongClick
+    }
+
+    fun disableLongClick() {
+        mLongClick = false
+        unCheckAllCheckbox(false)
+        notifyDataSetChanged()
+    }
+
+    private fun unCheckAllCheckbox(isCheck: Boolean) {
+        val listSectionSize = mediaMap?.size
+
+        selectedList.clear()
+        for (i in 0 until listSectionSize!!) {
+            val itemList = mediaMap?.get(i)?.sectionList
+            mediaMap?.get(i)?.isCheck = isCheck
+            selectedSectionList?.get(i)?.totalSelected = 0
+            for (j in 0 until itemList?.size!!) {
+                itemList[j].isCheck = isCheck
+            }
+        }
+    }
+
+    private fun selectAll(section: Int, itemList: List<MediaData>?, isCheck: Boolean?) {
+        for (media in itemList!!) {
+            media.isCheck = isCheck
+            removeAddItem(section, media, isCheck)
+        }
+        notifyDataSetChanged()
+    }
+
+    private fun removeAddItem(section: Int, mediaData: MediaData, isCheck: Boolean?) {
+        count = selectedSectionList?.get(section)?.totalSelected ?: 0
+
+        if (isCheck == true) {
+            if (!selectedList.contains(mediaData)) {
+                count++
+                selectedList.add(mediaData)
+            }
+        } else {
+            if (selectedList.contains(mediaData)) {
+                count--
+                selectedList.remove(mediaData)
+            }
+        }
+
+        selectedSectionList?.get(section)?.totalSelected = count
+
+        val oldState = mediaMap?.get(section)?.isCheck
+        mediaMap?.get(section)?.isCheck = count == mediaMap?.get(section)?.sectionList?.size
+        val newState = mediaMap?.get(section)?.isCheck
+
+        if (oldState != newState)
+            notifyDataSetChanged()
+
+        totalSelectedSize(selectedList.size)
+    }
+
+    fun getSelectedImageList(): ArrayList<MediaData> {
+        return selectedList
     }
 }

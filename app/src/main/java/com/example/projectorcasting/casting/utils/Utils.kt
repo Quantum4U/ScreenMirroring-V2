@@ -72,9 +72,9 @@ object Utils {
         Log.d("MainActivity", "buildMediaInfo A13 : >>$sampleVideoStream")
 
         val imageUrl1 =
-            "http://${CastHelper.deviceIpAddress}:9999/${thumb}"
+            "http://${CastHelper.deviceIpAddress}:9999/${path}"
         val imageUrl2 =
-            "http://${CastHelper.deviceIpAddress}:9999/${thumb}"
+            "http://${CastHelper.deviceIpAddress}:9999/${path}"
 
 
         /** (Optional) Setting a subtitle track, You can add more subtitle
@@ -142,13 +142,13 @@ object Utils {
 
     private fun mediaInfoForImage(mediaData: MediaData?,imageUrl1: String, imageUrl2: String): MediaInfo {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_PHOTO)
-        setMediaData(mediaData,movieMetadata, imageUrl1, imageUrl2)
+//        setMediaData(mediaData,movieMetadata, imageUrl1, imageUrl2)
 
         return MediaInfo.Builder(imageUrl1)
             .setStreamType(MediaInfo.STREAM_TYPE_NONE)
             .setContentType("image/jpeg")
             .setMetadata(movieMetadata)
-            .setStreamDuration(0) // 5:33 means 333 seconds
+//            .setStreamDuration(0) // 5:33 means 333 seconds
 //                .setMediaTracks(listOf(mediaTrack)) // (Optional) Set list of subtitles.
             .build()
 

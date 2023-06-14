@@ -1,8 +1,10 @@
 package com.example.projectorcasting.ui.fragments
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.RelativeLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -17,7 +19,6 @@ import com.example.projectorcasting.databinding.FragmentImagesBinding
 import com.example.projectorcasting.models.FolderModel
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.models.SectionModel
-import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.utils.SpacesItemDecoration
 import com.google.android.gms.cast.framework.CastState
@@ -31,6 +32,8 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     private var folderDialog: BottomSheetDialog? = null
     private val DOCUMENT_BUFFER = 50
     private var imgFolder: FolderModel? = null
+    private var isListReadyForPreview = false
+    private var isItemClick = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,6 +41,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         binding = FragmentImagesBinding.bind(view)
         observeImageList()
         observeCastingLiveData()
+        observeListForPreview()
 
         doFetchingWork()
 
@@ -60,6 +64,22 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         binding?.ivBack?.setOnClickListener {
             exitPage()
         }
+
+        binding?.tvSlideshow?.setOnClickListener {
+            MediaListSingleton.setSelectedImageList(imageSectionalAdapter?.getSelectedImageList())
+            imageSectionalAdapter?.disableLongClick()
+            val action =
+                ImagesFragmentDirections.actionImageToPreview(true, 0)
+            findNavController().navigate(action)
+        }
+
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    exitPage()
+                }
+            })
     }
 
     private fun doFetchingWork() {
@@ -79,6 +99,16 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         showLoader()
         getDashViewModel()?.getAllGalleryImages(context)
         getDashViewModel()?.fetchImages(context)
+    }
+
+    private fun observeListForPreview() {
+        getDashViewModel()?.imageListForPreview?.observe(viewLifecycleOwner, Observer {
+            isListReadyForPreview = true
+            MediaListSingleton.setAllImageListForPreview(it)
+            if (isItemClick) {
+                itemClick(null)
+            }
+        })
     }
 
     private fun observeCastingLiveData() {
@@ -107,7 +137,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     private fun setAdapter() {
         imageSectionalAdapter = ImageSectionalAdapter(
             requireContext(),
-            ::itemClick
+            ::itemClick, ::onLongClick, ::totalSelectedSize
         )
         val layoutManager = GridLayoutManager(requireContext(), 3)
         imageSectionalAdapter?.setLayoutManager(layoutManager)
@@ -120,6 +150,12 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         imageSectionalAdapter?.refreshList(
             MediaListSingleton.getGalleryImageFolderList()?.get(0)?.sectionList
         )
+        setListForPreview()
+    }
+
+    private fun setListForPreview() {
+        isListReadyForPreview = false
+        imageSectionalAdapter?.getItemList()?.let { getDashViewModel()?.setImageListForPreview(it) }
     }
 
     private fun sortMediaList() {
@@ -147,8 +183,32 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         imageSectionalAdapter?.refreshList(adapterList)
     }
 
-    private fun itemClick(mediaData: MediaData) {
-        findNavController().navigate(R.id.nav_image_preview)
+    private fun itemClick(mediaData: MediaData?) {
+//        MediaListSingleton.setSelectedImageList(imageSectionalAdapter?.getSelectedImageList())
+        if (isListReadyForPreview) {
+            hideLoader()
+            isItemClick = false
+            val action =
+                ImagesFragmentDirections.actionImageToPreview(
+                    false,
+                    MediaListSingleton.getAllImageListForPreview()?.indexOf(mediaData)!!
+                )
+            findNavController().navigate(action)
+        } else {
+            showLoader()
+            isItemClick = true
+        }
+    }
+
+    private fun onLongClick(isLongClick: Boolean) {
+        if (isLongClick)
+            binding?.tvSlideshow?.visibility = View.VISIBLE
+        else
+            binding?.tvSlideshow?.visibility = View.GONE
+    }
+
+    private fun totalSelectedSize(totalFiles: Int) {
+        binding?.tvHeader?.text = getString(R.string.items_selected, totalFiles)
     }
 
     private fun actionPerform(isConnect: Boolean, castModel: CastModel?) {
@@ -183,6 +243,8 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         folderDialog?.cancel()
         binding?.tvFolderName?.text = folderModel.folderName
         imageSectionalAdapter?.refreshList(folderModel.sectionList as ArrayList<SectionModel>?)
+
+        setListForPreview()
     }
 
     override fun onDestroyView() {
@@ -191,6 +253,11 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     }
 
     private fun exitPage() {
-        findNavController().navigateUp()
+        if (imageSectionalAdapter?.isLongClickEnable() == true) {
+            imageSectionalAdapter?.disableLongClick()
+            onLongClick(false)
+            binding?.tvHeader?.text = getString(R.string.images)
+        } else
+            findNavController().navigateUp()
     }
 }
