@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.bumptech.glide.Glide
 import com.example.projectorcasting.R
 import com.example.projectorcasting.models.MediaData
 
@@ -24,10 +25,11 @@ class ImagePreviewAdapter(private val pathList: List<MediaData>?): PagerAdapter(
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val holder = ViewHolder()
-        val itemView = LayoutInflater.from(container.context).inflate(R.layout.image_preview_item, container, false)
+        val ctx = container.context
+        val itemView = LayoutInflater.from(ctx).inflate(R.layout.image_preview_item, container, false)
 
         holder.imageView = itemView?.findViewById(R.id.iv_image_preview) as ImageView
-        holder.imageView.setImageURI(Uri.fromFile(pathList?.get(position)?.file))
+        holder.imageView.let { Glide.with(ctx).load(pathList?.get(position)?.path).into(it) }
 
         (container as ViewPager).addView(itemView)
         return itemView

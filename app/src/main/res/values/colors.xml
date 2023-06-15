@@ -14,4 +14,5 @@
     <color name="text_green">#00CC2D</color>
     <color name="text_red">#FF2F2F</color>
     <color name="text_orange">#FC6A4B</color>
+    <color name="preview_page_bg_color">#262626</color>
 </resources>

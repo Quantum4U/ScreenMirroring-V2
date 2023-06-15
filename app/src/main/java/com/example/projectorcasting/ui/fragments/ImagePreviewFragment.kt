@@ -1,16 +1,22 @@
 package com.example.projectorcasting.ui.fragments
 
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.example.projectorcasting.R
 import com.example.projectorcasting.adapter.ImagePreviewAdapter
+import com.example.projectorcasting.adapter.MiniImagePreviewAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
@@ -23,10 +29,14 @@ import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import java.util.*
 
-class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview) {
+
+class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
+    ViewPager.OnPageChangeListener,
+    RecyclerView.OnChildAttachStateChangeListener {
 
     private var binding: FragmentImagePreviewBinding? = null
     private var imagePreviewAdapter: ImagePreviewAdapter? = null
+    private var recyclerAdapter: MiniImagePreviewAdapter? = null
     private var remoteMediaClient: RemoteMediaClient? = null
     private var isCastConnected = false
     private val argument: ImagePreviewFragmentArgs by navArgs()
@@ -37,6 +47,8 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview) {
 
     private var mHandler: Handler? = null
     private var timer: Timer? = null
+
+    private var currentItemPos = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,33 +66,8 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview) {
         else
             MediaListSingleton.getAllImageListForPreview()?.let { itemList.addAll(it) }
 
-        imagePreviewAdapter = ImagePreviewAdapter(itemList)
-
-        binding?.vpImgPreview?.adapter = imagePreviewAdapter
-
-        binding?.vpImgPreview?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-
-            }
-
-            override fun onPageSelected(position: Int) {
-                binding?.tvCount?.text = ""+(position+1)+"/"+itemList.size
-                if (isCastConnected)
-                    castImage(position)
-            }
-
-        })
-
-        binding?.vpImgPreview?.currentItem = filePosition
-//        castImage(1)
+        initViewpager()
+        initRecyclerview()
         startSlideShow()
 
         binding?.llConnect?.setOnClickListener {
@@ -101,12 +88,27 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview) {
 
     }
 
-    private fun slideshowButtonClick(){
-        if (binding?.tvSlideshow?.text == getString(R.string.stop_slideshow)){
+    private fun initViewpager() {
+        imagePreviewAdapter = ImagePreviewAdapter(itemList)
+        binding?.vpImgPreview?.adapter = imagePreviewAdapter
+        binding?.vpImgPreview?.addOnPageChangeListener(this)
+        binding?.vpImgPreview?.currentItem = filePosition
+    }
+
+    private fun initRecyclerview() {
+        recyclerAdapter = MiniImagePreviewAdapter(itemList, ::recyclerItemClick)
+        binding?.rvHorizontalPreview?.adapter = recyclerAdapter
+        binding?.rvHorizontalPreview?.addOnChildAttachStateChangeListener(this)
+        binding?.rvHorizontalPreview?.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    private fun slideshowButtonClick() {
+        if (binding?.tvSlideshow?.text == getString(R.string.stop_slideshow)) {
             binding?.tvSlideshow?.text = getString(R.string.start_slideshow)
             timer?.cancel()
             timer = null
-        }else{
+        } else {
             binding?.tvSlideshow?.text = getString(R.string.stop_slideshow)
             startSlideShow()
         }
@@ -117,10 +119,10 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview) {
             binding?.llSlideshow?.visibility = View.GONE
             binding?.llMiniPreview?.visibility = View.VISIBLE
             return
-        }else{
+        } else {
             binding?.llSlideshow?.visibility = View.VISIBLE
             binding?.llMiniPreview?.visibility = View.GONE
-            binding?.tvCount?.text = ""+(filePosition+1)+"/"+itemList.size
+            binding?.tvCount?.text = "" + (filePosition + 1) + "/" + itemList.size
         }
 
         mHandler = Handler(Looper.getMainLooper())
@@ -190,14 +192,22 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview) {
         filePosition = binding?.vpImgPreview?.currentItem ?: 0
         filePosition++
         if (filePosition < itemList.size)
-            binding?.vpImgPreview?.setCurrentItem(filePosition, true)
+            scrollViewpager(filePosition)
         else {
             filePosition = 0
-            binding?.vpImgPreview?.setCurrentItem(filePosition, true)
+            scrollViewpager(filePosition)
             binding?.tvSlideshow?.text = getString(R.string.start_slideshow)
             timer?.cancel()
             timer = null
         }
+    }
+
+    private fun scrollViewpager(pos: Int) {
+        binding?.vpImgPreview?.setCurrentItem(pos, true)
+    }
+
+    private fun recyclerItemClick(mediaData: MediaData, position: Int) {
+        binding?.vpImgPreview?.currentItem = position
     }
 
     override fun onDestroyView() {
@@ -209,5 +219,79 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview) {
 
     private fun exitPage() {
         findNavController().navigateUp()
+    }
+
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onPageSelected(position: Int) {
+        if (fromSlideshow) {
+            binding?.tvCount?.text = "" + (position + 1) + "/" + itemList.size
+            if (isCastConnected)
+                castImage(position)
+        } else {
+            val previousItemPos: Int = currentItemPos
+            currentItemPos = position
+            scroll(position, true)
+            changeItem(position, previousItemPos)
+        }
+
+    }
+
+    override fun onPageScrollStateChanged(state: Int) {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onChildViewAttachedToWindow(view: View) {
+        val childPosition: Int = binding?.rvHorizontalPreview?.getChildAdapterPosition(view) ?: 0
+        if (childPosition == currentItemPos) {
+            highlightItem(view)
+        }
+    }
+
+    override fun onChildViewDetachedFromWindow(view: View) {
+        unHighlightItem(view)
+    }
+
+    private fun scroll(position: Int, isPortrait: Boolean) {
+        val view: View? =
+            binding?.rvHorizontalPreview?.getChildAt(0) //Only used to get the width of a view. They are all the same so this is safe
+        if (view != null) {
+            val width = if (isPortrait) view.width else view.height
+            val pos: Int? =
+                if (isPortrait) binding?.rvHorizontalPreview?.computeHorizontalScrollOffset() else binding?.rvHorizontalPreview?.computeVerticalScrollOffset()
+            val targetPos = (position * width).toFloat()
+            val delta = (pos?.minus(targetPos))?.times(-1)
+            val x = if (isPortrait) delta?.toInt() else 0
+            val y = if (isPortrait) 0 else delta?.toInt()
+            x?.let { xAxis ->
+                y?.let { yAxis ->
+                    binding?.rvHorizontalPreview?.smoothScrollBy(
+                        xAxis,
+                        yAxis
+                    )
+                }
+            }
+        }
+    }
+
+    private fun changeItem(newItem: Int, oldItem: Int) {
+        val holder = binding?.rvHorizontalPreview?.findViewHolderForAdapterPosition(newItem)
+        if (holder is MiniImagePreviewAdapter.ViewHolder) {
+            highlightItem(holder.getViewHolderContainer())
+        }
+        val oldHolder= binding?.rvHorizontalPreview?.findViewHolderForAdapterPosition(oldItem)
+        if (oldHolder is MiniImagePreviewAdapter.ViewHolder) {
+            unHighlightItem(oldHolder.getViewHolderContainer())
+        }
+    }
+
+    private fun highlightItem(view: View) {
+        view.background = ResourcesCompat.getDrawable(resources,R.drawable.selected_image_bg,null)
+    }
+
+    private fun unHighlightItem(view: View) {
+        view.background = null
     }
 }

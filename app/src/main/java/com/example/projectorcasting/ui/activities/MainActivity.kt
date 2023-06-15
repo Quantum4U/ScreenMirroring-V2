@@ -14,11 +14,7 @@ import androidx.navigation.ui.navigateUp
 import com.example.projectorcasting.R
 import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.databinding.ActivityMainBinding
-import com.example.projectorcasting.utils.AppUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity(), View.OnClickListener {
@@ -50,6 +46,12 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             } else {
                 drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
+
+            if (destination.id == R.id.nav_image_preview) {
+                statusBarColor(true, window)
+            } else {
+                statusBarColor(false, window)
             }
         }
 
@@ -142,7 +144,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 //        }
     }
 
-    fun openImagePage(){
+    fun openImagePage() {
         if (!checkStoragePermission(Utils.IMAGE)) {
             checkForPermission = true
             isImagePageBtnClicked = true
@@ -153,7 +155,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    fun openVideoPage(){
+    fun openVideoPage() {
         if (!checkStoragePermission(Utils.VIDEO)) {
             checkForPermission = true
             isVideoPageBtnClicked = true
@@ -164,7 +166,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    fun openAudioPage(){
+    fun openAudioPage() {
         if (!checkStoragePermission(Utils.AUDIO)) {
             checkForPermission = true
             isAudioPageBtnClicked = true
@@ -179,7 +181,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         super.onResume()
 //        inAppUpdateManager?.checkNewAppVersionState()
 
-        if(checkForPermission) {
+        if (checkForPermission) {
             checkForPermission = false
 
             if (isImagePageBtnClicked && checkStoragePermission(Utils.IMAGE)) {

@@ -50,6 +50,8 @@ class ImageSectionalAdapter(
     inner class ViewHolder internal constructor(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         val txtHeader: TextView? = itemView.findViewById(R.id.tv_date)
+        val checkBoxLayout: RelativeLayout? = itemView.findViewById(R.id.rl_checkbox)
+        val textSelection: TextView? = itemView.findViewById(R.id.tv_selection)
         val headerCb: CheckBox? = itemView.findViewById(R.id.header_checkbox)
     }
 
@@ -57,7 +59,7 @@ class ImageSectionalAdapter(
         RecyclerView.ViewHolder(itemView) {
         val card: RelativeLayout? = itemView.findViewById(R.id.cv_parent)
         val imgFile: ImageView? = itemView.findViewById(R.id.iv_image)
-        val checkBox: CheckBox? = itemView.findViewById(R.id.checkbox)
+        val checkBox: CheckBox? = itemView.findViewById(R.id.cb_checkbox)
 
     }
 
@@ -79,18 +81,27 @@ class ImageSectionalAdapter(
         holderHeader.txtHeader?.text = headerItem?.date
 
         holderHeader.headerCb?.isChecked = headerItem?.isCheck == true
+        if (headerItem?.isCheck == true)
+            holderHeader.textSelection?.text = context.getString(R.string.unselect_all)
+        else
+            holderHeader.textSelection?.text = context.getString(R.string.select_all)
 
-        holderHeader.headerCb?.setOnClickListener {
+        holderHeader.checkBoxLayout?.setOnClickListener {
             headerItem?.isCheck = !headerItem?.isCheck!!
-            holderHeader.headerCb.isChecked = headerItem.isCheck!!
+            holderHeader.headerCb?.isChecked = headerItem.isCheck!!
 
             selectAll(section, headerItem.sectionList, headerItem.isCheck)
+
+            if (headerItem.isCheck == true)
+                holderHeader.textSelection?.text = context.getString(R.string.unselect_all)
+            else
+                holderHeader.textSelection?.text = context.getString(R.string.select_all)
         }
 
         if (mLongClick) {
-            holderHeader.headerCb?.visibility = View.VISIBLE
+            holderHeader.checkBoxLayout?.visibility = View.VISIBLE
         } else {
-            holderHeader.headerCb?.visibility = View.GONE
+            holderHeader.checkBoxLayout?.visibility = View.GONE
         }
     }
 

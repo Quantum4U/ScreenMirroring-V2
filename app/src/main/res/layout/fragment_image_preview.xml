@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#262626">
+    android:background="@color/preview_page_bg_color">
 
     <RelativeLayout
         android:id="@+id/rl_toolbar"
@@ -116,6 +116,7 @@
         android:layout_alignParentBottom="true">
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/ll_slideshow"
             android:orientation="vertical"
             android:gravity="center"
@@ -155,9 +156,13 @@
 
         <RelativeLayout
             android:id="@+id/ll_mini_preview"
-            android:layout_marginBottom="@dimen/padding15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_horizontal_preview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         </RelativeLayout>
     </RelativeLayout>

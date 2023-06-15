@@ -1,11 +1,11 @@
 package com.example.projectorcasting.ui.fragments
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,6 +19,7 @@ import com.example.projectorcasting.databinding.FragmentImagesBinding
 import com.example.projectorcasting.models.FolderModel
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.models.SectionModel
+import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.utils.SpacesItemDecoration
 import com.google.android.gms.cast.framework.CastState
@@ -34,6 +35,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     private var imgFolder: FolderModel? = null
     private var isListReadyForPreview = false
     private var isItemClick = false
+    private var isConnected = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,7 +52,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         }
 
         binding?.llConnect?.setOnClickListener {
-            findNavController().navigate(R.id.nav_scan_device)
+            openDeviceListPage(false)
         }
 
         binding?.llConnected?.setOnClickListener {
@@ -68,9 +70,11 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         binding?.tvSlideshow?.setOnClickListener {
             MediaListSingleton.setSelectedImageList(imageSectionalAdapter?.getSelectedImageList())
             imageSectionalAdapter?.disableLongClick()
-            val action =
-                ImagesFragmentDirections.actionImageToPreview(true, 0)
-            findNavController().navigate(action)
+            if (isConnected) {
+                openPreviewPage(true, 0)
+            } else {
+                openDeviceListPage(true)
+            }
         }
 
         activity?.onBackPressedDispatcher?.addCallback(
@@ -80,6 +84,16 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
                     exitPage()
                 }
             })
+
+        checkResultToStartSlideshow()
+    }
+
+    private fun openDeviceListPage(startSlideShow: Boolean) {
+        Bundle().apply {
+            putBoolean(AppConstants.START_SLIDESHOW,startSlideShow)
+            findNavController().navigate(R.id.nav_scan_device,this)
+        }
+//        findNavController().navigate(R.id.nav_scan_device)
     }
 
     private fun doFetchingWork() {
@@ -114,10 +128,12 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     private fun observeCastingLiveData() {
         castingLiveData().observe(viewLifecycleOwner, Observer { state ->
             if (state == CastState.CONNECTED) {
+                isConnected = true
                 binding?.llConnected?.visibility = View.VISIBLE
                 binding?.llConnect?.visibility = View.GONE
                 binding?.tvConnected?.text = getString(R.string.connected, getConnectedDeviceName())
             } else if (state == CastState.NOT_CONNECTED) {
+                isConnected = false
                 binding?.llConnected?.visibility = View.GONE
                 binding?.llConnect?.visibility = View.VISIBLE
             }
@@ -188,16 +204,20 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         if (isListReadyForPreview) {
             hideLoader()
             isItemClick = false
-            val action =
-                ImagesFragmentDirections.actionImageToPreview(
-                    false,
-                    MediaListSingleton.getAllImageListForPreview()?.indexOf(mediaData)!!
-                )
-            findNavController().navigate(action)
+            openPreviewPage(
+                false,
+                MediaListSingleton.getAllImageListForPreview()?.indexOf(mediaData)!!
+            )
         } else {
             showLoader()
             isItemClick = true
         }
+    }
+
+    private fun openPreviewPage(startSlideshow: Boolean, pos: Int) {
+        val action =
+            ImagesFragmentDirections.actionImageToPreview(startSlideshow, pos)
+        findNavController().navigate(action)
     }
 
     private fun onLongClick(isLongClick: Boolean) {
@@ -259,5 +279,13 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             binding?.tvHeader?.text = getString(R.string.images)
         } else
             findNavController().navigateUp()
+    }
+
+    private fun checkResultToStartSlideshow() {
+        setFragmentResultListener(AppConstants.START_SLIDESHOW_REQUEST_KEY) { requestKey: String, bundle: Bundle ->
+            val result = bundle.getBoolean(AppConstants.START_SLIDESHOW)
+            if (result)
+                openPreviewPage(true, 0)
+        }
     }
 }

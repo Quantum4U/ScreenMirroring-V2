@@ -19,7 +19,10 @@
 
         <action
             android:id="@+id/action_image_to_preview"
-            app:destination="@id/nav_image_preview"/>
+            app:destination="@id/nav_image_preview"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/slide_down"
+            app:popExitAnim="@anim/slide_down"/>
 
     </fragment>
 
@@ -39,8 +42,7 @@
         android:id="@+id/nav_scan_device"
         android:name="com.example.projectorcasting.ui.fragments.ScanDeviceFragment"
         android:label="@string/menu_scan_device"
-        tools:layout="@layout/fragment_scandevice" />
-
+        tools:layout="@layout/fragment_scandevice"/>
     <fragment
         android:id="@+id/nav_queue"
         android:name="com.example.projectorcasting.ui.fragments.QueueFragment"
@@ -55,7 +57,7 @@
 
         <argument
             android:name="from_slideshow"
-            app:argType="boolean" />
+            app:argType="boolean"/>
 
         <argument
             android:name="file_position"

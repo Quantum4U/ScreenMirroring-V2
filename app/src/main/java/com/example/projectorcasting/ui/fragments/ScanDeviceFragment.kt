@@ -2,15 +2,19 @@ package com.example.projectorcasting.ui.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.projectorcasting.R
 import com.example.projectorcasting.adapter.ScanDeviceAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.databinding.FragmentScandeviceBinding
+import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.viewmodels.ScanViewModel
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastState
@@ -20,6 +24,7 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
     private val scanViewModel: ScanViewModel by viewModels()
     private var binding: FragmentScandeviceBinding? = null
     private var scanDeviceAdapter: ScanDeviceAdapter? = null
+    private var fromSlideShow = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,9 +33,19 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
         observeCastingLiveData()
         observeDeviceList()
 
+        fromSlideShow = arguments?.getBoolean(AppConstants.START_SLIDESHOW) == true
+
         binding?.ivBack?.setOnClickListener {
             exitPage()
         }
+
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    exitPage()
+                }
+            })
 
         binding?.ivRefresh?.setOnClickListener {
             checkWifiNetwork()
@@ -126,12 +141,12 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
         getMediaRouter()?.let { scanViewModel.fetchDeviceList(it) }
     }
 
-    private fun itemClick(isConnect: Boolean,castModel: CastModel) {
-        scanViewModel.showConnectionPrompt(context,::actionPerform,isConnect,castModel)
+    private fun itemClick(isConnect: Boolean, castModel: CastModel) {
+        scanViewModel.showConnectionPrompt(context, ::actionPerform, isConnect, castModel)
     }
 
-    private fun actionPerform(isConnect: Boolean,castModel: CastModel?){
-        if(isConnect)
+    private fun actionPerform(isConnect: Boolean, castModel: CastModel?) {
+        if (isConnect)
             startCasting(castModel?.routeInfo, castModel?.castDevice)
         else
             stopCasting()
@@ -143,6 +158,10 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
     }
 
     private fun exitPage() {
+        val result = Bundle().apply {
+            putBoolean(AppConstants.START_SLIDESHOW, (fromSlideShow && isCastingConnected() == true))
+        }
+        setFragmentResult(AppConstants.START_SLIDESHOW_REQUEST_KEY, result)
         findNavController().navigateUp()
     }
 }

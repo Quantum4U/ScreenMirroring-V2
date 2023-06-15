@@ -71,4 +71,6 @@
     <string name="queue_empty">Queue is empty!</string>
     <string name="all_photos">All Photos</string>
     <string name="items_selected">%d Items Selected</string>
+    <string name="select_all">Select all</string>
+    <string name="unselect_all">Unselect all</string>
 </resources>

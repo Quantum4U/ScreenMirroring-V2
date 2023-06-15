@@ -3,9 +3,9 @@
     <item android:state_checked="true" android:state_focused="true"
         android:drawable="@drawable/ic_checked" />
     <item android:state_checked="false" android:state_focused="true"
-        android:drawable="@drawable/transparent_uncheck" />
+        android:drawable="@drawable/ic_unchecked" />
     <item android:state_checked="false"
-        android:drawable="@drawable/transparent_uncheck" />
+        android:drawable="@drawable/ic_unchecked" />
     <item android:state_checked="true"
         android:drawable="@drawable/ic_checked" />
 </selector>
