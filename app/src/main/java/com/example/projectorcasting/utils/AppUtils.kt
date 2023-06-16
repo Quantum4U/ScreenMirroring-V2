@@ -37,14 +37,14 @@ object AppUtils {
     fun createTempImagePath(): File {
         return File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-            ".CastingFolder/VideoThumb"
+            "CastingFolder/VideoThumb"
         )
     }
 
     fun createAudioThumbPath(context: Context?): File {
         return File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-            ".CastingFolder/AudioThumb"
+            "CastingFolder/AudioThumb"
         )
 //        return File(context?.filesDir, "AudioThumb")
     }

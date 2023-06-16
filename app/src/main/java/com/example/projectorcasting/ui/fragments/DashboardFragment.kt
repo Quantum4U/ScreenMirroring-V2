@@ -40,6 +40,7 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
 
         binding?.rlCast?.setOnClickListener {
             findNavController().navigate(R.id.nav_scan_device)
+            showFullAds(activity)
         }
 
         binding?.cvCastPhotos?.setOnClickListener {

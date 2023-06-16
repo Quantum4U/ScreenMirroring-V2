@@ -44,6 +44,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
 
         binding?.llConnect?.setOnClickListener {
             findNavController().navigate(R.id.nav_scan_device)
+            showFullAds(activity)
         }
 
         binding?.llConnected?.setOnClickListener {
@@ -56,6 +57,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
 
         binding?.tvQueued?.setOnClickListener {
             findNavController().navigate(R.id.nav_queue)
+            showFullAds(activity)
         }
 
         val provider: QueueDataProvider? = QueueDataProvider.Companion.getInstance(context)

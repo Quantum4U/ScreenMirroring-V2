@@ -33,7 +33,7 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
         observeCastingLiveData()
         observeDeviceList()
 
-        fromSlideShow = arguments?.getBoolean(AppConstants.START_SLIDESHOW) == true
+        fromSlideShow = arguments?.getBoolean(AppConstants.FOR_START_SLIDESHOW) == true
 
         binding?.ivBack?.setOnClickListener {
             exitPage()

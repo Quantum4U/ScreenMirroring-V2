@@ -98,7 +98,9 @@ object CastHelper {
                 .setAutoplay(true)
 //                .setCurrentTime(0.toLong())
                 .build()
-        )
+        )?.setResultCallback {
+            Log.d("CastHelper", "castPhotos A13 : >>>"+it.mediaError+"//"+it.status)
+        }
     }
 
     fun startServer(context: Context?) {

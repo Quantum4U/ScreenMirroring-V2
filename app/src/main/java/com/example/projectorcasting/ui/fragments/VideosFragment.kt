@@ -55,6 +55,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
         binding?.llConnect?.setOnClickListener {
             findNavController().navigate(R.id.nav_scan_device)
+            showFullAds(activity)
         }
 
         binding?.llConnected?.setOnClickListener {
@@ -67,6 +68,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
         binding?.tvQueued?.setOnClickListener {
             findNavController().navigate(R.id.nav_queue)
+            showFullAds(activity)
         }
 
         val provider: QueueDataProvider? = QueueDataProvider.Companion.getInstance(context)

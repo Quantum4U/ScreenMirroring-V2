@@ -182,6 +182,7 @@ object Utils {
             context?.let { CastContext.getSharedInstance(it).sessionManager.currentCastSession }
         if (castSession == null || !castSession.isConnected) {
             Log.w(TAG, "showQueuePopup(): not connected to a cast device")
+            Toast.makeText(context,context?.getString(R.string.connect_to_cast_device_text) , Toast.LENGTH_SHORT).show()
             return
         }
         val remoteMediaClient: RemoteMediaClient? = castSession.remoteMediaClient

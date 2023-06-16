@@ -90,10 +90,10 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 
     private fun openDeviceListPage(startSlideShow: Boolean) {
         Bundle().apply {
-            putBoolean(AppConstants.START_SLIDESHOW,startSlideShow)
+            putBoolean(AppConstants.FOR_START_SLIDESHOW,startSlideShow)
             findNavController().navigate(R.id.nav_scan_device,this)
         }
-//        findNavController().navigate(R.id.nav_scan_device)
+        showFullAds(activity)
     }
 
     private fun doFetchingWork() {
@@ -218,13 +218,17 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         val action =
             ImagesFragmentDirections.actionImageToPreview(startSlideshow, pos)
         findNavController().navigate(action)
+        showFullAds(activity)
     }
 
     private fun onLongClick(isLongClick: Boolean) {
-        if (isLongClick)
+        if (isLongClick) {
             binding?.tvSlideshow?.visibility = View.VISIBLE
-        else
+            binding?.rlBottom?.visibility = View.GONE
+        }else {
             binding?.tvSlideshow?.visibility = View.GONE
+            binding?.rlBottom?.visibility = View.VISIBLE
+        }
     }
 
     private fun totalSelectedSize(totalFiles: Int) {

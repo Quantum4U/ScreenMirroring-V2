@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -22,6 +23,7 @@ import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.databinding.FragmentImagePreviewBinding
 import com.example.projectorcasting.models.MediaData
+import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.MediaListSingleton
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
@@ -71,7 +73,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         startSlideShow()
 
         binding?.llConnect?.setOnClickListener {
-            findNavController().navigate(R.id.nav_scan_device)
+            openDeviceListPage(true)
         }
 
         binding?.llConnected?.setOnClickListener {
@@ -86,6 +88,15 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
             slideshowButtonClick()
         }
 
+        checkResultToStartSlideshow()
+
+    }
+
+    private fun openDeviceListPage(startSlideShow: Boolean) {
+        Bundle().apply {
+            putBoolean(AppConstants.FOR_START_SLIDESHOW,startSlideShow)
+            findNavController().navigate(R.id.nav_scan_device,this)
+        }
     }
 
     private fun initViewpager() {
@@ -106,8 +117,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     private fun slideshowButtonClick() {
         if (binding?.tvSlideshow?.text == getString(R.string.stop_slideshow)) {
             binding?.tvSlideshow?.text = getString(R.string.start_slideshow)
-            timer?.cancel()
-            timer = null
+            stopTimer()
         } else {
             binding?.tvSlideshow?.text = getString(R.string.stop_slideshow)
             startSlideShow()
@@ -125,6 +135,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
             binding?.tvCount?.text = "" + (filePosition + 1) + "/" + itemList.size
         }
 
+//        castImage(filePosition)
         mHandler = Handler(Looper.getMainLooper())
 
         timer = Timer()
@@ -132,7 +143,12 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
             override fun run() {
                 mHandler?.post(runnable)
             }
-        }, 2000, 3000)
+        }, 5000, 5000)
+    }
+
+    private fun stopTimer(){
+        timer?.cancel()
+        timer = null
     }
 
     private fun establishSession() {
@@ -156,7 +172,6 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
     }
 
-
     private fun castImage(position: Int) {
         val mediaItem = imagePreviewAdapter?.getItem(position)
         val path = mediaItem?.path?.split("0/")?.get(1)
@@ -173,6 +188,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
                 CastHelper.startServer(context)
                 establishSession()
+                castImage(filePosition)
             } else if (state == CastState.NOT_CONNECTED) {
                 isCastConnected = false
                 binding?.llConnected?.visibility = View.GONE
@@ -184,8 +200,13 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     private fun actionPerform(isConnect: Boolean, castModel: CastModel?) {
         if (isConnect)
             startCasting(castModel?.routeInfo, castModel?.castDevice)
-        else
+        else {
+            fromSlideshow = false
             stopCasting()
+            filePosition = binding?.vpImgPreview?.currentItem ?: 0
+            startSlideShow()
+            stopTimer()
+        }
     }
 
     private val runnable = Runnable {
@@ -197,8 +218,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
             filePosition = 0
             scrollViewpager(filePosition)
             binding?.tvSlideshow?.text = getString(R.string.start_slideshow)
-            timer?.cancel()
-            timer = null
+            stopTimer()
         }
     }
 
@@ -211,6 +231,8 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     override fun onDestroyView() {
+        if(isCastConnected)
+            stopCasting()
         super.onDestroyView()
         binding = null
         mHandler?.removeCallbacks(runnable)
@@ -293,5 +315,16 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
     private fun unHighlightItem(view: View) {
         view.background = null
+    }
+
+    private fun checkResultToStartSlideshow() {
+        setFragmentResultListener(AppConstants.START_SLIDESHOW_REQUEST_KEY) { requestKey: String, bundle: Bundle ->
+            val result = bundle.getBoolean(AppConstants.START_SLIDESHOW)
+            if (result){
+                fromSlideshow = result
+                filePosition = binding?.vpImgPreview?.currentItem ?: 0
+                startSlideShow()
+            }
+        }
     }
 }

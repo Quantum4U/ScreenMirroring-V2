@@ -2,8 +2,8 @@ package com.example.projectorcasting.casting.provider
 
 import android.content.Context
 import android.util.Log
+import com.example.projectorcasting.R
 import com.example.projectorcasting.casting.activities.ExpandedControlsActivity
-import com.google.android.gms.cast.CastMediaControlIntent
 import com.google.android.gms.cast.LaunchOptions
 import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.framework.CastOptions
@@ -26,7 +26,7 @@ class CastOptionsProvider : OptionsProvider {
      *  @see <a href="http://cast.google.com/publish">Cast Developers Console</a> to register for custom receiver Id.
      */
 
-    override fun getCastOptions(p0: Context): CastOptions {
+    override fun getCastOptions(ctx: Context): CastOptions {
         /**
          * This will also show a notification in device.
          */
@@ -46,7 +46,7 @@ class CastOptionsProvider : OptionsProvider {
 
         return CastOptions.Builder()
             .setLaunchOptions(launchOptions)
-            .setReceiverApplicationId(CastMediaControlIntent.DEFAULT_MEDIA_RECEIVER_APPLICATION_ID)
+            .setReceiverApplicationId(ctx.getString(R.string.cast_app_id))
             .setCastMediaOptions(mediaOptions)
             .build()
     }

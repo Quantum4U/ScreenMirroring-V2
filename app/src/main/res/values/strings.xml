@@ -1,4 +1,5 @@
 <resources>
+    <string name="cast_app_id">248F0F11</string>
     <string name="app_name">Projector Casting</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -29,6 +30,7 @@
     <string name="deny">Deny</string>
     <string name="screen_mirror">Screen mirror</string>
     <string name="screen_mirror_info">Share your phone\’s screen to \nyour TV in real time</string>
+    <string name="start_cast">Start Cast</string>
     <string name="start">Start</string>
     <string name="tv_cast">TV Cast</string>
     <string name="tv_cast_subtitle">Lorem Ipsum is simply dummy text of </string>
@@ -73,4 +75,5 @@
     <string name="items_selected">%d Items Selected</string>
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
+    <string name="connect_to_cast_device_text">Please connect to a device</string>
 </resources>
