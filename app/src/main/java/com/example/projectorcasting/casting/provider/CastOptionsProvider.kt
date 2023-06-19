@@ -2,7 +2,7 @@ package com.example.projectorcasting.casting.provider
 
 import android.content.Context
 import android.util.Log
-import com.example.projectorcasting.R
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.casting.activities.ExpandedControlsActivity
 import com.google.android.gms.cast.LaunchOptions
 import com.google.android.gms.cast.MediaMetadata

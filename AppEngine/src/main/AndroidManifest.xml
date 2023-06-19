@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="app.pnd.adshandler"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.android.vending.BILLING" />
+
+    <application>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <meta-data
+            android:name="android.webkit.WebView.EnableSafeBrowsing"
+            android:value="true" />
+
+        <!--Because of CDO error this is move to app manifest if you have not used CDO
+        please remember to uncomment below line -->
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/app_id_admob" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id_facebook" />
+
+        <meta-data
+            android:name="applovin.sdk.key"
+            android:value="@string/app_id_applovin"/>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/status_app_icon" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/fcm_defaultSenderId" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.flag.NATIVE_AD_DEBUGGER_ENABLED"
+            android:value="false" />
+
+        <!--Engine  Start-->
+        <activity
+            android:name="engine.app.ui.AboutUsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="engine.app.ui.PrintActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="engine.app.fcm.NotificationTypeFour"
+            android:theme="@style/AppTheme.NoActionBar.Transparent.Engine" />
+
+<!--        <activity-->
+<!--            android:name="engine.app.inapp.BillingListActivity"-->
+<!--            android:screenOrientation="portrait"-->
+<!--            android:theme="@android:style/Theme.NoTitleBar" />-->
+        <activity
+            android:name="engine.app.inapp.BillingListActivityNew"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" />
+        <activity
+            android:name="engine.app.inapp.BillingDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" />
+
+        <activity
+            android:name="engine.app.adshandler.FullPagePromo"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity
+            android:name="engine.app.ui.AdsLoadingActivity"
+            android:theme="@style/AppTheme.NoActionBar.Transparent.Engine" />
+
+        <activity
+            android:name="engine.app.exitapp.ExitAdsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.Transparent.Engine" />
+
+        <activity
+            android:name="engine.app.exitapp.ExitAdsType2Activity"
+            android:screenOrientation="portrait"
+            android:label=""
+            android:theme="@style/AppTheme.Transparent" />
+
+
+        <!--Engine Activity End-->
+
+        <!--Admob Activity-->
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <!--Facebook Activity-->
+        <activity
+            android:name="com.facebook.ads.AudienceNetworkActivity"
+            android:hardwareAccelerated="true"
+            android:exported="false"
+            tools:replace="android:exported"/>
+
+
+        <!--Unity Activities-->
+<!--        <activity android:name="com.unity3d.services.ads.adunit.AdUnitActivity" />-->
+<!--        <activity android:name="com.unity3d.services.ads.adunit.AdUnitSoftwareActivity" />-->
+
+
+        <!--&lt;!&ndash;Vungle Activities&ndash;&gt;-->
+        <!--<activity-->
+        <!--android:name="com.vungle.warren.engine.ui.VungleActivity"-->
+        <!--android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"-->
+        <!--android:launchMode="singleTop"-->
+        <!--android:theme="@android:style/Theme.NoTitleBar.Fullschreen" />-->
+        <!--<activity-->
+        <!--android:name="com.vungle.warren.engine.ui.VungleFlexViewActivity"-->
+        <!--android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"-->
+        <!--android:hardwareAccelerated="true"-->
+        <!--android:launchMode="singleTop"-->
+        <!--android:theme="@android:style/Theme.Translucent.NoTitleBar" />-->
+
+     <!--   &lt;!&ndash;Applovin Activities&ndash;&gt;
+        <activity android:name="com.applovin.adview.AppLovinInterstitialActivity" />
+
+        &lt;!&ndash;Startapp Activities&ndash;&gt;
+        <activity
+            android:name="com.startapp.sdk.ads.list3d.List3DActivity"
+            android:theme="@android:style/Theme" />
+
+        <activity
+            android:name="com.startapp.sdk.adsbase.activities.OverlayActivity"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <activity
+            android:name="com.startapp.sdk.adsbase.activities.FullScreenActivity"
+            android:theme="@android:style/Theme" />
+-->
+
+        <!--IronSource Activities-->
+        <activity
+            android:name="com.ironsource.sdk.controller.ControllerActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true" />
+        <activity
+            android:name="com.ironsource.sdk.controller.InterstitialActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent" />
+        <activity
+            android:name="com.ironsource.sdk.controller.OpenUrlActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <!--morefeature-->
+        <activity
+            android:name="engine.app.ui.MoreFeatureActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme_Dialog_more" />
+
+
+        <activity
+            android:name="engine.app.ui.MapperActivity"
+            android:theme="@style/AppTheme.NoActionBar.Transparent.Engine"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="${app_mapper_action}" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name="engine.app.fcm.NotificationActionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="sec_btn" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="engine.app.receiver.FirebaseAlarmReceiver"
+            android:exported="false"/>
+
+        <receiver android:name="engine.app.receiver.TopicAlarmReceiver"
+            android:exported="false"/>
+
+        <service
+            android:name="engine.app.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+    </application>
+</manifest>

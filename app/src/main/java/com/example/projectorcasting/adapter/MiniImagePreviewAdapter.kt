@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.projectorcasting.R
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.models.MediaData
 import kotlin.reflect.KFunction2
 

@@ -1,0 +1,52 @@
+android {
+
+    def dimen = "version"
+    flavorDimensions dimen
+
+    defaultConfig {
+        dimension dimen
+    }
+
+    productFlavors {
+        apps24 {
+
+        }
+        appnextg {
+
+        }
+        techapp {
+
+        }
+        livideo {
+
+        }
+        droidfoxes {
+
+        }
+        m24apps {
+
+        }
+        thinkcoder {
+
+        }
+        indappdev {
+
+        }
+        quantum {
+
+        }
+        qsoft {
+
+        }
+        q4u {
+
+        }
+        microapps {
+
+        }
+        berockfit {
+
+        }
+
+    }
+}

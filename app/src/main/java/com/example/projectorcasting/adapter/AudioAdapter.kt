@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.projectorcasting.R
 import com.example.projectorcasting.models.MediaData
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import kotlin.reflect.KFunction1
 
 class AudioAdapter(private val itemClick: KFunction1<MediaData, Unit>) :

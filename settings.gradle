@@ -10,7 +10,16 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        jcenter()
+        maven {
+            //IronSource
+            url "https://android-sdk.is.com/"
+        }
+        maven {
+            url "https://dl.appnext.com/"
+        }
+        maven { url "https://jitpack.io" }
     }
 }
 rootProject.name = "Projector Casting"
-include ':app',':tinyhttpd'
+include ':app',':tinyhttpd',':AppEngine'

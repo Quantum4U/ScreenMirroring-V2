@@ -1,11 +1,10 @@
 package com.example.projectorcasting
 
-import android.app.Application
-
 import dagger.hilt.android.HiltAndroidApp
+import engine.app.EngineAppApplication
 
 @HiltAndroidApp
-class MainApplication : Application() {
+class MainApplication : EngineAppApplication() {
 
     override fun onCreate() {
         super.onCreate()

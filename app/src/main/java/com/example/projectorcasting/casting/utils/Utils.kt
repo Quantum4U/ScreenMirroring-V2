@@ -9,7 +9,8 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.example.projectorcasting.R
+import com.example.projectorcasting.AnalyticsConstant
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.casting.activities.ExpandedControlsActivity
 import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.models.MediaData
@@ -19,6 +20,7 @@ import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.images.WebImage
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import engine.app.analytics.logGAEvents
 import org.json.JSONObject
 import java.io.File
 import java.net.InetAddress
@@ -302,6 +304,12 @@ object Utils {
         val currentId: Int = provider.currentItemId
 
         playNow?.setOnClickListener {
+            if(mediaInfo.metadata?.mediaType?.equals(MediaMetadata.MEDIA_TYPE_MOVIE) == true){
+                context.logGAEvents(AnalyticsConstant.GA_Videos_Play_Now)
+            }else{
+                context.logGAEvents(AnalyticsConstant.GA_Audio_Play_Now)
+            }
+
             if (provider.count == 0) {
                 remoteMediaClient?.queueLoad(
                     newItemArray, 0,
@@ -320,6 +328,12 @@ object Utils {
         }
 
         playNext?.setOnClickListener {
+            if(mediaInfo.metadata?.mediaType?.equals(MediaMetadata.MEDIA_TYPE_MOVIE) == true){
+                context.logGAEvents(AnalyticsConstant.GA_Videos_Play_Next)
+            }else{
+                context.logGAEvents(AnalyticsConstant.GA_Audio_Play_Next)
+            }
+
             if (provider.count == 0) {
                 remoteMediaClient?.queueLoad(
                     newItemArray, 0,
@@ -352,6 +366,12 @@ object Utils {
         }
 
         addToQueue?.setOnClickListener {
+            if(mediaInfo.metadata?.mediaType?.equals(MediaMetadata.MEDIA_TYPE_MOVIE) == true){
+                context.logGAEvents(AnalyticsConstant.GA_Videos_Add_to_Queue)
+            }else{
+                context.logGAEvents(AnalyticsConstant.GA_Audio_Add_to_Queue)
+            }
+
             if (provider.count == 0) {
                 remoteMediaClient?.queueLoad(
                     newItemArray, 0,

@@ -54,5 +54,13 @@
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.Transparent" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+
+    </style>
 
 </resources>

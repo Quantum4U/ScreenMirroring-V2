@@ -15,9 +15,6 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.Window
-import android.view.WindowInsetsController
-import android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
-import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.LinearLayout
@@ -32,16 +29,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.mediarouter.media.MediaRouter
 import androidx.viewbinding.BuildConfig
-import com.example.projectorcasting.R
 import com.example.projectorcasting.casting.utils.Utils
+import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.viewmodels.DashboardViewModel
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.SessionManagerListener
-import com.google.android.gms.cast.framework.media.RemoteMediaClient
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import dagger.hilt.android.AndroidEntryPoint
+import engine.app.adshandler.AHandler
+import engine.app.server.v2.Slave
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import java.util.*
 import javax.inject.Inject
@@ -396,20 +395,20 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
     }
 
     fun showFullAds(activity: Activity) {
-//        AHandler.getInstance().showFullAds(activity, false)
+        AHandler.getInstance().showFullAds(activity, false)
     }
 
     fun showBottomBannerAds(view: LinearLayout?, activity: Activity?) {
-//        view?.addView(AHandler.getInstance().getBannerHeader(activity))
+        view?.addView(AHandler.getInstance().getBannerHeader(activity))
     }
 
     fun showNativeMedium(view: LinearLayout?, activity: Activity?) {
-//        view?.addView(AHandler.getInstance().getNativeMedium(activity))
+        view?.addView(AHandler.getInstance().getNativeMedium(activity))
     }
 
-//    fun isAdsEnabled(): Boolean {
-//        return !Slave.hasPurchased(this)
-//    }
+    fun isAdsEnabled(): Boolean {
+        return !Slave.hasPurchased(this)
+    }
 
 
     override fun onPause() {
@@ -421,18 +420,18 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
     }
 
     fun startMirroring() {
-//        if (Utils.isNetworkConnected(this)) {
+        if (engine.app.serviceprovider.Utils.isNetworkConnected(this)) {
         try {
             startActivity(Intent("android.settings.CAST_SETTINGS"))
         } catch (e: Exception) {
             Toast.makeText(this, getString(R.string.device_not_supported), Toast.LENGTH_LONG)
                 .show()
         }
-//        } else {
-//            Toast.makeText(this, getString(R.string.required_wifi_network), Toast.LENGTH_SHORT)
-//                .show()
-//            AppUtils.openWifiPopUpInApp(this)
-//        }
+        } else {
+            Toast.makeText(this, getString(R.string.required_wifi_network), Toast.LENGTH_SHORT)
+                .show()
+            AppUtils.openWifiPopUpInApp(this)
+        }
     }
 
     @Suppress("DEPRECATION")

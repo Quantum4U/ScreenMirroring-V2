@@ -9,7 +9,7 @@ import android.widget.RelativeLayout
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
-import com.example.projectorcasting.R
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.models.MediaData
 
 

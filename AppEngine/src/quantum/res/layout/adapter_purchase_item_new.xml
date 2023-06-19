@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parentPro"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible">
+
+    <RelativeLayout
+        android:id="@+id/rl_parentPro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/inapp_corner_color_unselect">
+
+        <CheckBox
+            android:clickable="false"
+            android:focusable="false"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/planPurchaseChk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_left_10"
+            android:button="@drawable/ic_inapp_checkbox" />
+
+
+        <RelativeLayout
+            android:layout_marginRight="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:paddingTop="@dimen/margin_left_10"
+            android:paddingBottom="@dimen/margin_left_10"
+            android:layout_toLeftOf="@+id/planPurchaseChk">
+
+            <TextView
+                android:id="@+id/tv_pro_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:paddingStart="5dp"
+                android:visibility="visible"
+                android:textColor="@color/inapp_selected_text_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/ll"
+                android:paddingStart="5dp"
+                android:layout_marginTop="@dimen/margin_3"
+                android:layout_below="@+id/tv_pro_title"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_price_pro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/inapp_selected_text_color"
+                    android:textSize="18sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/tv_price_subs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_price_pro"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/text_view_background"
+                    android:textColor="#4C86E3"
+                    android:paddingLeft="@dimen/margin_5"
+                    android:paddingRight="@dimen/margin_5"
+                    android:paddingTop="@dimen/margin_3"
+                    android:paddingBottom="@dimen/margin_3"
+                    android:layout_gravity="bottom"
+                    android:textSize="12sp"
+                    android:textStyle="normal" />
+            </LinearLayout>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+    <ImageView
+        android:layout_centerHorizontal="true"
+        android:visibility="visible"
+        android:id="@+id/iv_purchased_icon"
+        android:layout_width="80dp"
+        android:layout_height="@dimen/margin_bottom_40"/>
+</RelativeLayout>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/native_ad_unit"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/native_grid_height"
+    android:background="@color/native_med_bg"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <RelativeLayout
+            android:id="@+id/ll_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/appIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/ad_choices_container"
+                android:layout_toRightOf="@+id/appIcon"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:layout_toStartOf="@+id/ad_choices_container"
+                android:layout_toEndOf="@+id/appIcon">
+
+
+                <TextView
+                    android:id="@+id/native_ad_sponsored_label"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:text="@string/sponsored"
+                    android:textColor="@color/native_med_sub_text_color"
+                    android:textSize="10sp"
+                    android:layout_alignParentRight="true" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ad_choices_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:orientation="horizontal"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/padding4dp"
+            android:id="@+id/contairads"
+            android:layout_below="@+id/ll_header"
+            android:layout_width="match_parent"
+            android:layout_height="110dp">
+
+            <FrameLayout
+                android:id="@+id/mediaViewPlaceholder"
+                android:layout_width="110dp"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true"
+                android:layout_height="110dp"
+                android:background="@android:color/white"
+                android:gravity="center" />
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_above="@+id/lincall"
+            android:id="@+id/lintext"
+            android:layout_marginBottom="@dimen/padding2dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/contairads"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/appTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:maxLength="25"
+                android:singleLine="true"
+                android:text="Header Text"
+                android:textColor="@color/native_med_bg_grid"
+                android:textSize="13dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_marginTop="@dimen/padding5dp"
+                android:id="@+id/appDescriptionTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Subtext"
+                android:maxLength="90"
+                android:textColor="@color/native_med_bg_grid"
+                android:textSize="11dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lincall"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="3dp"
+            android:layout_alignParentBottom="true"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/appDownloadButton"
+                android:layout_width="130dp"
+                android:layout_height="35dp"
+                android:gravity="center"
+                android:text="Download"
+                android:textColor="@color/native_large_button_text_color"
+
+                android:textSize="11dp"
+                android:textStyle="bold"
+                android:background="@drawable/native_large_button_color"
+
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

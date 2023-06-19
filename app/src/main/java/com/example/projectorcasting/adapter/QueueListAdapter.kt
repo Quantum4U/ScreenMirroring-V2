@@ -34,7 +34,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.ImageLoader
 import com.android.volley.toolbox.NetworkImageView
-import com.example.projectorcasting.R
+import com.example.projectorcasting.AnalyticsConstant
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.casting.listener.QueueItemTouchHelperCallback
 import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CustomVolleyRequest
@@ -44,6 +45,7 @@ import com.google.android.gms.cast.MediaStatus
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.media.MediaQueue
 import com.google.android.gms.cast.framework.media.MediaQueueRecyclerViewAdapter
+import engine.app.analytics.logGAEvents
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 
@@ -194,6 +196,7 @@ class QueueListAdapter(
     }
 
     override fun onItemDismiss(position: Int) {
+        mAppContext.logGAEvents(AnalyticsConstant.GA_Queue_Swipe_Delete)
         mProvider!!.removeFromQueue(position)
     }
 

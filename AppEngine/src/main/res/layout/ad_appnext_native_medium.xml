@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.appnext.nativeads.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/na_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/native_med_bg"
+    android:padding="10dp">
+
+
+    <RelativeLayout
+        android:id="@+id/na_ad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/na_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/na_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_toRightOf="@id/na_icon"
+            android:gravity="left"
+            android:textColor="@color/native_med_text_color"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/na_media"
+            android:layout_below="@+id/na_title"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/na_icon"
+            android:layout_toRightOf="@+id/na_icon"
+            android:textColor="@color/native_med_text_color"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <com.appnext.nativeads.MediaView
+            android:id="@+id/na_media"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/na_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/na_media"
+            android:layout_toStartOf="@+id/install"
+            android:layout_toLeftOf="@+id/install"
+            android:textColor="@color/native_med_text_color"
+            tools:text="TextView" />
+
+        <Button
+            android:id="@+id/install"
+            android:layout_width="120dp"
+            android:layout_height="32dp"
+            android:layout_below="@+id/na_media"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/native_med_button_color"
+            android:text="install"
+            android:textColor="#ffffff" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/na_title"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@+id/rating"
+            android:layout_toRightOf="@+id/rating"
+            android:visibility="gone"
+            app:srcCompat="@drawable/apnxt_ads_full_star" />
+
+
+    </RelativeLayout>
+
+</com.appnext.nativeads.NativeAdView>

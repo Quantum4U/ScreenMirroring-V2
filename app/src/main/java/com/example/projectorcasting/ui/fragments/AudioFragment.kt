@@ -7,19 +7,21 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.projectorcasting.R
+import com.example.projectorcasting.AnalyticsConstant
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.adapter.AudioAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
-import com.example.projectorcasting.databinding.FragmentAudioBinding
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentAudioBinding
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.viewmodels.AudioViewModel
 import com.google.android.gms.cast.framework.CastState
+import engine.app.analytics.logGAEvents
 import java.io.File
 
 class AudioFragment : BaseFragment(R.layout.fragment_audio) {
@@ -39,15 +41,18 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
         doFetchingWork()
 
         binding?.llSorting?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Audio_Date_Sorting)
             sortMediaList()
         }
 
         binding?.llConnect?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Audio_Cast_Connect)
             findNavController().navigate(R.id.nav_scan_device)
             showFullAds(activity)
         }
 
         binding?.llConnected?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Audio_Cast_DisConnect)
             audioViewModel.showConnectionPrompt(context, ::actionPerform, false, null)
         }
 
@@ -56,6 +61,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
         }
 
         binding?.tvQueued?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Audio_Queue_Button)
             findNavController().navigate(R.id.nav_queue)
             showFullAds(activity)
         }

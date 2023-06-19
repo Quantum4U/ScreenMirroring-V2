@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+<com.huawei.hms.ads.nativead.NativeView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/native_three_images"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/hiad_10_dp"
+        android:orientation="vertical">
+        &lt;!&ndash; Advertising multimedia view &ndash;&gt;
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/hms_three_small_height"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_view_1"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen_75dp"
+                android:layout_margin="@dimen/hiad_5_dp"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/image_view_2"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen_75dp"
+                android:layout_margin="@dimen/hiad_5_dp"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/image_view_3"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen_75dp"
+                android:layout_margin="@dimen/hiad_5_dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/center_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/hiad_5_dp"
+            android:layout_marginEnd="@dimen/hiad_5_dp"
+            android:background="#FFFFFF">
+            &lt;!&ndash; Ad headline &ndash;&gt;
+            <TextView
+                android:id="@+id/ad_title"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hiad_30_dp"
+                android:layout_marginTop="4dp"
+                android:alpha="1"
+                android:textColor="#000000"
+                android:textSize="@dimen/hiad_text_13_sp" />
+            &lt;!&ndash; Ad source &ndash;&gt;
+            <TextView
+                android:id="@+id/ad_source"
+                android:layout_width="wrap_content"
+                android:layout_height="14dp"
+                android:layout_below="@+id/ad_title"
+                android:layout_marginBottom="@dimen/hiad_4_dp"
+                android:gravity="center_vertical"
+                android:alpha="0.6"
+                android:maxWidth="132dp"
+                android:textColor="@color/hms_native_subtext_color"
+                android:textSize="@dimen/hiad_text_13_sp" />
+            &lt;!&ndash; Advertising logo &ndash;&gt;
+            <TextView
+                android:id="@+id/ad_flag"
+                android:layout_width="@dimen/hiad_16_dp"
+                android:layout_height="@dimen/hiad_14_dp"
+                android:layout_marginStart="@dimen/hiad_8_dp"
+                android:layout_below="@+id/ad_source"
+                android:layout_toEndOf="@+id/ad_source"
+                android:background="@drawable/native_flag_rounded_corners_shape"
+                android:gravity="center"
+                android:text="@string/ad_flag"
+                android:textColor="#FFFFFF"
+                android:textSize="8sp"
+                android:textStyle="bold" />
+            &lt;!&ndash; Ad click behavior button &ndash;&gt;
+            <Button
+                android:id="@+id/ad_call_to_action"
+                android:layout_width="@dimen/hiad_88_dp"
+                android:layout_height="@dimen/dimen_26dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/padding10dp"
+                android:layout_marginEnd="@dimen/padding10dp"
+                android:background="@drawable/native_button_rounded_corners_shape"
+                android:textColor="@color/white"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:padding="@dimen/padding5dp"
+                android:textSize="10sp" />
+        </RelativeLayout>
+    </LinearLayout>
+</com.huawei.hms.ads.nativead.NativeView>
+-->
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>

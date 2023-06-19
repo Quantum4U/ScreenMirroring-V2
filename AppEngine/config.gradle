@@ -1,0 +1,111 @@
+import groovy.json.JsonOutput
+
+import javax.crypto.Cipher
+import javax.crypto.spec.DESKeySpec
+import javax.crypto.spec.SecretKeySpec
+import java.security.Key
+import java.security.SecureRandom
+
+android {
+
+    Properties properties = new Properties()
+    //Reading the Engine config files
+    properties.load(project.file('config.properties').newDataInputStream())
+
+    //Application PID
+    def app_id = properties.getProperty("app_id")
+
+    defaultConfig {
+        def mapperAction = "action_" + app_id + "_mapper"
+        manifestPlaceholders = [app_mapper_action: mapperAction]
+        buildConfigField 'String', 'MAPPER_ACTION', '\"' + mapperAction + '\"'
+        buildConfigField 'String', 'APP_ID', '\"' + properties['app_id'] + '\"'
+    }
+
+
+    preBuild.doLast {
+        def base_url = properties.getProperty("base_url")
+        def main_folder_path = properties.getProperty("main_folder_path")
+
+        if (base_url != null && main_folder_path != null) {
+            def appPath = project.projectDir.absolutePath + "" + main_folder_path
+            def mainFolderFile = new File(appPath)
+            if (!mainFolderFile.exists()) {
+                throw new Exception("Main folder does not exists " + appPath)
+            }
+
+            def mainFolderFilePath = mainFolderFile.absolutePath
+            def asset_folder_path = properties.getProperty("asset_folder_path")
+            def assetFolderPath = (mainFolderFilePath + "" + asset_folder_path)
+
+            def asset_dir = new File(assetFolderPath)
+            if (!asset_dir.exists()) {
+                asset_dir.mkdir()
+            }
+
+            def file_name = properties.getProperty("file_name")
+            def file = new File(assetFolderPath + "/" + file_name)
+            if (file.exists())
+                file.delete()
+
+            def country = properties.getProperty("country")
+            def screen = properties.getProperty("screen")
+            def launchcount = properties.getProperty("launchcount")
+            def version = properties.getProperty("version")
+            def osversion = properties.getProperty("osversion")
+
+            def params = "?" +
+                    "engv=0" + "&" +
+                    "app_id=" + app_id + "&" +
+                    "country=" + country + "&" +
+                    "screen=" + screen + "&" +
+                    "launchcount=" + launchcount + "&" +
+                    "version=" + version + "&" +
+                    "osversion=" + osversion
+            def url = base_url + params
+            def connection = new URL(url)
+            def myURLConnection = (URLConnection) connection.openConnection()
+            myURLConnection.requestMethod = 'GET'
+            assert myURLConnection.responseCode == 200
+
+            try {
+                def jsonString = myURLConnection.getInputStream().getText("UTF-8")
+                // println("Default master link json :\n" + jsonString)
+
+                // incrypted value here
+
+
+
+//                def encryptionKey = "2288445566deadcd"//Paste your key here
+//                def aesKey = new SecretKeySpec(encryptionKey.getBytes("UTF-8"), "AES")
+//                if (!jsonString) return jsonString
+//                def cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
+//                cipher.init(Cipher.ENCRYPT_MODE, aesKey)
+//                def encryptedStr = cipher.doFinal(jsonString.getBytes("UTF-8")).encodeBase64()
+
+                JsonOutput.prettyPrint(jsonString)
+                file << jsonString
+
+
+
+            } catch (e) {
+                throw new Exception("Error in json format " + e.message)
+            }
+
+        } else {
+            println("no properties found")
+        }
+    }
+
+//    String encrypt(String strToEncrypt) {
+//
+//        String encryptionKey = "1234567812345678"//Paste your key here
+//        Key aesKey = new SecretKeySpec(encryptionKey.getBytes("UTF-8"), "AES")
+//        if (!strToEncrypt) return strToEncrypt
+//        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
+//        cipher.init(Cipher.ENCRYPT_MODE, aesKey)
+//        String encryptedStr = cipher.doFinal(strToEncrypt.getBytes("UTF-8")).encodeBase64()
+//        return encryptedStr
+//    }
+
+}

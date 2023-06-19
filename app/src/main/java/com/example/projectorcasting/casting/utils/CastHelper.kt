@@ -6,14 +6,12 @@ import android.widget.Toast
 import androidx.mediarouter.media.MediaRouter
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
-import com.example.projectorcasting.R
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.service.WebService
 import com.example.projectorcasting.models.MediaData
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.MediaLoadRequestData
-import com.google.android.gms.cast.framework.CastContext
-import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import kotlin.reflect.KFunction1
 import kotlin.reflect.KFunction2

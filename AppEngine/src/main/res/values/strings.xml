@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Screen Cast new</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="showdata">Show Data From</string>
+    <string name="showdata_asset">Default Value</string>
+    <string name="showdata_server">Server Value</string>
+
+
+    <string name="pindi_ad_unit_google">ca-app-pub-3451337100490595/8973395265</string>
+    <string name="pindi_ad_unit_id2">ca-app-pub-3451337100490595/5365655266</string>
+    <string name="pindi_ad_unit_id">ca-app-pub-3451337100490595/6842388463</string>
+    <string name="pindi_ad_unit_id_int">ca-app-pub-3451337100490595/8319121660</string>
+
+    <string name="termsCond">Terms of Service</string>
+    <string name="privacy_policy"><u>Privacy Policy</u></string>
+    <string name="termsCondnew"><u>Terms of Service</u></string>
+
+
+    <string name="upgradetopro_text">"* No Ads\n\n* All Feature Upgrades Free\n\n* No Monthly Charges\n\n* No Recurring, Lifetime Payment Once"</string>
+    <string name="forAlert">Want to exit from app?</string>
+    <string name="forOption">Exit</string>
+    <string name="forMoreOption">More Apps</string>
+    <string name="title_toolbar_about_us">About Us</string>
+
+    <string name="fcm_defaultSenderId">479332638129</string>
+
+    <!--Provider app id -->
+    <string name="fb_login_protocol_scheme">fb413092470065517</string>
+    <string name="app_id_facebook">413092470065517</string>
+    <string name="app_id_admob">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="app_id_startapp">210012641</string>
+    <string name="app_id_unity">4402645</string>
+    <string name="app_id_iron_source">1173cd355</string>
+    <string name="app_id_applovin">QDC9FDFrr-cdtD-6uvCt5Adct_CZDRncddROp_9SlI7WI_npLVec7K08EekzU2cBRlPzCLHTCF8_Icw0bgSbOT</string>
+
+    <string name="ads_loading">Ads Loading....</string>
+    <string name="replay">Replay</string>
+    <string name="learn_more">Learn More</string>
+    <string name="sponsored">Sponsored</string>
+
+    <string name="close">Close</string>
+    <string name="exit">Exit</string>
+
+    <string name="more_apps">More Apps</string>
+    <string name="rate_apps">Rate Us</string>
+    <string name="five_star">5 Star</string>
+    <string name="play_store">Play Store</string>
+
+    <!--    <string name="apps24_forAlert">Are you sure to exit from app?</string>-->
+    <string name="share_app">Share App</string>
+    <string name="sscreenshot_share">Share</string>
+    <string name="innovation_that_make_lives_simpler">Innovation that make lives simpler</string>
+    <string name="enter_correct_number">Please Enter Correct number!!</string>
+    <string name="action_need_network_connection">This action requires Internet Connection</string>
+    <string name="check_internet_connections">Check your Internet Connection</string>
+
+    <string name="view_details">View Details</string>
+    <string name="ad_flag">Ad</string>
+    <string name="download_successful">Download Successful</string>
+
+    <string name="exit_default_more">We have many more cool apps you would love</string>
+    <string name="press_again_to_exit">Press again to exit app</string>
+
+    <!--    Strings for Inapp new design  -->
+    <string name="inapp_get_premium">Get Premium Features</string>
+    <string name="inapp_unlimited_feature">Unlimited access to all features</string>
+    <string name="inapp_ads_free_version">Ads free version for lifetime</string>
+    <string name="inapp_no_recurring_changes">No recurring charges</string>
+    <string name="inapp_improved_app">Improved app experience</string>
+    <string name="continue_with_ads"><u>Continue with Ads</u></string>
+    <string name="tap_on_select_plans">Tap on select plans</string>
+    <string name="continuet"><u>Go to Home Screen</u></string>
+
+    <string name="you_agree_to_the">I agree to the <u>Terms of Services</u> and <u>Privacy Policy</u></string>
+    <string name="subscribe_now">Subscribe Now</string>
+
+    <string name="purchase_now">Purchase Now</string>
+    <string name="inapp_get_premium_m24apps">Get Access to all Pro features</string>
+    <string name="dont_show_again"><u>Don\'t show again</u></string>
+    <string name="get_all_new_exciting">Get All New Exciting Features </string>
+    <string name="remove_ads">Remove ads</string>
+    <string name="enjoy_ads_free_surfing">Enjoy Ad-free surfing for an uninterrupted experience</string>
+    <string name="unlimited_listening">Unlimited listening</string>
+    <string name="discover_50_musics">Discover 50+ music sounds for unlimited listening pleasure</string>
+    <string name="enter_your_details">Enter your details</string>
+
+</resources>

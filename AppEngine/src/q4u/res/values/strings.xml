@@ -1,0 +1,9 @@
+<resources>
+    <string name="action_settings">Settings</string>
+    <string name="textViewLabel">Hello Paid</string>
+    <string name="forAlert">Want to exit from app?</string>
+    <string name="forOption">Exit</string>
+    <string name="forMoreOption">More Apps</string>
+    <string name="close">Close</string>
+    <string name="exit">Exit</string>
+</resources>

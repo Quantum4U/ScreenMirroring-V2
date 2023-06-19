@@ -26,8 +26,8 @@ public class AnalyticsConstant {
     public static final String GA_Photos_Folder_Sort_Button = "Photos_Folder_Sort_Button";
     public static final String GA_Photo_Preview_Cast_Connect = "Photos_Preview_Cast_Connect";
     public static final String GA_Photo_Preview_Cast_DisConnect = "Photos_Preview_Cast_DisConnect";
-    public static final String GA_Photo_Start_Slideshow = "Photo_Start_Slideshow";
-    public static final String GA_Photo_Stop_Slideshow = "Photo_Stop_Slideshow";
+    public static final String GA_Photo_Preview_Start_Slideshow = "Photo_Preview_Start_Slideshow";
+    public static final String GA_Photo_Preview_Stop_Slideshow = "Photo_Preview_Stop_Slideshow";
 
     public static final String GA_Videos_Date_Sorting = "Videos_Date_Sorting";
     public static final String GA_Videos_Cast_Connect = "Videos_Cast_Connect";
@@ -36,7 +36,6 @@ public class AnalyticsConstant {
     public static final String GA_Videos_Play_Next = "Videos_Play_Next";
     public static final String GA_Videos_Add_to_Queue = "Videos_Add_to_Queue";
     public static final String GA_Videos_Queue_Button = "Videos_Queue_Button";
-    public static final String GA_Video_Mini_Player_click = "Video_Mini_Player_click";
 
     public static final String GA_Audio_Date_Sorting = "Audio_Date_Sorting";
     public static final String GA_Audio_Cast_Connect = "Audio_Cast_Connect";
@@ -45,11 +44,9 @@ public class AnalyticsConstant {
     public static final String GA_Audio_Play_Next = "Audio_Play_Next";
     public static final String GA_Audio_Add_to_Queue = "Audio_Add_to_Queue";
     public static final String GA_Audio_Queue_Button = "Audio_Queue_Button";
-    public static final String GA_Audio_Mini_Player_click = "Audio_Mini_Player_click";
 
     public static final String GA_Queue_Cast_Connect = "Queue_Cast_Connect";
     public static final String GA_Queue_Cast_DisConnect = "Queue_Cast_DisConnect";
     public static final String GA_Queue_Swipe_Delete = "Queue_Swipe_Delete";
-    public static final String GA_Queue_Mini_Player_click = "Queue_Mini_Player_click";
 
 }

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/ic_inapp"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_pro_des"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_left_10">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding10dp"
+                    android:src="@drawable/ic_inapp_back_arrow"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:id="@+id/purchased_billing_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_pro_icon"
+                    android:visibility="visible" />
+
+
+                <TextView
+                    android:visibility="visible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/purchased_billing_icon"
+                    android:layout_centerHorizontal="true"
+                    android:padding="@dimen/margin_left_10"
+                    android:text="VIP Access"
+                    android:textColor="#717171"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/app_icon"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/app_icon"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/padding2dp"
+                    android:layout_marginRight="@dimen/margin_left_20" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_billing_icon"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/padding5dp"
+                android:maxLines="1"
+                android:padding="@dimen/margin_left_10"
+                android:text="@string/inapp_get_premium_m24apps"
+                android:textColor="#121212"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_billing_icon"
+                android:layout_centerInParent="true"
+                android:layout_gravity="left"
+                android:layout_marginLeft="@dimen/margin_left_10"
+                android:drawablePadding="@dimen/margin_left_10"
+                android:padding="@dimen/margin_left_10"
+                android:text="@string/inapp_unlimited_feature"
+                android:textColor="#424242"
+                android:textSize="14sp"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/subs_now"
+            android:layout_below="@+id/ll_pro_des"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mRecyclerView"
+                android:layout_width="match_parent"
+                tools:listitem="@layout/adapter_purchase_item"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/subs_now"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_above="@+id/conti_with_ads"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_left_10"
+            android:layout_marginBottom="@dimen/padding5dp"
+            android:background="@drawable/inapp_sub_btn"
+            android:textAllCaps="false"
+            android:textColor="@android:color/black"
+            android:visibility="visible" />
+        <TextView
+            android:id="@+id/conti_with_ads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/margin10dp"
+            android:maxLines="1"
+            android:padding="@dimen/margin_left_10"
+            android:layout_above="@+id/manange_subs"
+            android:text="@string/continue_with_ads"
+            android:textColor="@color/inapp_continue_with_ads_color"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/manange_subs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/margin10dp"
+            android:maxLines="1"
+            android:padding="@dimen/margin_left_10"
+            android:text="@string/manage_subs"
+            android:textColor="@color/inapp_continue_with_ads_color"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</LinearLayout>

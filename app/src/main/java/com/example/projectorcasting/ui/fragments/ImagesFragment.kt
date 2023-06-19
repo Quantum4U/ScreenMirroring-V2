@@ -11,11 +11,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.projectorcasting.R
+import com.example.projectorcasting.AnalyticsConstant
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.adapter.FolderSelectionAdapter
 import com.example.projectorcasting.adapter.ImageSectionalAdapter
 import com.example.projectorcasting.casting.model.CastModel
-import com.example.projectorcasting.databinding.FragmentImagesBinding
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagesBinding
 import com.example.projectorcasting.models.FolderModel
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.models.SectionModel
@@ -24,6 +25,7 @@ import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.utils.SpacesItemDecoration
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import engine.app.analytics.logGAEvents
 
 
 class ImagesFragment : BaseFragment(R.layout.fragment_images) {
@@ -48,18 +50,22 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         doFetchingWork()
 
         binding?.llSorting?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Photos_Date_Sorting)
             sortMediaList()
         }
 
         binding?.llConnect?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Photos_Cast_Connect)
             openDeviceListPage(false)
         }
 
         binding?.llConnected?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Photos_Cast_DisConnect)
             getDashViewModel()?.showConnectionPrompt(context, ::actionPerform, false, null)
         }
 
         binding?.llFolder?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Photos_Folder_Sort_Button)
             showFolderSortingPrompt()
         }
 
@@ -68,6 +74,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         }
 
         binding?.tvSlideshow?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Photos_Slideshow)
             MediaListSingleton.setSelectedImageList(imageSectionalAdapter?.getSelectedImageList())
             imageSectionalAdapter?.disableLongClick()
             if (isConnected) {

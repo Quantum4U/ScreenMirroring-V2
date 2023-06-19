@@ -1,0 +1,69 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="ad_one_padding">10dp</dimen>
+    <dimen name="ad_one_banner_height">200dp</dimen>
+
+    <dimen name="dashboard_height">410dp</dimen>
+    <dimen name="dash_card_width">130dp</dimen>
+    <dimen name="dash_card_height">150dp</dimen>
+    <dimen name="tool_160dp">160dp</dimen>
+
+    <dimen name="cardevalu">4dp</dimen>
+    <dimen name="melayoutsize">70dp</dimen>
+    <dimen name="cardcontentpadding">1dp</dimen>
+    <dimen name="padding2dp">2dp</dimen>
+    <dimen name="mefragment_icon">35dp</dimen>
+    <dimen name="padding4dp">6dp</dimen>
+    <dimen name="textMefragment">10sp</dimen>
+
+    <dimen name="padding10dp">10dp</dimen>
+    <dimen name="padding5dp">5dp</dimen>
+    <dimen name="margin10dp">10dp</dimen>
+
+    <dimen name="banner_height">60dp</dimen>
+    <dimen name="banner_large_height">100dp</dimen>
+    <dimen name="banner_rectangle_height">250dp</dimen>
+    <dimen name="banner_rectangle_width">300dp</dimen>
+
+    <dimen name="campaign_padding">10dp</dimen>
+
+    <dimen name="native_large_height">250dp</dimen>
+    <dimen name="native_medium_height">180dp</dimen>
+    <dimen name="native_grid_height">255dp</dimen>
+    <dimen name="native_rect_height">250dp</dimen>
+
+    <dimen name="text_margin">12dp</dimen>
+
+    <dimen name="titlesize">20dp</dimen>
+    <dimen name="margin_5">5dp</dimen>
+    <dimen name="margin_3">2dp</dimen>
+    <dimen name="margin_left_10">10dp</dimen>
+    <dimen name="margin_left_70">100dp</dimen>
+    <dimen name="margin_left_80">80dp</dimen>
+    <dimen name="margin_left_60">60dp</dimen>
+    <dimen name="margin_left_25">25dp</dimen>
+    <dimen name="margin_left_30">30dp</dimen>
+    <dimen name="margin_left_20">20dp</dimen>
+    <dimen name="margin_bottom_40">40dp</dimen>
+    <dimen name="text_size">13sp</dimen>
+    <dimen name="text_medium">16sp</dimen>
+    <dimen name="text_large">19sp</dimen>
+
+    <dimen name="hms_native_small_width">75dp</dimen>
+    <dimen name="hms_native_small_height">50dp</dimen>
+    <dimen name="hms_start_space">24dp</dimen>
+    <dimen name="hms_three_small_height">80dp</dimen>
+    <dimen name="dimen_75dp">75dp</dimen>
+    <dimen name="dimen_26dp">26dp</dimen>
+
+    <dimen name="dimen_more_icon_size_30">30dp</dimen>
+    <dimen name="dimen_more_icon_size_60">60dp</dimen>
+
+    <dimen name="exit_page_button_width">125dp</dimen>
+    <dimen name="exit_page_button_height">45dp</dimen>
+
+</resources>

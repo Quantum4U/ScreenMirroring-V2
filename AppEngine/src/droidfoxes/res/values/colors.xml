@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="droidfoxes_card_bg">#f9f8fd</color>
+    <color name="droidfoxes_text">#000000</color>
+    <color name="droidfoxes_subtext">#555557</color>
+    <color name="black">#000000</color>
+    <color name="white_inapp">#ffffff</color>
+    <color name="exit_layout_divider_color">#80A5A3A3</color>
+    <color name="dark_grey">#aca3a3</color>
+</resources>

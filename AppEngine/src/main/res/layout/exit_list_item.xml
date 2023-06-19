@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
+
+    <androidx.cardview.widget.CardView
+        android:background="@drawable/button_background"
+        android:id="@+id/parentPro"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:cardCornerRadius="@dimen/margin_left_10"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:id="@+id/rl_parentPro"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:padding="10dp">
+
+
+            <Button
+                android:id="@+id/btn_pro"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/margin_bottom_40"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/primimum_bg_color"
+                android:clickable="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Download"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/deep_white"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_pro"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/splash_btn"
+                android:backgroundTint="@color/black"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/roundedCornersImageView"
+                android:src="@drawable/app_icon"
+                app:strokeWidth="2dp"
+                app:strokeColor="@color/white"/>
+
+            <RatingBar
+                android:id="@+id/ratingBar1"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_pro_subtitle"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="@dimen/margin_left_10"
+                android:layout_toEndOf="@+id/iv_pro"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:textColor="#D32626"
+                android:theme="@style/RatingBar" />
+
+            <TextView
+                android:id="@+id/tv_pro_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="@dimen/margin_left_10"
+                android:layout_toStartOf="@+id/btn_pro"
+                android:layout_toEndOf="@+id/iv_pro"
+                android:textColor="@color/billing_list_header"
+                android:textSize="14sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/tv_pro_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_pro_title"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="@dimen/margin_left_10"
+                android:layout_toStartOf="@+id/btn_pro"
+                android:layout_toEndOf="@+id/iv_pro"
+                android:textColor="@color/billing_list_subtitle"
+                android:textSize="11sp" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
+

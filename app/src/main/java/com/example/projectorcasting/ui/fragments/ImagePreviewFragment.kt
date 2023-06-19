@@ -15,13 +15,14 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import com.example.projectorcasting.R
+import com.example.projectorcasting.AnalyticsConstant
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.adapter.ImagePreviewAdapter
 import com.example.projectorcasting.adapter.MiniImagePreviewAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
-import com.example.projectorcasting.databinding.FragmentImagePreviewBinding
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagePreviewBinding
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.MediaListSingleton
@@ -29,6 +30,7 @@ import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
+import engine.app.analytics.logGAEvents
 import java.util.*
 
 
@@ -73,10 +75,12 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         startSlideShow()
 
         binding?.llConnect?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Photo_Preview_Cast_Connect)
             openDeviceListPage(true)
         }
 
         binding?.llConnected?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Photo_Preview_Cast_DisConnect)
             getDashViewModel()?.showConnectionPrompt(context, ::actionPerform, false, null)
         }
 
@@ -116,9 +120,11 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
     private fun slideshowButtonClick() {
         if (binding?.tvSlideshow?.text == getString(R.string.stop_slideshow)) {
+            logGAEvents(AnalyticsConstant.GA_Photo_Preview_Stop_Slideshow)
             binding?.tvSlideshow?.text = getString(R.string.start_slideshow)
             stopTimer()
         } else {
+            logGAEvents(AnalyticsConstant.GA_Photo_Preview_Start_Slideshow)
             binding?.tvSlideshow?.text = getString(R.string.stop_slideshow)
             startSlideShow()
         }

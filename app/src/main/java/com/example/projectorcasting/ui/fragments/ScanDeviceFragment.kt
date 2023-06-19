@@ -7,17 +7,17 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.projectorcasting.R
 import com.example.projectorcasting.adapter.ScanDeviceAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.utils.CastHelper
-import com.example.projectorcasting.databinding.FragmentScandeviceBinding
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.viewmodels.ScanViewModel
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastState
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentScandeviceBinding
+import engine.app.serviceprovider.Utils
 
 class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
 
@@ -121,14 +121,14 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
     }
 
     private fun checkWifiNetwork() {
-//        if (Utils.isNetworkConnected(this)) {
-        fetchDeviceList()
-//        } else {
-//            binding?.llNoNetwork?.visibility = View.VISIBLE
-//            binding?.llNoDeviceFound?.visibility = View.GONE
-//            binding?.llItemLayout?.visibility = View.GONE
-//            binding?.llScanning?.visibility = View.GONE
-//        }
+        if (Utils.isNetworkConnected(context)) {
+            fetchDeviceList()
+        } else {
+            binding?.llNoNetwork?.visibility = View.VISIBLE
+            binding?.llNoDeviceFound?.visibility = View.GONE
+            binding?.llItemLayout?.visibility = View.GONE
+            binding?.llScanning?.visibility = View.GONE
+        }
     }
 
     private fun fetchDeviceList() {
@@ -159,7 +159,10 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
 
     private fun exitPage() {
         val result = Bundle().apply {
-            putBoolean(AppConstants.START_SLIDESHOW, (fromSlideShow && isCastingConnected() == true))
+            putBoolean(
+                AppConstants.START_SLIDESHOW,
+                (fromSlideShow && isCastingConnected() == true)
+            )
         }
         setFragmentResult(AppConstants.START_SLIDESHOW_REQUEST_KEY, result)
         findNavController().navigateUp()

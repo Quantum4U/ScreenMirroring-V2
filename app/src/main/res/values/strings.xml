@@ -1,6 +1,6 @@
 <resources>
     <string name="cast_app_id">248F0F11</string>
-    <string name="app_name">Projector Casting</string>
+    <string name="app_name">Screen Cast new</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -76,4 +76,5 @@
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
     <string name="connect_to_cast_device_text">Please connect to a device</string>
+    <string name="accept_privacy_policy">Please accept privacy policy conditions</string>
 </resources>

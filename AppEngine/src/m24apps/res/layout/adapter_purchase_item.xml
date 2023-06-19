@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parentPro"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible">
+
+    <RelativeLayout
+        android:id="@+id/rl_parentPro"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/inapp_corner_color_unselect">
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_pro"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/margin10dp" />
+
+        <RelativeLayout
+            android:layout_marginRight="@dimen/padding5dp"
+            android:layout_toLeftOf="@+id/iv_arrow"
+            android:layout_toStartOf="@id/iv_arrow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/iv_pro">
+
+            <Button
+                android:id="@+id/btn_pro"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_below="@+id/tv_pro_subtitle"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/button_background"
+                android:clickable="false"
+                android:padding="2dp"
+                android:paddingStart="5dp"
+                android:paddingLeft="5dp"
+                android:paddingEnd="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/view_details"
+                android:textAllCaps="false"
+                android:textColor="@color/view_details_color"
+                android:textSize="11sp"
+                android:visibility="gone" />
+
+
+            <TextView
+                android:id="@+id/tv_pro_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_pro_title"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="@dimen/margin_left_10"
+                android:layout_toStartOf="@+id/tv_price_subs"
+                android:paddingStart="5dp"
+                android:text=""
+                android:textColor="@color/rate_us_black"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_pro_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="2dp"
+                android:layout_toStartOf="@+id/tv_price_subs"
+                android:paddingStart="5dp"
+                android:text="wedhvsdgcgsd"
+                android:textColor="@color/inapp_unselected_text_color"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_price_pro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:text=""
+                android:textColor="@color/inapp_selected_text_color"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_price_subs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_price_pro"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
+                android:text=""
+                android:textColor="#898989"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:visibility="visible"
+            android:id="@+id/iv_arrow"
+            android:layout_marginRight="14dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:rotation="180"
+            android:tint="#898989"
+            android:src="@drawable/ic_back_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/iv_purchased_icon"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_offer_pro"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="6dp"
+            android:visibility="gone" />
+    </RelativeLayout>
+</FrameLayout>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/native_grid_height">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/native_grid_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="0dp"
+        android:background="@color/white_inapp"
+        android:minHeight="80dp"
+        android:padding="0dp">
+
+
+        <TextView
+            android:id="@+id/ad_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:background="#33a0c1"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Ad"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/contentad_logo"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_below="@id/ad_txt"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="bottom"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/contentad_image"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_below="@id/ad_txt"
+            android:layout_centerHorizontal="true"
+            android:maxHeight="120dp" />
+
+
+        <LinearLayout
+            android:id="@+id/lintext"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/lincall"
+            android:layout_below="@+id/contentad_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/contentad_headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:maxLength="25"
+                android:singleLine="true"
+                android:text="Header Text"
+                android:textColor="@color/native_med_bg_grid"
+                android:textSize="13dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/contentad_body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/padding5dp"
+                android:gravity="center"
+                android:maxLength="90"
+                android:maxLines="2"
+                android:text="Subtext"
+                android:textColor="@color/native_med_bg_grid"
+                android:textSize="11dp" />
+
+            <TextView
+                android:id="@+id/contentad_advertiser"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:textColor="@color/native_med_text_color_grid"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lincall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="3dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/contentad_call_to_action"
+                android:layout_width="130dp"
+                android:layout_height="35dp"
+                android:background="@drawable/native_large_button_color"
+                android:gravity="center"
+                android:text="Download"
+                android:textColor="@color/native_large_button_text_color"
+                android:textSize="11dp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</com.google.android.gms.ads.nativead.NativeAdView>

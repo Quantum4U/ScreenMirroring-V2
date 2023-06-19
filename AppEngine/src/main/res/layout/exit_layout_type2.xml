@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:background="@android:color/transparent"
+    android:gravity="top">
+
+
+    <RelativeLayout
+        android:id="@+id/rl_default_more_apps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_left_20">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/exit_bg_type2"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="@dimen/margin_bottom_40"
+                android:layout_height="4dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_left_20"
+                android:background="@color/green3"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin10dp"
+                android:layout_marginTop="@dimen/margin_left_20"
+                android:layout_marginEnd="@dimen/margin10dp"
+                android:layout_marginBottom="@dimen/padding5dp"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:id="@+id/native_ads"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal" />
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/txt_exit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/close_exit_layout"
+                android:layout_marginTop="@dimen/margin_left_20"
+                android:layout_marginBottom="@dimen/margin_left_10"
+                android:gravity="center"
+                android:padding="@dimen/padding10dp"
+                android:text="@string/forAlert"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
+
+            <TextView
+                android:id="@+id/exit_btn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/exit_page_button_height"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin_left_30"
+                android:layout_marginTop="@dimen/margin_left_10"
+                android:layout_marginEnd="@dimen/margin_left_30"
+                android:background="@drawable/exit_btn_bg_type2"
+                android:backgroundTint="@color/colorPrimary"
+                android:gravity="center"
+                android:onClick="appExitExit"
+                android:text="@string/exit"
+                android:textAllCaps="true"
+                android:textColor="@color/deep_white"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/exit_btn_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/margin_left_10"
+                android:padding="@dimen/margin_left_10"
+                android:text="Cancel"
+                android:textColor="@color/black"
+                android:textSize="17dp" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
+
+
+
+
+

@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/ic_splash_bg">
 
-
     <LinearLayout
         android:gravity="center"
         android:layout_centerInParent="true"
@@ -18,17 +17,31 @@
             android:layout_height="wrap_content"
             android:background="@drawable/app_icon" />
 
-        <TextView
-            android:id="@+id/tv_app_name"
+        <RelativeLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/imageViewArrow"
-            android:layout_centerHorizontal="true"
-            android:text="@string/app_name"
-            android:textColor="@android:color/white"
-            android:textSize="22sp"
-            android:layout_marginBottom="@dimen/padding25dp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_toRightOf="@+id/tv_app_name"
+                android:layout_marginBottom="@dimen/padding5dp"
+                android:layout_marginLeft="-6dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_splash_wifi_icon"/>
+
+            <TextView
+                android:layout_marginTop="@dimen/padding5dp"
+                android:id="@+id/tv_app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"
+                android:layout_marginBottom="@dimen/padding25dp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/layoutStart"
@@ -36,7 +49,7 @@
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
             android:background="@drawable/splash_btn_bg"
-            android:visibility="visible">
+            android:visibility="invisible">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -56,25 +69,23 @@
     </LinearLayout>
 
 
-<!--    <include-->
-<!--        android:id="@+id/layout_tnc"-->
-<!--        layout="@layout/splash_tnc"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_above="@+id/layout_powered_by"-->
-<!--        android:layout_centerInParent="true"-->
-<!--        android:layout_marginBottom="15dp" />-->
+    <include
+        android:id="@+id/layout_tnc"
+        layout="@layout/splash_tnc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_powered_by"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="15dp" />
 
-
-<!--    <include-->
-<!--        android:id="@+id/layout_powered_by"-->
-<!--        layout="@layout/splash_powered_by"-->
-<!--        android:layout_width="250dp"-->
-<!--        android:layout_height="70dp"-->
-<!--        android:layout_above="@+id/adsholder"-->
-<!--        android:layout_centerInParent="true"-->
-<!--        android:layout_marginBottom="@dimen/ad_one_padding" />-->
-
+    <include
+        android:id="@+id/layout_powered_by"
+        layout="@layout/splash_powered_by"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:layout_above="@+id/adsholder"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="@dimen/ad_one_padding" />
 
     <LinearLayout
         android:id="@+id/adsholder"

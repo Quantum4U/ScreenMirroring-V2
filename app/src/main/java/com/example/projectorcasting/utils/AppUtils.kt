@@ -18,7 +18,7 @@ import android.text.format.DateFormat
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.projectorcasting.R
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.models.FolderModel
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.models.PaginationResponseModel
@@ -37,14 +37,14 @@ object AppUtils {
     fun createTempImagePath(): File {
         return File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-            "CastingFolder/VideoThumb"
+            "Quantum_CastingFolder/VideoThumb"
         )
     }
 
     fun createAudioThumbPath(context: Context?): File {
         return File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-            "CastingFolder/AudioThumb"
+            "Quantum_CastingFolder/AudioThumb"
         )
 //        return File(context?.filesDir, "AudioThumb")
     }
@@ -199,11 +199,25 @@ object AppUtils {
                         val path = galCursor.getString(
                             galCursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
                         )
-                        val file = File(path)
+
+                        if(!path.contains("Quantum_CastingFolder")) {
+                            val file = File(path)
 //                        val id = galCursor.getString(5)
 //                        val folderName = galCursor.getString(6)
 
-                        list?.add(MediaData(file, null, null, null, bucketId, bucketName, path,false))
+                            list?.add(
+                                MediaData(
+                                    file,
+                                    null,
+                                    null,
+                                    null,
+                                    bucketId,
+                                    bucketName,
+                                    path,
+                                    false
+                                )
+                            )
+                        }
                     }
 
                 }

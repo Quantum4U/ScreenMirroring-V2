@@ -1,0 +1,18 @@
+<resources>
+    <string name="action_settings">Settings</string>
+    <string name="textViewLabel">Hello Paid</string>
+    <string name="forAlert">Want to exit from app?</string>
+    <string name="apps24_forAlert">Are you sure to exit from app?</string>
+    <string name="rate_apps">Rate Us</string>
+    <string name="more_apps">More Apps</string>
+    <string name="share_app">Share App</string>
+    <string name="play_store">Play Store</string>
+    <string name="five_star">5 Star</string>
+    <string name="close">Close</string>
+    <string name="exit">Exit</string>
+    <string name="title_toolbar_about_us">About Us</string>
+    <string name="innovation_that_make_lives_simpler">Innovation that make lives simpler</string>
+
+
+
+</resources>

@@ -9,14 +9,15 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.projectorcasting.R
+import com.example.projectorcasting.AnalyticsConstant
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.adapter.VideoHorizontalAdapter
 import com.example.projectorcasting.adapter.VideoSectionalAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
-import com.example.projectorcasting.databinding.FragmentVideosBinding
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentVideosBinding
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.models.SectionModel
 import com.example.projectorcasting.utils.AppConstants
@@ -24,6 +25,7 @@ import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.viewmodels.VideoViewModel
 import com.google.android.gms.cast.framework.CastState
+import engine.app.analytics.logGAEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,15 +52,18 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 //        observeMediaThumbnailCreated(thumb)
 
         binding?.llSorting?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Videos_Date_Sorting)
             sortMediaList()
         }
 
         binding?.llConnect?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Videos_Cast_Connect)
             findNavController().navigate(R.id.nav_scan_device)
             showFullAds(activity)
         }
 
         binding?.llConnected?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Videos_Cast_DisConnect)
             videoViewModel.showConnectionPrompt(context, ::actionPerform, false, null)
         }
 
@@ -67,6 +72,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         }
 
         binding?.tvQueued?.setOnClickListener {
+            logGAEvents(AnalyticsConstant.GA_Videos_Queue_Button)
             findNavController().navigate(R.id.nav_queue)
             showFullAds(activity)
         }

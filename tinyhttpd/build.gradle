@@ -2,13 +2,17 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 //apply plugin: 'kotlin-android-extensions'
 
+apply {
+    from '../AppEngine/flavours.gradle'
+}
+
 android {
-    compileSdkVersion 32
-    buildToolsVersion "29.0.3"
+    compileSdkVersion appcompileSdkVersion
+    buildToolsVersion appbuildToolsVersion
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 32
+        minSdkVersion appminSdkVersion
+        targetSdkVersion appTargetSDKVersion
         versionCode 1
         versionName "1.0"
 
@@ -22,6 +26,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -32,5 +40,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    //engine
+    api project(":AppEngine")
 
 }

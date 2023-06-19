@@ -3,21 +3,34 @@ package com.example.projectorcasting.ui.activities
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import com.example.projectorcasting.R
+import com.example.projectorcasting.AnalyticsConstant
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.casting.utils.Utils
-import com.example.projectorcasting.databinding.ActivityMainBinding
+import com.example.projectorcasting.utils.AppUtils
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import engine.app.adshandler.AHandler
+import engine.app.adshandler.PromptHander
+import engine.app.analytics.logGAEvents
+import engine.app.fcm.MapperUtils
+import engine.app.inapp.InAppUpdateManager
+import engine.app.listener.InAppUpdateListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity(), View.OnClickListener {
+class MainActivity : BaseActivity(), View.OnClickListener, InAppUpdateListener {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -30,13 +43,20 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private var isAudioPageBtnClicked = false
     private var checkForPermission = false
 
+    private var inAppUpdateManager: InAppUpdateManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        setupCasting()
+        if (inAppUpdateManager == null) inAppUpdateManager = InAppUpdateManager(this)
+        inAppUpdateManager?.checkForAppUpdate(this)
+
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(broadcastReceiver, IntentFilter("Exit_Mapper_For_App"))
+
 
         drawerLayout = binding.drawerLayout
         navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -76,39 +96,39 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         when (view?.id) {
 
             R.id.menuRateUs -> {
-//                logGAEvents(AnalyticsConstant.GA_Menu_RateUs)
-//                PromptHander().rateUsDialog(true, this)
+                logGAEvents(AnalyticsConstant.GA_Menu_RateUs)
+                PromptHander().rateUsDialog(true, this)
                 closeDrawer()
             }
 
             R.id.menuShare -> {
-//                logGAEvents(AnalyticsConstant.GA_Menu_ShareApp)
-//                Utils().shareUrl(this)
+                logGAEvents(AnalyticsConstant.GA_Menu_ShareApp)
+                engine.app.serviceprovider.Utils().shareUrl(this)
                 closeDrawer()
             }
 
             R.id.menuMoreApps -> {
-//                logGAEvents(AnalyticsConstant.GA_Menu_MoreApps)
-//                Utils().moreApps(this)
+                logGAEvents(AnalyticsConstant.GA_Menu_MoreApps)
+                engine.app.serviceprovider.Utils().moreApps(this)
                 closeDrawer()
             }
 
             R.id.menuFeedBack -> {
-//                logGAEvents(AnalyticsConstant.GA_Menu_ShareFeedback)
-//                Utils().sendFeedback(this)
+                logGAEvents(AnalyticsConstant.GA_Menu_Feedback)
+                engine.app.serviceprovider.Utils().sendFeedback(this)
                 closeDrawer()
             }
 
             R.id.menuaboutus -> {
-//                logGAEvents(AnalyticsConstant.GA_Menu_AboutUs)
-//                AHandler.getInstance().showAboutUs(this)
+                logGAEvents(AnalyticsConstant.GA_Menu_AboutUs)
+                AHandler.getInstance().showAboutUs(this)
                 closeDrawer()
             }
 
             R.id.menuexit -> {
-//                logGAEvents(AnalyticsConstant.GA_Menu_AboutUs)
-//                AHandler.getInstance().showAboutUs(this)
+                logGAEvents(AnalyticsConstant.GA_Menu_Exit)
                 closeDrawer()
+                exitApp()
             }
         }
     }
@@ -121,27 +141,28 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         if (drawerLayout?.isDrawerOpen(GravityCompat.START) == true) {
             drawerLayout?.closeDrawer(GravityCompat.START)
         } else {
-//            AHandler.getInstance().v2ManageAppExit(this,binding.appBarMain.rootLayout)
-            finish()
+            exitApp()
         }
     }
 
+    private fun exitApp() {
+        AHandler.getInstance().v2ManageAppExit(this,binding.appBarMain.rootLayout)
+    }
+
     private fun navigateAccordingMapper(keyValue: String?) {
-//        if (intent != null) {
-//
-//            val value: String? = keyValue ?: intent.getStringExtra(MapperUtils.keyValue)
-//            val type = this.intent.getStringExtra(MapperUtils.keyType)
-//
-//            if (type != null && value != null) {
-//                when (value) {
-//                    MapperUtils.DASHBOARD_GALLERY -> openGallery()
-//                    MapperUtils.DASHBOARD_TEXT -> navController?.navigate(R.id.navigation_text)
-//                    MapperUtils.DASHBOARD_WEBPAGE -> navController?.navigate(R.id.navigation_webpage)
-//                    MapperUtils.DASHBOARD_MAIL -> navController?.navigate(R.id.navigation_email)
-//                    MapperUtils.DASHBOARD_PDF -> openPdfPicker()
-//                }
-//            }
-//        }
+        if (intent != null) {
+
+            val value: String? = keyValue ?: intent.getStringExtra(MapperUtils.keyValue)
+            val type = this.intent.getStringExtra(MapperUtils.keyType)
+
+            if (type != null && value != null) {
+                when (value) {
+                    MapperUtils.DL_IMAGES -> openImagePage()
+                    MapperUtils.DL_VIDEOS -> openVideoPage()
+                    MapperUtils.DL_AUDIOS -> openAudioPage()
+                }
+            }
+        }
     }
 
     fun openImagePage() {
@@ -203,59 +224,64 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == InAppUpdateManager.REQ_CODE_VERSION_UPDATE) {
-//            if (resultCode != RESULT_OK) {
-//                inAppUpdateManager?.unregisterInstallStateUpdListener()
-//                onUpdateNotAvailable()
-//            }
-//        }
+        if (requestCode == InAppUpdateManager.REQ_CODE_VERSION_UPDATE) {
+            if (resultCode != RESULT_OK) {
+                inAppUpdateManager?.unregisterInstallStateUpdListener()
+                onUpdateNotAvailable()
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-//        GlobalScope.launch(Dispatchers.IO) {
-//            AppUtils.deleteTempThumbFile(this@MainActivity)
-//        }
+        GlobalScope.launch(Dispatchers.IO) {
+            AppUtils.deleteTempThumbFile(this@MainActivity)
+        }
 
-
-//        try {
-//            LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
-//        } catch (e: java.lang.Exception) {
-//        }
+        try {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+        } catch (e: java.lang.Exception) {
+        }
     }
 
     var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-//            val type = intent.getStringExtra(MapperUtils.keyType)
-//            val value = intent.getStringExtra(MapperUtils.keyValue)
-//            if (type != null && value != null) {
-//                callingForMapper(type, value)
-//            }
-
+            val type = intent.getStringExtra(MapperUtils.keyType)
+            val value = intent.getStringExtra(MapperUtils.keyValue)
+            if (type != null && value != null) {
+                callingForMapper(type, value)
+            }
         }
     }
 
     private fun callingForMapper(type: String?, value: String?) {
-//        try {
-//            if (type != null && value != null) {
-////                Log.d("EXitPageWithType", "Checking ExitPage On Mapper Calling..$type  $value");
-//                if (type.equals("deeplink", ignoreCase = true)) {
-//                    when (value) {
-//                        MapperUtils.gcmMoreApp,
-//                        MapperUtils.gcmRateApp,
-//                        MapperUtils.gcmRemoveAds,
-//                        MapperUtils.gcmFeedbackApp,
-//                        MapperUtils.gcmShareApp,
-//                        MapperUtils.gcmForceAppUpdate -> AHandler.getInstance()
-//                            .callingForDeeplinking(this, value)
-//                        else -> navigateAccordingMapper(value)
-//                    }
-//                }
-//            }
-//        } catch (e: java.lang.Exception) {
-//            //            println("AHandler.callingForMapper excep " + e.message)
-//        }
+        try {
+            if (type != null && value != null) {
+                if (type.equals("deeplink", ignoreCase = true)) {
+                    when (value) {
+                        MapperUtils.gcmMoreApp,
+                        MapperUtils.gcmRateApp,
+                        MapperUtils.gcmRemoveAds,
+                        MapperUtils.gcmFeedbackApp,
+                        MapperUtils.gcmShareApp,
+                        MapperUtils.gcmForceAppUpdate -> AHandler.getInstance()
+                            .callingForDeeplinking(this, value)
+                        else -> navigateAccordingMapper(value)
+                    }
+                }
+            }
+        } catch (e: java.lang.Exception) {
+            //            println("AHandler.callingForMapper excep " + e.message)
+        }
+    }
+
+    override fun onUpdateAvailable() {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onUpdateNotAvailable() {
+        AHandler.getInstance().v2CallonAppLaunch(this)
     }
 
 

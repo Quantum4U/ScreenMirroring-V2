@@ -3,7 +3,7 @@ package com.example.projectorcasting.utils
 import android.content.Context
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.example.projectorcasting.R
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.adapter.FolderSelectionAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.google.android.material.bottomsheet.BottomSheetDialog

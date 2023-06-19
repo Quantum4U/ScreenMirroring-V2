@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "479332638129",
+    "project_id": "screen-mirroring-new",
+    "storage_bucket": "screen-mirroring-new.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479332638129:android:63fd4012ed94f1684f7190",
+        "android_client_info": {
+          "package_name": "com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "479332638129-alv8qr47v29fng1vnhvn88fmrsib3g6s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnkP7seh-12bJHOmHjsEeYKG14SuBMTVk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "479332638129-alv8qr47v29fng1vnhvn88fmrsib3g6s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

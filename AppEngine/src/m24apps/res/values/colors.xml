@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="m24apps_exit_layout_card_bottom_color">#0AFFFFFF</color>
+    <color name="m24apps_exit_layout_text_color">#CCFFFFFF</color>
+    <color name="m24apps_exit_layout_bg_color">#242424</color>
+    <color name="other_card_one_text_color_exit_prompt">#d84c4b</color>
+    <color name="other_card_two_text_color_exit_prompt">#2fc355</color>
+    <color name="share_feed_bgcolor">#B3000000</color>
+    <color name="white_inapp">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="exit_layout_divider_color">#80A5A3A3</color>
+    <color name="dark_grey">#aca3a3</color>
+    <color name="m24apps_exit_layout_card_one_color">#80c5ff</color>
+    <color name="m24apps_exit_layout_card_two_color">#f38382</color>
+    <color name="inapp_selected_text_color">#FEAE00</color>
+    <color name="inapp_unselected_text_color">#424242</color>
+    <color name="inapp_continue_with_ads_color">#FEAE00</color>
+    <color name="inapp_puchased_text_color">#424242</color>
+    <color name="inapp_puchased_price_color">#424242</color>
+</resources>

@@ -10,12 +10,10 @@ import com.example.projectorcasting.viewmodels.DashboardViewModel
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
+import engine.app.adshandler.AHandler
 import java.io.File
 
 open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
-
-
-    private var mTempFile:File? = null
 
     fun showLoader() {
         (activity as BaseActivity).showLoader()
@@ -30,15 +28,15 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
     }
 
     fun showFullAds(activity: Activity?) {
-//        AHandler.getInstance().showFullAds(activity, false)
+        AHandler.getInstance().showFullAds(activity, false)
     }
 
     fun showBottomBannerAds(view: LinearLayout?, activity: Activity?) {
-//        view?.addView(AHandler.getInstance().getBannerHeader(activity))
+        view?.addView(AHandler.getInstance().getBannerHeader(activity))
     }
 
     fun showNativeMedium(view: LinearLayout?, activity: Activity?) {
-//        view?.addView(AHandler.getInstance().getNativeMedium(activity))
+        view?.addView(AHandler.getInstance().getNativeMedium(activity))
     }
 
     fun getDashViewModel(): DashboardViewModel? {
