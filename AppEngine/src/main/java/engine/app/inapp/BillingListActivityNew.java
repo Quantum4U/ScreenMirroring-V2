@@ -1,38 +1,31 @@
 package engine.app.inapp;
 
-import static engine.app.adshandler.AHandler.ShowBillingPage;
 import static engine.app.server.v2.DataHubConstant.quantumList;
 import static engine.app.utils.EngineConstant.m24apps;
 import static engine.app.utils.EngineConstant.q4u;
 import static engine.app.utils.EngineConstant.quantum;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +37,7 @@ import java.util.List;
 
 import app.pnd.adshandler.R;
 import engine.app.adapter.BillingListAdapterNew;
+import engine.app.adshandler.AHandler;
 import engine.app.adshandler.EngineHandler;
 import engine.app.analytics.AppAnalyticsKt;
 import engine.app.analytics.EngineAnalyticsConstant;
@@ -54,155 +48,166 @@ import engine.app.server.v2.Billing;
 import engine.app.server.v2.BillingResponseHandler;
 import engine.app.server.v2.DataHubPreference;
 import engine.app.server.v2.Slave;
-import engine.app.serviceprovider.Utils;
 import engine.app.utils.EngineConstant;
 
 /**
  * Created by Meenu Singh on 20/05/2021.
  */
-public class BillingListActivityNew extends Activity implements RecyclerViewClickListener, View.OnClickListener, InAppBillingListener {
-    public static String FromSplash = "FromSplash";
+public class BillingListActivityNew extends AppCompatActivity implements RecyclerViewClickListener, View.OnClickListener, InAppBillingListener {
+
     private ArrayList<Billing> mBillingList;
-    private Button buttonSubs;
+    private TextView buttonSubs;
     private TextView textViewWithADs;
-    private ImageView backArrow;
+    private ImageView backArrow, purchaseBillingIcon;
     private BillingListAdapterNew billingListAdapter;
-    private TextView tv_description;
+    private TextView tv_description, description_text;
     private InAppBillingManager inAppBillingManager;
     private BillingPreference mPreference;
     private String productName;
     private GCMPreferences gcmPreference;
     private boolean isShowBackArrow;
+    private boolean fromSplash = false;
     private static String mPackageName;
-    private TextView textViewManageSubs;
-    private VideoView videoViewInapp;
-    private ImageView imageViewDefault;
-    private String isFromSplash = "false";
-    private TextView textViewDontask;
+    private TextView textViewManageSubs,tv_premium_benefits;
+    private NestedScrollView scroolView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
         setContentView(R.layout.billing_list_layout_new);
-        AppAnalyticsKt.logGAEvents(this, "AN_SHOW_BILLING_PAGE");
+         scroolView = findViewById(R.id.scroolView);
+        tv_premium_benefits = findViewById(R.id.tv_premium_benefits);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                scroolView.setSmoothScrollingEnabled(true);
+                scroolView.smoothScrollTo(0, scroolView.getBottom());
+            }
+        }, 2000);
+
 
         mPackageName = getPackageName();
         if (getIntent() != null) {
             isShowBackArrow = getIntent().getBooleanExtra(EngineConstant.isShowBackArrow, false);
-            isFromSplash = getIntent().getStringExtra(FromSplash);
+            fromSplash = getIntent().getBooleanExtra("fromSplash", false);
         }
-
         gcmPreference = new GCMPreferences(this);
         mPreference = new BillingPreference(this);
+        System.out.println("InAppBillingHandler.setPurchaseData biling mlist " + BillingResponseHandler.getInstance().getBillingResponse());
         mBillingList = BillingResponseHandler.getInstance().getBillingResponse();
-        tv_description = findViewById(R.id.tvDescription);
+        tv_description = findViewById(R.id.tv_description);
+        description_text = findViewById(R.id.description_text);
         backArrow = findViewById(R.id.iv_back);
+//        closeBtn = findViewById(R.id.iv_cross);
+
         textViewManageSubs = findViewById(R.id.manange_subs);
-        textViewManageSubs.setVisibility(View.VISIBLE);
-        textViewWithADs = findViewById(R.id.conti_with_ads);
-        textViewWithADs.setPaintFlags(textViewWithADs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        videoViewInapp = findViewById(R.id.videoPlay);
-        imageViewDefault = findViewById(R.id.defaultImage);
-
-        textViewDontask = findViewById(R.id.dont_show_again);
-        if (isFromSplash.equals("true")) {
-            if (ShowBillingPage.contains("1")) {
-                textViewDontask.setVisibility(View.VISIBLE);
-            } else {
-                textViewDontask.setVisibility(View.GONE);
-                textViewWithADs.setVisibility(View.GONE);}
-        }else{
-            textViewDontask.setVisibility(View.GONE);
-            textViewWithADs.setVisibility(View.GONE);}
-
-        textViewDontask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gcmPreference.setDoNotShow("true");
-                finishPage();}
-        });
-        String videoPath = Slave.ETC_4;
-        if (videoPath.isEmpty() || !Utils.isNetworkConnected(this)) {
-            videoViewInapp.setVisibility(View.GONE);
-        } else {
-            videoViewInapp.setVisibility(View.VISIBLE);
-            Uri uri = Uri.parse(videoPath);
-//            System.out.println("printing data ..." + videoPath + "  " + uri);
-            videoViewInapp.setVideoURI(uri);
-            videoViewInapp.setScaleX(1f);
-            videoViewInapp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mediaPlayer) {
-                    mediaPlayer.setLooping(true);
-                    videoViewInapp.setVisibility(View.VISIBLE);
-                    imageViewDefault.setVisibility(View.GONE);
-                }
-            });
-            videoViewInapp.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-                    videoViewInapp.setVisibility(View.GONE);
-                    imageViewDefault.setVisibility(View.VISIBLE);
-//                    System.out.println("BillingListActivityNew.onError.." + i + "  " + i1);
-                    return false;
-                }
-            });
-            // starts the video
-            videoViewInapp.start();
-        }
+//        billingIcon = findViewById(R.id.billing_icon);
+        purchaseBillingIcon = findViewById(R.id.purchased_billing_icon);
 
         inAppBillingManager = new InAppBillingManager(this, this);
+
         buttonSubs = findViewById(R.id.subs_now);
+        textViewWithADs = findViewById(R.id.conti_with_ads);
+//        textViewWithADs.setPaintFlags(textViewWithADs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+        //onSetBackIconUiWithPackage();
+        onSetProBillingIconUiWithPackage();
         onSetUiAfterPurchase();
 
         buttonSubs.setOnClickListener(this);
         textViewWithADs.setOnClickListener(this);
         backArrow.setOnClickListener(this);
+//        closeBtn.setOnClickListener(this);
+
         textViewManageSubs.setOnClickListener(this);
 
         RecyclerView mRecyclerView = findViewById(R.id.mRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-       new Handler().postDelayed(new Runnable() {
-           @Override
-           public void run() {
-               try{
-                   if(mBillingList.size()>1) {
-                       mRecyclerView.smoothScrollToPosition(mBillingList.size() - 1);
-                   }
-               }catch(Exception e){}
-           }
-       },2000);
         if (mBillingList != null && mBillingList.size() > 0) {
+            setPremiumBenifit(mBillingList);
+            //  Slave.IS_MONTHLY = true;
             billingListAdapter = new BillingListAdapterNew(this, mBillingList, this);
             mRecyclerView.setAdapter(billingListAdapter);
-            if (billingListAdapter.getItem(0).details_description != null) {
-                String str = billingListAdapter.getItem(0).details_description;
-                try {
-                    String[] inAppStr = str.split("\n\n");
-                    for (int i = 0; i < inAppStr.length; i++) {
-                        String posStr = inAppStr[i];
-                        TextView textView = new TextView(this);
-                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.inapp_des_icon, 0, 0, 0);
-                        textView.setCompoundDrawablePadding(10);
-                        textView.setText(posStr);
-                        textView.setTextColor(ContextCompat.getColor(this, R.color.black));
-                        textView.setLayoutParams(dim);
-                    }
-                } catch (Exception e) {
-                    TextView textView = new TextView(this);
-                    LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    textView.setText(str);
-                    textView.setTextColor(ContextCompat.getColor(this, R.color.black));
-                    textView.setLayoutParams(dim);
-                }
+            if (billingListAdapter.getItem(0).button_sub_text != null)
+                tv_description.setText(billingListAdapter.getItem(0).button_sub_text);
+
+            setDescription_text(0);
+            showDataAccordingToPurchase();
+        }
+        TextView tvTerms = findViewById(R.id.tvTerms);
+//        TextView tvPrivacy = findViewById(R.id.tvPrivacy);
+
+        tvTerms.setClickable(true);
+        tvTerms.setMovementMethod(LinkMovementMethod.getInstance());
+        tvTerms.setOnClickListener(v -> {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Slave.ABOUTDETAIL_TERM_AND_COND)));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        });
+
+//        tvPrivacy.setClickable(true);
+//        tvPrivacy.setMovementMethod(LinkMovementMethod.getInstance());
+//        tvPrivacy.setOnClickListener(v -> {
+//            try {
+//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Slave.ABOUTDETAIL_PRIVACYPOLICY)));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+
+        TextView dont_show = findViewById(R.id.dont_show);
+//        TextView dont_showSpace = findViewById(R.id.dont_showSpace);
+
+        if (fromSplash) {
+//            closeBtn.setVisibility(View.VISIBLE);
+//            backArrow.setVisibility(View.GONE);
+            try {
+                if (AHandler.ShowBillingPage.equals("1")) {
+                    tvTerms.setVisibility(View.GONE);
+//                    tvPrivacy.setVisibility(View.GONE);
+                    dont_show.setVisibility(View.VISIBLE);
+//                dont_showSpace.setVisibility(View.INVISIBLE);
+                    dont_show.setOnClickListener(view -> {
+                        gcmPreference.setDoNotShow("true");
+                        finishPage();
+                    });
+                } else {
+                    dont_show.setVisibility(View.GONE);
+                }
+
+            } catch (Exception e) {
+                dont_show.setVisibility(View.GONE);
+            }
+
+
+        } else {
+//            closeBtn.setVisibility(View.GONE);
+//            backArrow.setVisibility(View.VISIBLE);
+            tvTerms.setVisibility(View.INVISIBLE);
+//            tvPrivacy.setVisibility(View.INVISIBLE);
+            dont_show.setVisibility(View.GONE);
+//            dont_showSpace.setVisibility(View.GONE);
         }
     }
 
- private void finishPage() {
-        setResult(RESULT_OK);
-        finish();
+    private void onSetBackIconUiWithPackage() {
+        if (mPackageName != null && (mPackageName.contains(m24apps) || mPackageName.contains("m24") ||
+                mPackageName.contains(q4u)
+                || mPackageName.equalsIgnoreCase("com.pnd.shareall")
+                || mPackageName.equalsIgnoreCase("app.phone2location")
+                || mPackageName.equalsIgnoreCase("com.pnd.fourgspeed")
+                || mPackageName.equalsIgnoreCase("com.q4u.qrscanner"))) {
+            backArrow.setVisibility(View.GONE);
+        } else if (mPackageName != null && getAccountQU()) {
+            backArrow.setVisibility(View.VISIBLE);
+        }
     }
 
     private boolean getAccountQU() {
@@ -215,122 +220,156 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
         return false;
     }
 
-    private void onSetUiAfterPurchase() {
-        if (Slave.hasPurchased(this)) {
-            textViewWithADs.setText(getResources().getString(R.string.continuet));
-            textViewWithADs.setVisibility(View.GONE);
-            backArrow.setVisibility(View.VISIBLE);
-//            buttonSubs.setVisibility(View.GONE);
-        } else {
-            textViewWithADs.setText(getResources().getString(R.string.continue_with_ads));
+    private void onSetProBillingIconUiWithPackage() {
+        if (mPackageName != null && (mPackageName.contains(m24apps) || mPackageName.contains("m24"))) {
+            purchaseBillingIcon.setVisibility(View.VISIBLE);
+        } else if (mPackageName != null && mPackageName.contains(q4u)
+                || mPackageName.equalsIgnoreCase("com.pnd.shareall")
+                || mPackageName.equalsIgnoreCase("app.phone2location")
+                || mPackageName.equalsIgnoreCase("com.pnd.fourgspeed")
+                || mPackageName.equalsIgnoreCase("com.q4u.qrscanner")) {
+            purchaseBillingIcon.setVisibility(View.GONE);
         }
     }
 
-
-    @Override
-    public void onViewClicked(int position) {
-        Billing b = mBillingList.get(position);
-
-        AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_ITEM_CLICK");
-
-        if(Slave.hasPurchased(this)) {
-            showDataAccordingToPurchase();
-        }else {
-            buttonSubs.setText(b.button_text);
+    private void onSetProBillingIconAfterPuchase() {
+        if (mPackageName != null && (mPackageName.contains(m24apps) || mPackageName.contains("m24") ||
+                mPackageName.contains(q4u)
+                || mPackageName.equalsIgnoreCase("com.pnd.shareall")
+                || mPackageName.equalsIgnoreCase("app.phone2location")
+                || mPackageName.equalsIgnoreCase("com.pnd.fourgspeed")
+                || mPackageName.equalsIgnoreCase("com.q4u.qrscanner"))) {
+            purchaseBillingIcon.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_pro_icon_purchase));
+            purchaseBillingIcon.setVisibility(View.VISIBLE);
         }
-        if (b.details_description.contains("#")) {
-            String[] splitText = b.details_description.split("#");
-            tv_description.setText("");
-            String s= splitText[0]+""+Html.fromHtml(b.product_price).toString()+""+splitText[1];
-            tv_description.setText(s);
+//        else if(mPackageName!=null  ){
+//            purchaseBillingIcon.setVisibility(View.GONE);
+//        }
+    }
+
+    private void onSetUiAfterPurchase() {
+        if (Slave.hasPurchased(this)) {
+            textViewWithADs.setText(getResources().getString(R.string.continuet));
+            //textViewWithADs.setVisibility(View.INVISIBLE);
+            backArrow.setVisibility(View.VISIBLE);
+            //buttonSubs.setVisibility(View.GONE);
+            onSetProBillingIconAfterPuchase();
         } else {
-            tv_description.setText(b.details_description);
+            textViewWithADs.setText(getResources().getString(R.string.continue_with_ads));
+            //textViewWithADs.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onViewClicked(View mView, int position) {
-        Billing b = mBillingList.get(position);
-        if(Slave.hasPurchased(this)) {
-            showDataAccordingToPurchase();
-        }else {
-            buttonSubs.setText(b.button_text);
-        }
-
-    }
-
-    private void onClickForPurchaseButton(View mView, int position) {
-        Billing b = mBillingList.get(position);
-        productName = b.product_offer_text;
-
-        Log.d("BillingListActivity", "Test onViewClicked...." + b.billing_type);
-        switch (b.billing_type) {
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                scroolView.setSmoothScrollingEnabled(true);
+//                scroolView.smoothScrollTo(0, scroolView.getBottom());
+//            }
+//        }, 100);
+        switch (mBillingList.get(position).billing_type) {
             case Slave.Billing_Free:
                 if (!Slave.hasPurchased(this)) {
-                    AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_ITEM_CLICK_FREE");
-
-                    onClickPurchase(b);
-                } else {
-                    Toast.makeText(BillingListActivityNew.this, "You are already a premium member", Toast.LENGTH_SHORT).show();
+                    buttonSubs.setText(mBillingList.get(position).button_text);
                 }
                 break;
             case Slave.Billing_Pro:
                 if (!Slave.IS_PRO) {
-                    AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_ITEM_CLICK_PRO");
-
-                    onClickPurchase(b);
-                } else {
-                    Toast.makeText(BillingListActivityNew.this, "You are already a premium member", Toast.LENGTH_SHORT).show();
+                    buttonSubs.setText(mBillingList.get(position).button_text);
                 }
                 break;
 
             case Slave.Billing_Weekly:
                 if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY && !Slave.IS_MONTHLY) && !Slave.IS_WEEKLY) {
-                    AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_ITEM_CLICK_WEEKLY");
-
-                    onClickPurchase(b);
-                } else {
-                    Toast.makeText(BillingListActivityNew.this, "You are already a premium member", Toast.LENGTH_SHORT).show();
+                    buttonSubs.setText(mBillingList.get(position).button_text);
                 }
                 break;
             case Slave.Billing_Monthly:
                 if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY) && !Slave.IS_MONTHLY) {
-                    AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_ITEM_CLICK_MONTHLY");
+                    buttonSubs.setText(mBillingList.get(position).button_text);
+                }
+                break;
+            case Slave.Billing_Quarterly:
+                if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY) && !Slave.IS_QUARTERLY) {
+                    buttonSubs.setText(mBillingList.get(position).button_text);
+                }
+                break;
+            case Slave.Billing_HalfYear:
+                if ((!Slave.IS_PRO && !Slave.IS_YEARLY) && !Slave.IS_HALFYEARLY) {
+                    buttonSubs.setText(mBillingList.get(position).button_text);
+                }
+                break;
 
+            case Slave.Billing_Yearly:
+                if (!Slave.IS_PRO && !Slave.IS_YEARLY) {
+                    buttonSubs.setText(mBillingList.get(position).button_text);
+                }
+                break;
+        }
+        setDescription_text(position);
+    }
+
+    private void setPurchaseClick(int position) {
+        Billing b = mBillingList.get(position);
+        productName = b.product_offer_text;
+
+        Log.d("BillingListActivityNew", "Test onViewClicked...." + b.billing_type);
+        switch (b.billing_type) {
+            case Slave.Billing_Free:
+                if (!Slave.hasPurchased(this)) {
                     onClickPurchase(b);
                 } else {
-                    Toast.makeText(BillingListActivityNew.this, "You are already a premium member", Toast.LENGTH_SHORT).show();
+                    showToast();
+                }
+                break;
+            case Slave.Billing_Pro:
+                if (!Slave.IS_PRO) {
+                    onClickPurchase(b);
+                } else {
+                    showToast();
+                }
+                break;
+
+            case Slave.Billing_Weekly:
+                if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY && !Slave.IS_MONTHLY) && !Slave.IS_WEEKLY) {
+                    onClickPurchase(b);
+                } else {
+                    showToast();
+                }
+                break;
+            case Slave.Billing_Monthly:
+                // Log.d("BillingListActivityNew", "Test onViewClicked...."+b.billing_type+"  "+Slave.IS_YEARLY+" "+Slave.IS_PRO+"  "+Slave.IS_HALFYEARLY+"  "+Slave.IS_QUARTERLY+"  "+Slave.IS_MONTHLY);
+                if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY) && !Slave.IS_MONTHLY) {
+                    onClickPurchase(b);
+                } else {
+                    showToast();
                 }
 
                 break;
             case Slave.Billing_Quarterly:
                 if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY) && !Slave.IS_QUARTERLY) {
-                    AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_ITEM_CLICK_QUARTERLY");
-
                     onClickPurchase(b);
                 } else {
-                    Toast.makeText(BillingListActivityNew.this, "You are already a premium member", Toast.LENGTH_SHORT).show();
+                    showToast();
                 }
 
                 break;
             case Slave.Billing_HalfYear:
                 if ((!Slave.IS_PRO && !Slave.IS_YEARLY) && !Slave.IS_HALFYEARLY) {
-                    AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_ITEM_CLICK_FREE_HALFYEARLY");
-
                     onClickPurchase(b);
                 } else {
-                    Toast.makeText(BillingListActivityNew.this, "You are already a premium member", Toast.LENGTH_SHORT).show();
+                    showToast();
                 }
 
                 break;
 
             case Slave.Billing_Yearly:
                 if (!Slave.IS_PRO && !Slave.IS_YEARLY) {
-                    AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_ITEM_CLICK_YEARLY");
-
                     onClickPurchase(b);
                 } else {
-                    Toast.makeText(BillingListActivityNew.this, "You are already a premium member", Toast.LENGTH_SHORT).show();
+                    showToast();
                 }
                 break;
         }
@@ -350,6 +389,18 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
 
     @Override
     public void onListItemClicked(View mView, String reDirectUrl) {
+
+    }
+
+    private void openPlaystoreAccount() {
+
+        try {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/account/subscriptions"));
+            startActivity(browserIntent);
+        } catch (Exception e) {
+            Log.d("BillingListActivityNew", "Test openPlaystoreAccount.." + e.getMessage());
+        }
     }
 
     @Override
@@ -357,22 +408,23 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
         int id = view.getId();
         if (id == R.id.subs_now) {
             if (billingListAdapter != null) {
-                onClickForPurchaseButton(view, billingListAdapter.getSelectedPos());
+                //onViewClicked(view, billingListAdapter.getSelectedPos());
+                setPurchaseClick(billingListAdapter.getSelectedPos());
             }
-//            Toast.makeText(this, getResources().getString(R.string.tap_on_select_plans), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, getResources().getString(R.string.tap_on_select_plans), Toast.LENGTH_SHORT).show();
         } else if (id == R.id.conti_with_ads) {
             finishPage();
         } else if (id == R.id.manange_subs) {
             openPlaystoreAccount();
         } else if (id == R.id.iv_back) {
             finishPage();
+        } else if (id == R.id.iv_cross) {
+            finishPage();
         }
     }
 
     @Override
     public void onPurchaseSuccess(ArrayList<Purchase> purchase) {
-        AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_PURCHASE_SUCCESSFULL");
-
         for (Purchase purchase1 : purchase) {
             setPurchaseData(purchase1.getSkus());
             for (String productId : purchase1.getSkus()) {
@@ -388,15 +440,12 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
     }
 
     private void setPurchaseData(ArrayList<String> productId) {
-        AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_SET_PURCHASEDATA");
-
         for (Billing b : BillingResponseHandler.getInstance().getBillingResponse()) {
             switch (b.billing_type) {
                 case Slave.Billing_Pro:
                     if (productId.contains(b.product_id)) {
                         mPreference.setPro(true);
                         Slave.IS_PRO = mPreference.isPro();
-                        AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_SUCCESSFULL_Billing_Pro");
 
                         showPurchaseDialog(b.product_id);
                         break;
@@ -405,47 +454,42 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
                 case Slave.Billing_Weekly:
                     if (productId.contains(b.product_id)) {
                         mPreference.setWeekly(true);
-                        AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_SUCCESSFULL_Billing_Weekly");
-
                         Slave.IS_WEEKLY = mPreference.isWeekly();
+
                         showPurchaseDialog(b.product_id);
                         break;
                     }
 
                 case Slave.Billing_Monthly:
                     if (productId.contains(b.product_id)) {
-                        AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_SUCCESSFULL_Billing_Monthly");
 
                         mPreference.setMonthly(true);
                         Slave.IS_MONTHLY = mPreference.isMonthly();
+
                         showPurchaseDialog(b.product_id);
                         break;
                     }
 
                 case Slave.Billing_Quarterly:
                     if (productId.contains(b.product_id)) {
-                        AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_SUCCESSFULL_Billing_Quarterly");
-
                         mPreference.setQuarterly(true);
                         Slave.IS_QUARTERLY = mPreference.isQuarterly();
+
                         showPurchaseDialog(b.product_id);
                         break;
                     }
 
                 case Slave.Billing_HalfYear:
                     if (productId.contains(b.product_id)) {
-                        AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_SUCCESSFULL_Billing_HalfYear");
-
                         mPreference.setHalfYearly(true);
                         Slave.IS_HALFYEARLY = mPreference.isHalfYearly();
+
                         showPurchaseDialog(b.product_id);
                         break;
                     }
 
                 case Slave.Billing_Yearly:
                     if (productId.contains(b.product_id)) {
-                        AppAnalyticsKt.logGAEvents(this, "AN_BILLING_PAGE_SUCCESSFULL_Billing_Yearly");
-
                         mPreference.setYearly(true);
                         Slave.IS_YEARLY = mPreference.isYearly();
 
@@ -457,6 +501,7 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
             }
         }
     }
+
 
     private void setExpirePurchaseData() {
         for (Billing b : BillingResponseHandler.getInstance().getBillingResponse()) {
@@ -501,7 +546,9 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
         }
     }
 
-    private void showPurchaseDialog(String productId) {
+    private void showPurchaseDialog(String productID) {
+        AppAnalyticsKt.logGAEvents(this, EngineAnalyticsConstant.Companion.getGA_IAP_SUCCESS()+productID);
+
         final Dialog dialog = new Dialog(this, R.style.BaseTheme);
         if (dialog.getWindow() != null)
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -509,7 +556,6 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.purchase_ok);
 
-        AppAnalyticsKt.logGAEvents(this, EngineAnalyticsConstant.Companion.getFIREBASE_BILLING_PURCHASE_EVENT()+""+productId);
 
         TextView header = dialog.findViewById(R.id.tv_header);
         TextView description = dialog.findViewById(R.id.tv_description);
@@ -555,7 +601,15 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
+            //System.exit(0);
         }
+    }
+
+    private void finishPage() {
+        Intent intent = getIntent();
+        //intent.putExtra("key", value);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override
@@ -563,17 +617,6 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
 
         finishPage();
         super.onBackPressed();
-    }
-
-    private void openPlaystoreAccount() {
-
-        try {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/account/subscriptions"));
-            startActivity(browserIntent);
-        } catch (Exception e) {
-            Log.d("BillingListActivity", "Test openPlaystoreAccount.." + e.getMessage());
-        }
     }
 
     private void showDataAccordingToPurchase() {
@@ -611,7 +654,8 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
                     if (Slave.IS_YEARLY) {
                         buttonSubs.setEnabled(false);
                         buttonSubs.setText("Subscribed");
-//                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_unsub_btn));
+                        buttonSubs.setTextColor(getResources().getColor(R.color.white));
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_unsub_btn));
                     }
                     break;
 
@@ -619,20 +663,68 @@ public class BillingListActivityNew extends Activity implements RecyclerViewClic
                     if (Slave.IS_PRO) {
                         buttonSubs.setEnabled(false);
                         buttonSubs.setText("Subscribed");
-//                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_unsub_btn));
+                        buttonSubs.setTextColor(getResources().getColor(R.color.white));
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_unsub_btn));
                     }
                     break;
 
-//                default:
-//                    if (!Slave.hasPurchased(this)) {
-//                        buttonSubs.setEnabled(true);
-//                        buttonSubs.setText(getResources().getString(R.string.start_free_trial));
-//                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_sub_btn));
-//                    }
-//                    break;
+                default:
+                    if (!Slave.hasPurchased(this)) {
+                        buttonSubs.setEnabled(true);
+                        buttonSubs.setText(getResources().getString(R.string.start_free_trial));
+                        buttonSubs.setTextColor(getResources().getColor(R.color.white));
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_sub_btn));
+                    }
+                    break;
             }
         }
 
     }
 
+    private void setDescription_text(int position) {
+
+        if (mBillingList.get(position).button_sub_text != null
+                && mBillingList.get(position).button_sub_text.length() > 0) {
+
+            String[] str = mBillingList.get(position).button_sub_text.split("@");
+            try {
+                if (str[0] != null && str[1] != null && mBillingList.get(position).product_price != null) {
+                    String value = str[0] + Html.fromHtml(mBillingList.get(position).product_price).toString() + str[1];
+                    description_text.setText(value);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void showToast() {
+        Toast.makeText(BillingListActivityNew.this, this.getResources().getString(R.string.already_premium_toast), Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+    }
+
+    void setPremiumBenifit(ArrayList<Billing> mBillingList){
+        String details_description = mBillingList.get(0).details_description;
+//        details_description=  "\uD83D\uDE00  Completely Ads Free\n\n????  Access Apps Update\n\n????   VIP Support";
+        if (details_description!=null && !details_description.equals("")){
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                if (details_description.contains("\n")){
+                    String replaceData = details_description.replace("\n", "<br>");
+                    tv_premium_benefits.setText(Html.fromHtml(replaceData, Html.FROM_HTML_MODE_COMPACT));
+
+                }
+
+            } else {
+                tv_premium_benefits.setText(Html.fromHtml(mBillingList.get(0).details_description));
+            }
+
+        }
+
+    }
 }

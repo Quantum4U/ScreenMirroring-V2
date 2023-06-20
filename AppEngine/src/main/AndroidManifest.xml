@@ -59,13 +59,13 @@
             android:theme="@style/AppTheme.NoActionBar.Transparent.Engine" />
 
 <!--        <activity-->
-<!--            android:name="engine.app.inapp.BillingListActivity"-->
+<!--            android:name="engine.app.inapp.BillingListActivityNewNew"-->
 <!--            android:screenOrientation="portrait"-->
 <!--            android:theme="@android:style/Theme.NoTitleBar" />-->
         <activity
             android:name="engine.app.inapp.BillingListActivityNew"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:theme="@style/Inapp.NoActionBar" />
         <activity
             android:name="engine.app.inapp.BillingDetailActivity"
             android:screenOrientation="portrait"

@@ -16,20 +16,16 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.text.format.DateFormat
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.models.FolderModel
 import com.example.projectorcasting.models.MediaData
-import com.example.projectorcasting.models.PaginationResponseModel
 import com.example.projectorcasting.models.SectionModel
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 
 object AppUtils {
@@ -42,11 +38,11 @@ object AppUtils {
     }
 
     fun createAudioThumbPath(context: Context?): File {
-        return File(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-            "Quantum_CastingFolder/AudioThumb"
-        )
-//        return File(context?.filesDir, "AudioThumb")
+//        return File(
+//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+//            "Quantum_CastingFolder/AudioThumb"
+//        )
+        return File(context?.filesDir, "AudioThumb")
     }
 
     fun openWifiPopUpInApp(activity: Activity) {
@@ -161,7 +157,7 @@ object AppUtils {
 //
 
         //add all images list
-        if (MediaListSingleton.getGalleryImageList()?.isNotEmpty() == true ){
+        if (MediaListSingleton.getGalleryImageList()?.isNotEmpty() == true) {
             folderMap?.add(
                 0,
                 FolderModel(
@@ -200,7 +196,7 @@ object AppUtils {
                             galCursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
                         )
 
-                        if(!path.contains("Quantum_CastingFolder")) {
+                        if (!path.contains("Quantum_CastingFolder")) {
                             val file = File(path)
 //                        val id = galCursor.getString(5)
 //                        val folderName = galCursor.getString(6)
@@ -252,7 +248,7 @@ object AppUtils {
                         val folderName = galCursor.getString(6)
 
                         Log.d("Utils", "getAllGalleryImages A13 : >>check for all" + folderName)
-                        list?.add(MediaData(file, null, null, null, id, folderName, path,false))
+                        list?.add(MediaData(file, null, null, null, id, folderName, path, false))
 
                     }
 
@@ -491,7 +487,7 @@ object AppUtils {
             } else {
 
                 if (mHolderList.isNotEmpty()) {
-                    mMap.add(SectionModel(convertDate(mDateHolder), mHolderList,false))
+                    mMap.add(SectionModel(convertDate(mDateHolder), mHolderList, false))
                 }
                 mHolderList = ArrayList()
                 mHolderList.add(mList[i])
@@ -500,7 +496,7 @@ object AppUtils {
             }
             if (i == mList.size - 1) {
 //                mMap[convertDate(mDateHolder).toString()] = mHolderList
-                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList,false))
+                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList, false))
             }
 
         }
@@ -532,7 +528,7 @@ object AppUtils {
             }
             if (i == mList.size - 1) {
 //                mMap[convertDate(mDateHolder).toString()] = mHolderList
-                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList,false))
+                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList, false))
             }
 
             println("here is the final size owngallery" + " " + mMap)
@@ -581,18 +577,20 @@ object AppUtils {
 
     fun saveAudioThumb(context: Context?, bitmap: Bitmap?): File {
         val path = createAudioThumbPath(context)
-
+        Log.d("AppUtils", "saveAudioThumb A13 : >>" + path + "//" + path.exists())
         if (!path.exists()) {
             path.mkdirs()
         }
 
         val targetFile = File(path, AppConstants.AUDIO_THUMB)
+        Log.d("AppUtils", "saveAudioThumb A13 : >>" + targetFile)
 
         if (!targetFile.exists()) {
             var out: FileOutputStream? = null
             try {
                 out = FileOutputStream(targetFile)
                 val imageSaved = bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                Log.d("AppUtils", "saveAudioThumb A13 : >>" + imageSaved)
                 Objects.requireNonNull(out).close()
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -602,36 +600,38 @@ object AppUtils {
         return targetFile
     }
 
-    fun deleteTempThumbFile(context: Context?): Boolean {
+    fun deleteTempThumbFile(context: Context?, path: File?): Boolean {
         var result = true
-        val path = createTempImagePath()
-        println("")
         if (path != null) {
             if (path.exists()) {
-//                if (path.isDirectory) {
-//                    for (child in path.listFiles()) {
-//                        result = result and deleteTempThumbFile(context)
-//                    }
-//                    result = result and path.delete() // Delete empty directory.
-//                } else if (path.isFile) {
-//                    result = result and path.delete()
-//                }
-                result = path.delete()
+                if (path.isDirectory) {
+                    for (child in path.listFiles()) {
+                        result = result and deleteTempThumbFile(context, child)
+                    }
+                    result = result and path.delete() // Delete empty directory.
+                } else if (path.isFile) {
+                    result = result and path.delete()
+                }
                 scanMedia(context)
+
+                val path = createTempImagePath()
+                Log.d("AppUtils", "saveAudioThumb A13 : <<>>" + path + "//" + path.exists())
                 return result
             }
         } else {
             return false
         }
+
         return false
     }
 
     private fun scanMedia(context: Context?) {
         if (context != null) {
-            MediaScannerConnection.scanFile(context,
+            MediaScannerConnection.scanFile(
+                context,
                 arrayOf(Environment.getExternalStorageDirectory().toString()),
-                null,
-                MediaScannerConnection.OnScanCompletedListener { path, uri -> })
+                null
+            ) { path, uri -> }
         }
     }
 

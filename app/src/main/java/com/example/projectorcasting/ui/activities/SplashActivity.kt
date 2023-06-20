@@ -16,11 +16,11 @@ import com.example.projectorcasting.engine.AppMapperConstant
 import com.example.projectorcasting.engine.TransLaunchFullAdsActivity
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.LayoutSplashActivityBinding
-import engine.app.adapter.BillingListAdapterNew
 import engine.app.adshandler.AHandler
 import engine.app.analytics.logGAEvents
 import engine.app.fcm.GCMPreferences
 import engine.app.fcm.MapperUtils
+import engine.app.inapp.BillingListActivityNew
 import engine.app.listener.OnBannerAdsIdLoaded
 import engine.app.listener.OnCacheFullAdLoaded
 import engine.app.server.v2.DataHubConstant
@@ -42,6 +42,11 @@ class SplashActivity : BaseActivity(), OnBannerAdsIdLoaded {
     private var binding: LayoutSplashActivityBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val decorView = window.decorView
+        decorView.systemUiVisibility =
+            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+
         binding = LayoutSplashActivityBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
@@ -150,7 +155,7 @@ class SplashActivity : BaseActivity(), OnBannerAdsIdLoaded {
     private var billingActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == 199) {
+        if (result.resultCode == RESULT_OK) {
             openDashboard()
         }
     }
@@ -259,8 +264,8 @@ class SplashActivity : BaseActivity(), OnBannerAdsIdLoaded {
     }
 
     private fun openBillingActivity() {
-        val intent = Intent(this@SplashActivity, BillingListAdapterNew::class.java)
-        intent.putExtra("FromSplash", true)
+        val intent = Intent(this@SplashActivity, BillingListActivityNew::class.java)
+        intent.putExtra("fromSplash", true)
         billingActivityResultLauncher.launch(intent)
     }
 

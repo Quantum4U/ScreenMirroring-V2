@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.GravityCompat
@@ -85,6 +86,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, InAppUpdateListener {
         navigateAccordingMapper(null)
 
         showBottomBannerAds(binding.appBarMain.contentMain.adsbanner, this)
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -234,10 +236,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, InAppUpdateListener {
 
     override fun onDestroy() {
         super.onDestroy()
-
-        GlobalScope.launch(Dispatchers.IO) {
-            AppUtils.deleteTempThumbFile(this@MainActivity)
-        }
 
         try {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)

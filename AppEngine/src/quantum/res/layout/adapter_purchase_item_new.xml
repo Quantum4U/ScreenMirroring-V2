@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/parentPro"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,85 +9,144 @@
         android:id="@+id/rl_parentPro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="8dp"
+        android:minHeight="92dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/inapp_corner_color_unselect">
 
-        <CheckBox
-            android:clickable="false"
-            android:focusable="false"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:id="@+id/planPurchaseChk"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/margin_left_10"
-            android:button="@drawable/ic_inapp_checkbox" />
-
-
         <RelativeLayout
-            android:layout_marginRight="16dp"
+            android:id="@+id/rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="10dp"
-            android:paddingTop="@dimen/margin_left_10"
-            android:paddingBottom="@dimen/margin_left_10"
-            android:layout_toLeftOf="@+id/planPurchaseChk">
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp">
+
+            <Button
+                android:id="@+id/btn_pro"
+                android:layout_width="40dp"
+                android:layout_height="22dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/inapp_button_active"
+                android:clickable="false"
+                android:text="@string/active"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_pro_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:paddingStart="5dp"
-                android:visibility="visible"
-                android:textColor="@color/inapp_selected_text_color"
-                android:textSize="16sp"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Weekly Plan"
+                android:textColor="@color/inapp_unselected_text_color"
+                android:textSize="14sp"
                 android:textStyle="bold" />
+
             <LinearLayout
                 android:id="@+id/ll"
-                android:paddingStart="5dp"
-                android:layout_marginTop="@dimen/margin_3"
-                android:layout_below="@+id/tv_pro_title"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_pro_title">
 
                 <TextView
                     android:id="@+id/tv_price_pro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/inapp_selected_text_color"
-                    android:textSize="18sp"
-                    android:textStyle="normal" />
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="@color/inapp_puchased_text_color"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_price_subs"
+                    android:id="@+id/tv_pro_subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/tv_price_pro"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/text_view_background"
-                    android:textColor="#4C86E3"
-                    android:paddingLeft="@dimen/margin_5"
-                    android:paddingRight="@dimen/margin_5"
-                    android:paddingTop="@dimen/margin_3"
-                    android:paddingBottom="@dimen/margin_3"
-                    android:layout_gravity="bottom"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
+                    android:layout_marginStart="5dp"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="@color/inapp_puchased_text_color"
+                    android:textSize="12sp" />
+
             </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tv_price_subs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll"
+                android:layout_marginTop="2dp"
+                android:backgroundTint="#26FF8025"
+                android:paddingStart="@dimen/margin_5"
+                android:paddingEnd="@dimen/margin_5"
+                android:background="@drawable/text_view_background"
+                android:maxLines="1"
+                android:padding="4dp"
+                android:singleLine="true"
+                android:textColor="#0E0E2C"
+                android:textSize="11sp"/>
+
+            <ImageView
+                android:id="@+id/cb"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:src="@drawable/ic_checkbox_inapp" />
+
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_pro"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="@dimen/margin10dp"
+            android:visibility="gone" />
+
+
+        <ImageView
+            android:id="@+id/iv_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="14dp"
+            android:background="@drawable/ic_back_arrow"
+            android:backgroundTint="#000000"
+            android:rotation="180"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_purchased_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone" />
 
 
     </RelativeLayout>
+
     <ImageView
-        android:layout_centerHorizontal="true"
-        android:visibility="visible"
-        android:id="@+id/iv_purchased_icon"
+        android:id="@+id/iv_offer_pro"
         android:layout_width="80dp"
-        android:layout_height="@dimen/margin_bottom_40"/>
-</RelativeLayout>
+        android:layout_height="18dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="visible" />
+
+</FrameLayout>

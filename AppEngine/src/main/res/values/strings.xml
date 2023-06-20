@@ -69,7 +69,7 @@
     <string name="inapp_ads_free_version">Ads free version for lifetime</string>
     <string name="inapp_no_recurring_changes">No recurring charges</string>
     <string name="inapp_improved_app">Improved app experience</string>
-    <string name="continue_with_ads"><u>Continue with Ads</u></string>
+    <string name="continue_with_ads">Continue with Ads</string>
     <string name="tap_on_select_plans">Tap on select plans</string>
     <string name="continuet"><u>Go to Home Screen</u></string>
 
@@ -78,7 +78,7 @@
 
     <string name="purchase_now">Purchase Now</string>
     <string name="inapp_get_premium_m24apps">Get Access to all Pro features</string>
-    <string name="dont_show_again"><u>Don\'t show again</u></string>
+    <string name="dont_show_again">Don\'t show again</string>
     <string name="get_all_new_exciting">Get All New Exciting Features </string>
     <string name="remove_ads">Remove ads</string>
     <string name="enjoy_ads_free_surfing">Enjoy Ad-free surfing for an uninterrupted experience</string>

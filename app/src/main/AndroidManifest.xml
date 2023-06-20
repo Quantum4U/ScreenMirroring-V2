@@ -6,33 +6,31 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
     <!-- Required permission to start http server -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
-    <uses-feature
-        android:name="android.hardware.wifi"
-        android:required="true">
-    </uses-feature>
+    <uses-feature android:name="android.hardware.wifi"
+        android:required="true"/>
 
 
     <application
-        android:requestLegacyExternalStorage="true"
         android:name="com.example.projectorcasting.MainApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjectorCasting"
-        android:networkSecurityConfig="@xml/network_security_config"
-        android:hardwareAccelerated="true"
-        android:largeHeap="true"
         tools:replace="android:allowBackup">
         <activity
             android:name="com.example.projectorcasting.ui.activities.SplashActivity"
@@ -46,18 +44,20 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.projectorcasting.ui.activities.MainActivity"
-            android:theme="@style/Theme.ProjectorCasting.NoActionBar"/>
+        <activity
+            android:name="com.example.projectorcasting.ui.activities.MainActivity"
+            android:theme="@style/Theme.ProjectorCasting.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="com.example.projectorcasting.casting.provider.CastOptionsProvider" />
 
-        <activity android:name="com.example.projectorcasting.casting.activities.ExpandedControlsActivity"
+        <activity
+            android:name="com.example.projectorcasting.casting.activities.ExpandedControlsActivity"
+            android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.CastVideosDark"
-            android:exported="true">
+            android:theme="@style/Theme.CastVideosDark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -66,7 +66,7 @@
                 android:value="com.example.projectorcasting.ui.activities.MainActivity" />
         </activity>
 
-        <activity android:name="com.example.projectorcasting.engine.TransLaunchFullAdsActivity"/>
+        <activity android:name="com.example.projectorcasting.engine.TransLaunchFullAdsActivity" />
     </application>
 
 </manifest>

@@ -18,6 +18,11 @@
     <style name="Theme.ProjectorCasting.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:windowDisablePreview">true</item>
+
+        <item name="android:windowTranslucentStatus">false</item>
     </style>
 
     <style name="Theme.ProjectorCasting.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

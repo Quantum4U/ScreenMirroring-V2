@@ -56,7 +56,7 @@ class ScanDeviceAdapter(
             } else {
                 activeDot.visibility = View.GONE
             }
-            deviceName.text = item.castDevice?.modelName
+            deviceName.text = item.castDevice?.friendlyName
 
             card.setOnClickListener {
                 itemClick(!activeDot.isVisible,item)

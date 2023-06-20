@@ -11,9 +11,9 @@
     <color name="exit_layout_divider_color">#80A5A3A3</color>
 
     <color name="inapp_puchased_white_70">#B3FFFFFF</color>
-    <color name="inapp_unselected_text_color">#A1A1A1</color>
+    <color name="inapp_unselected_text_color">#E94234</color>
     <color name="inapp_continue_with_ads_color">#FFFFFF</color>
-    <color name="inapp_puchased_text_color">#FFFFFF</color>
+    <color name="inapp_puchased_text_color">#0E0E2C</color>
     <color name="inapp_puchased_price_color">#248DED</color>
     <color name="inapp_selected_text_color">#FFFFFF</color>
 </resources>

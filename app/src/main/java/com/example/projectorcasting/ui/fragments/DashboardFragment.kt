@@ -1,6 +1,5 @@
 package com.example.projectorcasting.ui.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,15 +7,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.projectorcasting.AnalyticsConstant
-import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.utils.CastHelper
-import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentDashboardBinding
 import com.example.projectorcasting.ui.activities.MainActivity
-import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.viewmodels.DashboardViewModel
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastState
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentDashboardBinding
 import engine.app.adshandler.AHandler
 import engine.app.analytics.logGAEvents
 
@@ -71,7 +69,7 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
 
         binding?.tvDisconnect?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Dashboard_Cast_DisConnect)
-            getDashViewModel()?.showConnectionPrompt(context,::actionPerform,false,null)
+            getDashViewModel()?.showConnectionPrompt(context, ::actionPerform, false, null)
         }
 
     }
@@ -116,7 +114,7 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
             binding?.tvNoDeviceConnected?.visibility = View.VISIBLE
 
             //delete videos thumbs created for casting media if it presents
-            AppUtils.deleteTempThumbFile(context)
+            getDashViewModel()?.deleteTempThumbFolder(context)
         }
     }
 

@@ -274,11 +274,6 @@ public class ExitAdsActivity extends AppCompatActivity implements RecyclerViewCl
     }
 
     @Override
-    public void onViewClicked(int position) {
-
-    }
-
-    @Override
     public void onViewClicked(View mView, int position) {
 
     }

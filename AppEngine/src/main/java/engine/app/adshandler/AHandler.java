@@ -1,6 +1,5 @@
 package engine.app.adshandler;
 
-import static engine.app.inapp.BillingListActivityNew.FromSplash;
 
 import android.app.Activity;
 import android.content.Context;
@@ -336,7 +335,7 @@ public class AHandler {
      */
     public void showRemoveAdsPrompt(Context mContext) {
         Intent intent = new Intent(mContext, BillingListActivityNew.class);
-        intent.putExtra(FromSplash, "false");
+        intent.putExtra("fromSplash", "false");
         mContext.startActivity(intent);
     }
 

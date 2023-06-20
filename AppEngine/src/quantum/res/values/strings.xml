@@ -10,5 +10,9 @@
     <string name="more_apps">More Apps</string>
     <string name="inapp_get_premium_m24apps">Get Access to all Pro features</string>
     <string name="manage_subs"><u>Manage Subscription</u></string>
+    <string name="subscription_benefits">Subscription Benefits</string>
+    <string name="start_free_trial">Start Free Trial</string>
+    <string name="active">Active</string>
+    <string name="already_premium_toast">You are already a premium member</string>
 
 </resources>
