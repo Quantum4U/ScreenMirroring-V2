@@ -30,19 +30,20 @@ import java.util.concurrent.TimeUnit
 
 object AppUtils {
 
-    fun createTempImagePath(): File {
+    fun createTempImagePath(context: Context?): File {
         return File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
             "Quantum_CastingFolder/VideoThumb"
         )
+//        return File(context?.filesDir, "VideoThumb")
     }
 
     fun createAudioThumbPath(context: Context?): File {
-//        return File(
-//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-//            "Quantum_CastingFolder/AudioThumb"
-//        )
-        return File(context?.filesDir, "AudioThumb")
+        return File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+            "Quantum_CastingFolder/AudioThumb"
+        )
+//        return File(context?.filesDir, "AudioThumb")
     }
 
     fun openWifiPopUpInApp(activity: Activity) {
@@ -248,7 +249,20 @@ object AppUtils {
                         val folderName = galCursor.getString(6)
 
                         Log.d("Utils", "getAllGalleryImages A13 : >>check for all" + folderName)
-                        list?.add(MediaData(file, null, null, null, id, folderName, path, false))
+                        if (!path.contains("Quantum_CastingFolder")) {
+                            list?.add(
+                                MediaData(
+                                    file,
+                                    null,
+                                    null,
+                                    null,
+                                    id,
+                                    folderName,
+                                    path,
+                                    false
+                                )
+                            )
+                        }
 
                     }
 
@@ -553,8 +567,8 @@ object AppUtils {
 
     }
 
-    fun saveTempThumb(bitmap: Bitmap?): File {
-        val path = createTempImagePath()
+    fun saveTempThumb(context: Context?,bitmap: Bitmap?): File {
+        val path = createTempImagePath(context)
 
         if (!path.exists()) {
             path.mkdirs()
@@ -613,9 +627,6 @@ object AppUtils {
                     result = result and path.delete()
                 }
                 scanMedia(context)
-
-                val path = createTempImagePath()
-                Log.d("AppUtils", "saveAudioThumb A13 : <<>>" + path + "//" + path.exists())
                 return result
             }
         } else {

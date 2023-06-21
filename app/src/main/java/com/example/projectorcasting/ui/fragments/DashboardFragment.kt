@@ -10,6 +10,7 @@ import com.example.projectorcasting.AnalyticsConstant
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.ui.activities.MainActivity
+import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.viewmodels.DashboardViewModel
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastState
@@ -71,6 +72,9 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
             logGAEvents(AnalyticsConstant.GA_Dashboard_Cast_DisConnect)
             getDashViewModel()?.showConnectionPrompt(context, ::actionPerform, false, null)
         }
+
+        val path = AppUtils.createTempImagePath(context)
+        Log.d("AppUtils", "saveAudioThumb A14 : <<>>" + path + "//" + path.exists())
 
     }
 

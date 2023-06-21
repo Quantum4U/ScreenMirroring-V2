@@ -272,4 +272,12 @@ class QueueDataProvider private constructor(context: Context?) {
             return mInstance
         }
     }
+
+    fun showNextImage(pos: Int) {
+        val remoteMediaClient: RemoteMediaClient = remoteMediaClient ?: return
+        val queue: MediaQueue = mediaQueue ?: return
+        val itemId: Int = queue.itemIdAtIndex(pos)
+        Log.d("ImagePreviewFragment", "castImage A13 : >>"+pos+itemId)
+        remoteMediaClient.queueJumpToItem(itemId, JSONObject() )
+    }
 }

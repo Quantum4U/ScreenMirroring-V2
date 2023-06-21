@@ -1,13 +1,11 @@
 package com.example.projectorcasting.ui.fragments
 
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -16,13 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.example.projectorcasting.AnalyticsConstant
-import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.adapter.ImagePreviewAdapter
 import com.example.projectorcasting.adapter.MiniImagePreviewAdapter
 import com.example.projectorcasting.casting.model.CastModel
+import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
-import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagePreviewBinding
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.MediaListSingleton
@@ -30,6 +27,8 @@ import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagePreviewBinding
 import engine.app.analytics.logGAEvents
 import java.util.*
 
@@ -54,12 +53,16 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
     private var currentItemPos = 0
 
+    private var mProvider: QueueDataProvider? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentImagePreviewBinding.bind(view)
 
         observeCastingLiveData()
+
+        mProvider = QueueDataProvider.Companion.getInstance(context)
 
         fromSlideshow = argument.fromSlideshow
         if (!fromSlideshow)
@@ -98,8 +101,8 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
     private fun openDeviceListPage(startSlideShow: Boolean) {
         Bundle().apply {
-            putBoolean(AppConstants.FOR_START_SLIDESHOW,startSlideShow)
-            findNavController().navigate(R.id.nav_scan_device,this)
+            putBoolean(AppConstants.FOR_START_SLIDESHOW, startSlideShow)
+            findNavController().navigate(R.id.nav_scan_device, this)
         }
     }
 
@@ -152,7 +155,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         }, 5000, 5000)
     }
 
-    private fun stopTimer(){
+    private fun stopTimer() {
         timer?.cancel()
         timer = null
     }
@@ -182,6 +185,9 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         val mediaItem = imagePreviewAdapter?.getItem(position)
         val path = mediaItem?.path?.split("0/")?.get(1)
         CastHelper.castPhotos(remoteMediaClient, mediaItem, path.toString(), Utils.IMAGE)
+
+//        Log.d("ImagePreviewFragment", "castImage A13 : >>"+position+"//"+mProvider?.mediaQueue?.itemCount)
+//        mProvider?.showNextImage(position)
     }
 
     private fun observeCastingLiveData() {
@@ -237,7 +243,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     override fun onDestroyView() {
-        if(isCastConnected)
+        if (isCastConnected)
             stopCasting()
         super.onDestroyView()
         binding = null
@@ -309,14 +315,14 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         if (holder is MiniImagePreviewAdapter.ViewHolder) {
             highlightItem(holder.getViewHolderContainer())
         }
-        val oldHolder= binding?.rvHorizontalPreview?.findViewHolderForAdapterPosition(oldItem)
+        val oldHolder = binding?.rvHorizontalPreview?.findViewHolderForAdapterPosition(oldItem)
         if (oldHolder is MiniImagePreviewAdapter.ViewHolder) {
             unHighlightItem(oldHolder.getViewHolderContainer())
         }
     }
 
     private fun highlightItem(view: View) {
-        view.background = ResourcesCompat.getDrawable(resources,R.drawable.selected_image_bg,null)
+        view.background = ResourcesCompat.getDrawable(resources, R.drawable.selected_image_bg, null)
     }
 
     private fun unHighlightItem(view: View) {
@@ -326,7 +332,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     private fun checkResultToStartSlideshow() {
         setFragmentResultListener(AppConstants.START_SLIDESHOW_REQUEST_KEY) { requestKey: String, bundle: Bundle ->
             val result = bundle.getBoolean(AppConstants.START_SLIDESHOW)
-            if (result){
+            if (result) {
                 fromSlideshow = result
                 filePosition = binding?.vpImgPreview?.currentItem ?: 0
                 startSlideShow()

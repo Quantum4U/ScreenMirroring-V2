@@ -74,9 +74,9 @@ object Utils {
         Log.d("MainActivity", "buildMediaInfo A13 : >>$sampleVideoStream")
 
         val imageUrl1 =
-            "http://${CastHelper.deviceIpAddress}:9999/${path}"
+            "http://${CastHelper.deviceIpAddress}:9999/${thumb}"
         val imageUrl2 =
-            "http://${CastHelper.deviceIpAddress}:9999/${path}"
+            "http://${CastHelper.deviceIpAddress}:9999/${thumb}"
 
 
         /** (Optional) Setting a subtitle track, You can add more subtitle
@@ -110,7 +110,7 @@ object Utils {
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
             .setContentType("videos/mp4")
             .setMetadata(movieMetadata)
-            .setStreamDuration(42 * 1000) // 5:33 means 333 seconds
+            .setStreamDuration(0) // 5:33 means 333 seconds
 //            .setMediaTracks(listOf(mediaTrack)) // (Optional) Set list of subtitles.
             .build()
     }
@@ -137,7 +137,7 @@ object Utils {
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
             .setContentType("audios/mp3")
             .setMetadata(movieMetadata)
-            .setStreamDuration(42 * 1000) // 5:33 means 333 seconds
+            .setStreamDuration(0) // 5:33 means 333 seconds
 //            .setMediaTracks(listOf(mediaTrack)) // (Optional) Set list of subtitles.
             .build()
     }
@@ -150,7 +150,7 @@ object Utils {
             .setStreamType(MediaInfo.STREAM_TYPE_NONE)
             .setContentType("image/jpeg")
             .setMetadata(movieMetadata)
-//            .setStreamDuration(0) // 5:33 means 333 seconds
+            .setStreamDuration(0) // 5:33 means 333 seconds
 //                .setMediaTracks(listOf(mediaTrack)) // (Optional) Set list of subtitles.
             .build()
 
@@ -383,6 +383,7 @@ object Utils {
                 Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
             }
 
+            Log.d("Utils", "showQueuePrompt A13 : "+remoteMediaClient?.mediaStatus)
             checkForQueue(provider.count)
 
             sheetDialog.cancel()

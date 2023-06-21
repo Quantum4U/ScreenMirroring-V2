@@ -11,6 +11,7 @@ import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.service.WebService
 import com.example.projectorcasting.models.MediaData
 import com.google.android.gms.cast.CastDevice
+import com.google.android.gms.cast.MediaLoadOptions
 import com.google.android.gms.cast.MediaLoadRequestData
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import kotlin.reflect.KFunction1
@@ -27,8 +28,8 @@ object CastHelper {
         var devices = ArrayList<CastModel>()
 
         for (routeInfo in routes) {
-            Log.d("CastHelper", "getAvailableDevices A13 : >>" + routeInfo)
             val device = CastDevice.getFromBundle(routeInfo.extras)
+            Log.d("CastHelper", "getAvailableDevices A13 : >>" + routeInfo+"//"+device)
             if (device != null) {
                 devices.add(CastModel(routeInfo, device))
             }
@@ -93,8 +94,8 @@ object CastHelper {
             MediaLoadRequestData.Builder()
                 .setMediaInfo(Utils.buildMediaInfo(mediaData, path, path, type))
                 /** Use the [MediaInfo] generated from [buildMediaInfo]. */
-                .setAutoplay(true)
-//                .setCurrentTime(0.toLong())
+                .setAutoplay(false)
+                .setCurrentTime(0.toLong())
                 .build()
         )?.setResultCallback {
             Log.d("CastHelper", "castPhotos A13 : >>>"+it.mediaError+"//"+it.status)

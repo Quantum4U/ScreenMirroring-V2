@@ -30,9 +30,9 @@ class VideoViewModel @Inject constructor() : ViewModel() {
         PromptHelper.showConnectionPrompt(context, actionPerform, isConnect, castModel)
     }
 
-    fun saveThumbnailAndPlayMedia(bitmap: Bitmap?){
+    fun saveThumbnailAndPlayMedia(context: Context?,bitmap: Bitmap?){
         viewModelScope.launch(Dispatchers.IO) {
-            thumbFile.postValue(AppUtils.saveTempThumb(bitmap))
+            thumbFile.postValue(AppUtils.saveTempThumb(context,bitmap))
         }
     }
 

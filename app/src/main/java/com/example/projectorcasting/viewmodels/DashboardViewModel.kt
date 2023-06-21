@@ -104,7 +104,7 @@ class DashboardViewModel : ViewModel() {
 
     fun deleteTempThumbFolder(context: Context?){
         viewModelScope.launch(Dispatchers.IO) {
-            AppUtils.deleteTempThumbFile(context, AppUtils.createTempImagePath())
+            AppUtils.deleteTempThumbFile(context, AppUtils.createTempImagePath(context))
         }
     }
 

@@ -166,7 +166,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     private fun itemClick(mediaData: MediaData) {
         showLoader()
         CoroutineScope(Dispatchers.IO).launch {
-            val thumb = AppUtils.saveTempThumb(mediaData.bitmap)
+            val thumb = AppUtils.saveTempThumb(context,mediaData.bitmap)
 
             withContext(Dispatchers.Main) {
                 playMedia(thumb, mediaData)

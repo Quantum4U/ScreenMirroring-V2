@@ -1,6 +1,7 @@
 package com.example.projectorcasting.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
@@ -12,20 +13,33 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projectorcasting.AnalyticsConstant
-import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.adapter.FolderSelectionAdapter
 import com.example.projectorcasting.adapter.ImageSectionalAdapter
 import com.example.projectorcasting.casting.model.CastModel
-import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagesBinding
+import com.example.projectorcasting.casting.utils.Utils
+import com.example.projectorcasting.casting.utils.Utils.IMAGE
+import com.example.projectorcasting.casting.utils.Utils.VIDEO
 import com.example.projectorcasting.models.FolderModel
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.models.SectionModel
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.utils.SpacesItemDecoration
+import com.google.android.gms.cast.MediaQueueItem
+import com.google.android.gms.cast.MediaStatus
+import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.CastState
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagesBinding
 import engine.app.analytics.logGAEvents
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 
 class ImagesFragment : BaseFragment(R.layout.fragment_images) {
@@ -97,8 +111,8 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 
     private fun openDeviceListPage(startSlideShow: Boolean) {
         Bundle().apply {
-            putBoolean(AppConstants.FOR_START_SLIDESHOW,startSlideShow)
-            findNavController().navigate(R.id.nav_scan_device,this)
+            putBoolean(AppConstants.FOR_START_SLIDESHOW, startSlideShow)
+            findNavController().navigate(R.id.nav_scan_device, this)
         }
         showFullAds(activity)
     }
@@ -222,6 +236,51 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     }
 
     private fun openPreviewPage(startSlideshow: Boolean, pos: Int) {
+
+//        val imageList = MediaListSingleton.getSelectedImageList()
+//        var count =0
+//        Log.d("ImagesFragment", "openPreviewPage A13 : >>"+imageList?.size)
+//        CoroutineScope(Dispatchers.Main).launch {
+//            for (mediaData in imageList!!) {
+//                val castSession: CastSession? =
+//                    context?.let { CastContext.getSharedInstance(it).sessionManager.currentCastSession }
+//
+//                val remoteMediaClient: RemoteMediaClient? = castSession?.remoteMediaClient
+//
+//                val path = mediaData.path?.split("0/")?.get(1)
+//                Log.d("ImagesFragment", "openPreviewPage A13 : >> 11..>>"+path)
+//                val queueItem: MediaQueueItem =
+//                    MediaQueueItem.Builder(
+//                        (Utils.buildMediaInfo(
+//                            mediaData,
+//                            path.toString(), path.toString(), VIDEO
+//                        ))!!
+//                    ).setAutoplay(
+//                        true
+//                    ).setPreloadTime(Utils.PRELOAD_TIME_S.toDouble()).build()
+//                val newItemArray: Array<MediaQueueItem> = arrayOf(queueItem)
+//
+//                if (count == 0){
+//                    count++
+//                    remoteMediaClient?.queueLoad(
+//                        newItemArray, 0,
+//                        MediaStatus.REPEAT_MODE_REPEAT_OFF, JSONObject()
+//                    )
+//                }else {
+//                    remoteMediaClient?.queueAppendItem(queueItem, JSONObject())
+//                }
+//                Log.d("ImagesFragment", "openPreviewPage A13 : >> 22..>>"+remoteMediaClient)
+//            }
+//
+//
+//            withContext(Dispatchers.Main) {
+//                val action =
+//                    ImagesFragmentDirections.actionImageToPreview(startSlideshow, pos)
+//                findNavController().navigate(action)
+//                showFullAds(activity)
+//            }
+//        }
+
         val action =
             ImagesFragmentDirections.actionImageToPreview(startSlideshow, pos)
         findNavController().navigate(action)
@@ -232,7 +291,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         if (isLongClick) {
             binding?.tvSlideshow?.visibility = View.VISIBLE
             binding?.rlBottom?.visibility = View.GONE
-        }else {
+        } else {
             binding?.tvSlideshow?.visibility = View.GONE
             binding?.rlBottom?.visibility = View.VISIBLE
         }
