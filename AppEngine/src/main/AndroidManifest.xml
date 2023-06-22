@@ -48,7 +48,8 @@
         <!--Engine  Start-->
         <activity
             android:name="engine.app.ui.AboutUsActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
             android:name="engine.app.ui.PrintActivity"

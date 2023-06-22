@@ -5,6 +5,7 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="com.example.projectorcasting.ui.activities.MainActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -17,6 +18,15 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:scaleType="centerCrop"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:fitsSystemWindows="true"
+        app:lottie_rawRes="@raw/dash_json" />
 
     <include
         android:id="@+id/content_main"

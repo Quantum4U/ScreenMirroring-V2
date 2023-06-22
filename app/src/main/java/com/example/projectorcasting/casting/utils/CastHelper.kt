@@ -14,6 +14,7 @@ import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.MediaLoadOptions
 import com.google.android.gms.cast.MediaLoadRequestData
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
+import engine.app.fcm.GCMPreferences
 import kotlin.reflect.KFunction1
 import kotlin.reflect.KFunction2
 
@@ -77,6 +78,7 @@ object CastHelper {
     ) {
         startServer(context)
 
+        GCMPreferences(context).setfilePath(path)
         Utils.showQueuePopup(
             context,
             Utils.buildMediaInfo(mediaData, path, thumb, type),

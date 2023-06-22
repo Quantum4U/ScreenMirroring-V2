@@ -72,7 +72,7 @@
     <string name="queue_tag_item">queue-tag-item</string>
     <string name="queue_empty">Queue is empty!</string>
     <string name="all_photos">All Photos</string>
-    <string name="items_selected">%d Items Selected</string>
+    <string name="items_selected">Selected(%d)</string>
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
     <string name="connect_to_cast_device_text">Please connect to a device</string>

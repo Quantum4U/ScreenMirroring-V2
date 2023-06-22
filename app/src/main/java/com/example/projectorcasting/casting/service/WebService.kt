@@ -7,7 +7,7 @@ import androidx.work.*
 import com.example.projectorcasting.casting.utils.CastHelper
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 
-class WebService(context: Context,workerParameters: WorkerParameters) : Worker(context,workerParameters) {
+class WebService(private val context: Context,workerParameters: WorkerParameters) : Worker(context,workerParameters) {
     private val TAG = javaClass.simpleName
 
     companion object {
@@ -30,7 +30,7 @@ class WebService(context: Context,workerParameters: WorkerParameters) : Worker(c
              * but it is needed to start the server in the required path.
              */
 
-            SimpleWebServer.runServer(
+            SimpleWebServer.runServer(context,
                 arrayOf(
                     "-h",
                     CastHelper.deviceIpAddress,

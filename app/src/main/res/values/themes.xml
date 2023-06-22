@@ -23,6 +23,7 @@
         <item name="android:windowDisablePreview">true</item>
 
         <item name="android:windowTranslucentStatus">false</item>
+
     </style>
 
     <style name="Theme.ProjectorCasting.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

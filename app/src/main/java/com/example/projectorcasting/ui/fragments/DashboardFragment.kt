@@ -3,6 +3,7 @@ package com.example.projectorcasting.ui.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -73,8 +74,13 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
             getDashViewModel()?.showConnectionPrompt(context, ::actionPerform, false, null)
         }
 
-        val path = AppUtils.createTempImagePath(context)
-        Log.d("AppUtils", "saveAudioThumb A14 : <<>>" + path + "//" + path.exists())
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    (activity as MainActivity?)?.closeDrawer()
+                }
+            })
 
     }
 

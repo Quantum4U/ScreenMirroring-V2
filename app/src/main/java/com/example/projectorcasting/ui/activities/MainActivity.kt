@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -63,17 +65,24 @@ class MainActivity : BaseActivity(), View.OnClickListener, InAppUpdateListener {
         navController = findNavController(R.id.nav_host_fragment_content_main)
 
         navController?.addOnDestinationChangedListener { controller, destination, arguments ->
-            if (destination.id == R.id.nav_dash) {
-                drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-            } else {
-                drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            when (destination.id) {
+                R.id.nav_dash -> {
+                    setStatusBackgroundForDashboard()
+                    binding.appBarMain.topView.visibility = View.VISIBLE
+                    drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                }
+                R.id.nav_image_preview -> {
+                    binding.appBarMain.topView.visibility = View.GONE
+                    drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    statusBarColor(true, window)
+                }
+                else -> {
+                    binding.appBarMain.topView.visibility = View.GONE
+                    drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    statusBarColor(false, window)
+                }
             }
 
-            if (destination.id == R.id.nav_image_preview) {
-                statusBarColor(true, window)
-            } else {
-                statusBarColor(false, window)
-            }
         }
 
         binding.menuRateUs.setOnClickListener(this)
@@ -87,6 +96,18 @@ class MainActivity : BaseActivity(), View.OnClickListener, InAppUpdateListener {
 
         showBottomBannerAds(binding.appBarMain.contentMain.adsbanner, this)
 
+    }
+
+    private fun setStatusBackgroundForDashboard(){
+        val decorView = window.decorView
+        decorView.systemUiVisibility =
+            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+
+        val flags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
+                if (Build.VERSION.SDK_INT >= 26) View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR else 0
+
+        window.decorView.systemUiVisibility = (window.decorView.systemUiVisibility.inv() or flags).inv()
+        window.statusBarColor = ResourcesCompat.getColor(resources,android.R.color.transparent,null)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -139,7 +160,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, InAppUpdateListener {
         drawerLayout?.openDrawer(GravityCompat.START)
     }
 
-    private fun closeDrawer() {
+    fun closeDrawer() {
         if (drawerLayout?.isDrawerOpen(GravityCompat.START) == true) {
             drawerLayout?.closeDrawer(GravityCompat.START)
         } else {
@@ -281,6 +302,5 @@ class MainActivity : BaseActivity(), View.OnClickListener, InAppUpdateListener {
     override fun onUpdateNotAvailable() {
         AHandler.getInstance().v2CallonAppLaunch(this)
     }
-
 
 }

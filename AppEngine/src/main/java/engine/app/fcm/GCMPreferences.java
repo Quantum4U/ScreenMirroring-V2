@@ -345,12 +345,12 @@ public class GCMPreferences {
         editor.commit();
     }
 
-    public String getFirsttimeInAppString() {
+    public String getfilePath() {
         return preferences.getString("FirsttimeInAppString", "true");
     }
 
     //
-    public void setFirsttimeInAppString(String flag) {
+    public void setfilePath(String flag) {
         editor.putString("FirsttimeInAppString", flag);
         editor.commit();
     }

@@ -26,6 +26,13 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    lintOptions {
+        abortOnError false
+        disable 'MissingTranslation'
+        disable 'ExtraTranslation'
+        ignoreWarnings true
+    }
+
     buildTypes {
         release {
             minifyEnabled true
