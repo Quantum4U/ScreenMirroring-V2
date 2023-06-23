@@ -345,16 +345,6 @@ public class GCMPreferences {
         editor.commit();
     }
 
-    public String getfilePath() {
-        return preferences.getString("FirsttimeInAppString", "true");
-    }
-
-    //
-    public void setfilePath(String flag) {
-        editor.putString("FirsttimeInAppString", flag);
-        editor.commit();
-    }
-
     public void setDoNotShow(String flag) {
         editor.putString(KEY_DO_NOT_SHOW, flag);
         editor.commit();

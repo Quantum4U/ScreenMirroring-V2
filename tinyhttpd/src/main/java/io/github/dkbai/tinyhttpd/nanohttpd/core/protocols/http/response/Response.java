@@ -33,6 +33,8 @@ package io.github.dkbai.tinyhttpd.nanohttpd.core.protocols.http.response;
  * #L%
  */
 
+import android.util.Log;
+
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
@@ -236,6 +238,7 @@ public class Response implements Closeable {
             }
             PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, new ContentType(this.mimeType).getEncoding())), false);
             pw.append("HTTP/1.1 ").append(this.status.getDescription()).append(" \r\n");
+            Log.d("TAG", "send: >>00>>"+pw);
             if (this.mimeType != null) {
                 printHeader(pw, "Content-Type", this.mimeType);
             }
@@ -266,6 +269,7 @@ public class Response implements Closeable {
             }
             pw.append("\r\n");
             pw.flush();
+            Log.d("TAG", "send: >>11>>"+ pw);
             sendBodyWithCorrectTransferAndEncoding(outputStream, pending);
             outputStream.flush();
             NanoHTTPD.safeClose(this.data);
@@ -296,20 +300,24 @@ public class Response implements Closeable {
 
     private void sendBodyWithCorrectTransferAndEncoding(OutputStream outputStream, long pending) throws IOException {
         if (this.requestMethod != Method.HEAD && this.chunkedTransfer) {
+            Log.d("TAG", "sendBodyWithCorrectTransferAndEncoding: >>00>>");
             ChunkedOutputStream chunkedOutputStream = new ChunkedOutputStream(outputStream);
             sendBodyWithCorrectEncoding(chunkedOutputStream, -1);
             chunkedOutputStream.finish();
         } else {
+            Log.d("TAG", "sendBodyWithCorrectTransferAndEncoding: >>11>>");
             sendBodyWithCorrectEncoding(outputStream, pending);
         }
     }
 
     private void sendBodyWithCorrectEncoding(OutputStream outputStream, long pending) throws IOException {
         if (useGzipWhenAccepted()) {
+            Log.d("TAG", "sendBodyWithCorrectTransferAndEncoding: >>22>>");
             GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream);
             sendBody(gzipOutputStream, -1);
             gzipOutputStream.finish();
         } else {
+            Log.d("TAG", "sendBodyWithCorrectTransferAndEncoding: >>33>>");
             sendBody(outputStream, pending);
         }
     }
@@ -341,6 +349,8 @@ public class Response implements Closeable {
                     this.data.close();
                 }
             }
+
+            Log.d("TAG", "sendBody: >>"+data+"//"+read);
             if (!sendEverything) {
                 pending -= read;
             }

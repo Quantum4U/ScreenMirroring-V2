@@ -51,8 +51,8 @@ public class BillingDetailActivity extends Activity implements InAppBillingListe
         LinearLayout layoutPurchase = findViewById(R.id.layoutPurchase);
         TextView header = findViewById(R.id.header);
 
-        Typeface headerTypeFace = Typeface.createFromAsset(getAssets(), "fonts/billing_regular.ttf");
-        header.setTypeface(headerTypeFace);
+//        Typeface headerTypeFace = Typeface.createFromAsset(getAssets(), "fonts/billing_regular.ttf");
+//        header.setTypeface(headerTypeFace);
 
 
         ImageView detail_src = findViewById(R.id.details_src);
@@ -74,11 +74,11 @@ public class BillingDetailActivity extends Activity implements InAppBillingListe
 
                 String[] description = b.details_description.split("\n");
                 for (String s : description) {
-                    Typeface descriptionTypeFace = Typeface.createFromAsset(getAssets(), "fonts/billing_light.ttf");
+//                    Typeface descriptionTypeFace = Typeface.createFromAsset(getAssets(), "fonts/billing_light.ttf");
                     TextView textView = new TextView(BillingDetailActivity.this);
                     textView.setTextColor(getResources().getColor(android.R.color.white));
                     textView.setTextSize(17);
-                    textView.setTypeface(descriptionTypeFace);
+//                    textView.setTypeface(descriptionTypeFace);
 
                     if (!s.equalsIgnoreCase("")) {
                         textView.setCompoundDrawablePadding(20);

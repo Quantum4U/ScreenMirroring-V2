@@ -33,6 +33,7 @@ package io.github.dkbai.tinyhttpd.nanohttpd.webserver;
  */
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -54,7 +55,6 @@ import java.util.ServiceLoader;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
-import engine.app.fcm.GCMPreferences;
 import io.github.dkbai.tinyhttpd.nanohttpd.core.protocols.http.IHTTPSession;
 import io.github.dkbai.tinyhttpd.nanohttpd.core.protocols.http.NanoHTTPD;
 import io.github.dkbai.tinyhttpd.nanohttpd.core.protocols.http.request.Method;
@@ -328,78 +328,104 @@ public class SimpleWebServer extends NanoHTTPD {
     }
 
     protected String listDirectory(String uri, File f) {
+
+        Log.d("TAG", "defaultRespond: >>11>>"+uri+"//"+f+"//"+f.getAbsolutePath());
+
         String heading = "Directory " + uri;
         StringBuilder msg =
                 new StringBuilder("<html><head><title>" + heading + "</title><style><!--\n" + "span.dirname { font-weight: bold; }\n" + "span.filesize { font-size: 75%; }\n"
                         + "// -->\n" + "</style>" + "</head><body><h1>" + heading + "</h1>");
 
-//        String up = null;
-//        if (uri.length() > 1) {
-//            String u = uri.substring(0, uri.length() - 1);
-//            int slash = u.lastIndexOf('/');
-//            if (slash >= 0 && slash < u.length()) {
-//                up = uri.substring(0, slash + 1);
-//            }
-//        }
-//
-//        List<String> files = Arrays.asList(f.list(new FilenameFilter() {
-//
-//            @Override
-//            public boolean accept(File dir, String name) {
-//                return new File(dir, name).isFile();
-//            }
-//        }));
-//        Collections.sort(files);
-//        List<String> directories = Arrays.asList(f.list(new FilenameFilter() {
-//
-//            @Override
-//            public boolean accept(File dir, String name) {
-//                return new File(dir, name).isDirectory();
-//            }
-//        }));
-//        Collections.sort(directories);
-//        if (up != null || directories.size() + files.size() > 0) {
-//            msg.append("<ul>");
-//            if (up != null || directories.size() > 0) {
-//                msg.append("<section class=\"directories\">");
-//                if (up != null) {
-//                    msg.append("<li><a rel=\"directory\" href=\"").append(up).append("\"><span class=\"dirname\">..</span></a></li>");
-//                }
-//                for (String directory : directories) {
-//                    String dir = directory + "/";
-//                    msg.append("<li><a rel=\"directory\" href=\"").append(encodeUri(uri + dir)).append("\"><span class=\"dirname\">").append(dir).append("</span></a></li>");
-//                }
-//                msg.append("</section>");
-//            }
-//            if (files.size() > 0) {
-//                msg.append("<section class=\"files\">");
-//                for (String file : files) {
-//                    msg.append("<li><a href=\"").append(encodeUri(uri + file)).append("\"><span class=\"filename\">").append(file).append("</span></a>");
-//                    File curFile = new File(f, file);
-//                    long len = curFile.length();
-//                    msg.append("&nbsp;<span class=\"filesize\">(");
-//                    if (len < 1024) {
-//                        msg.append(len).append(" bytes");
-//                    } else if (len < 1024 * 1024) {
-//                        msg.append(len / 1024).append(".").append(len % 1024 / 10 % 100).append(" KB");
-//                    } else {
-//                        msg.append(len / (1024 * 1024)).append(".").append(len % (1024 * 1024) / 10000 % 100).append(" MB");
-//                    }
-//                    msg.append(")</span></li>");
-//                }
-//                msg.append("</section>");
-//            }
-//            msg.append("</ul>");
+        String up = null;
+        if (uri.length() > 1) {
+            String u = uri.substring(0, uri.length() - 1);
+            int slash = u.lastIndexOf('/');
+            if (slash >= 0 && slash < u.length()) {
+                up = uri.substring(0, slash + 1);
+            }
+        }
 
+        List<String> files = Arrays.asList(f.list(new FilenameFilter() {
 
-            System.out.println("SimpleWebServer.listDirectory sdfhgahjs"+" "+f.getPath());
+            @Override
+            public boolean accept(File dir, String name) {
+                return new File(dir, name).isFile();
+            }
+        }));
+        Collections.sort(files);
+        List<String> directories = Arrays.asList(f.list(new FilenameFilter() {
 
-            msg.append("<div>");
-            msg.append("<video controls autoplay><source src=\"").append(new GCMPreferences(ctx).getfilePath()).
-                    append("\"").
-                    append("type=\"video/mp4\"/>");
-            msg.append("</video>");
-//        }
+            @Override
+            public boolean accept(File dir, String name) {
+                return new File(dir, name).isDirectory();
+            }
+        }));
+        Collections.sort(directories);
+        if (up != null || directories.size() + files.size() > 0) {
+            msg.append("<ul>");
+            if (up != null || directories.size() > 0) {
+                msg.append("<section class=\"directories\">");
+                if (up != null) {
+                    msg.append("<li><a rel=\"directory\" href=\"").append(up).append("\"><span class=\"dirname\">..</span></a></li>");
+                }
+                for (String directory : directories) {
+                    String dir = directory + "/";
+                    msg.append("<li><a rel=\"directory\" href=\"").append(encodeUri(uri + dir)).append("\"><span class=\"dirname\">").append(dir).append("</span></a></li>");
+                }
+                msg.append("</section>");
+            }
+            if (files.size() > 0) {
+                msg.append("<section class=\"files\">");
+                for (String file : files) {
+                    msg.append("<li><a href=\"").append(encodeUri(uri + file)).append("\"><span class=\"filename\">").append(file).append("</span></a>");
+                    File curFile = new File(f, file);
+                    long len = curFile.length();
+                    msg.append("&nbsp;<span class=\"filesize\">(");
+                    if (len < 1024) {
+                        msg.append(len).append(" bytes");
+                    } else if (len < 1024 * 1024) {
+                        msg.append(len / 1024).append(".").append(len % 1024 / 10 % 100).append(" KB");
+                    } else {
+                        msg.append(len / (1024 * 1024)).append(".").append(len % (1024 * 1024) / 10000 % 100).append(" MB");
+                    }
+                    msg.append(")</span></li>");
+                }
+                msg.append("</section>");
+            }
+            msg.append("</ul>");
+        }
+        msg.append("</body></html>");
+        return msg.toString();
+    }
+
+    private String playMediaHtml(String uri){
+        Log.d("TAG", "playMediaHtml: >>00>."+uri);
+        String path = uri.split("hitesh")[1];
+        Log.d("TAG", "playMediaHtml: >>11>>"+path);
+
+        StringBuilder msg =
+                new StringBuilder("<html><body>");
+
+        msg.append("<div>");
+        msg.append("<video width=\"100%\" height=\"100%\" object-fit=\"fill\" controls autoplay><source src=\"").append(path).
+                append("\"").
+                append("type=\"video/mp4\"/>");
+        msg.append("</video>");
+        msg.append("</body></html>");
+        return msg.toString();
+    }
+
+    private String showImageHtml(String uri){
+        String path = uri.split("hitesh")[1];
+
+        StringBuilder msg =
+                new StringBuilder("<html><body>");
+
+        msg.append("<div>");
+
+        msg.append("<img position=\"absolute\" top=\"0\" bottom=\"0\" margin=\"auto\" width=\"100%\" height=\"100%\" src=\"").append(path).
+                append("\"");
+        msg.append("</img>");
         msg.append("</body></html>");
         return msg.toString();
     }
@@ -415,8 +441,10 @@ public class SimpleWebServer extends NanoHTTPD {
         System.out.println("SimpleWebServer.respon "+" "+uri);
         Response r;
         if (cors != null && Method.OPTIONS.equals(session.getMethod())) {
+            Log.d("TAG", "respond: >>00>>");
             r = Response.newFixedLengthResponse(Status.OK, MIME_PLAINTEXT, null, 0);
         } else {
+            Log.d("TAG", "respond: >>11>>");
             r = defaultRespond(headers, session, uri);
         }
 
@@ -427,14 +455,23 @@ public class SimpleWebServer extends NanoHTTPD {
     }
 
     private Response defaultRespond(Map<String, String> headers, IHTTPSession session, String uri) {
+        Log.d("TAG", "defaultRespond: >>00>>"+uri);
+
+        if (uri.contains("hitesh")){
+            return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, showImageHtml(uri));
+        }
+
         // Remove URL arguments
         uri = uri.trim().replace(File.separatorChar, '/');
+        Log.d("TAG", "defaultRespond: >>11>>"+uri);
         if (uri.indexOf('?') >= 0) {
             uri = uri.substring(0, uri.indexOf('?'));
         }
 
+        Log.d("TAG", "defaultRespond: >>22>>"+uri);
         // Prohibit getting out of current directory
         if (uri.contains("../")) {
+            Log.d("TAG", "defaultRespond: >>22 -- 11>>");
             return getForbiddenResponse("Won't serve ../ for security reasons.");
         }
 
@@ -444,6 +481,7 @@ public class SimpleWebServer extends NanoHTTPD {
             homeDir = this.rootDirs.get(i);
             canServeUri = canServeUri(uri, homeDir);
         }
+        Log.d("TAG", "defaultRespond: >>22 -- 22>>"+canServeUri);
         if (!canServeUri) {
             return getNotFoundResponse();
         }
@@ -452,6 +490,7 @@ public class SimpleWebServer extends NanoHTTPD {
         // redirect.
         File f = new File(homeDir, uri);
         System.out.println("SimpleWebServer.defaultRespond olaola 002"+" "+f.getAbsolutePath());
+        Log.d("TAG", "defaultRespond: >>33>>"+f.isDirectory()+"//"+uri.endsWith("/"));
         if (f.isDirectory() && !uri.endsWith("/")) {
             uri += "/";
             Response res = newFixedLengthResponse(Status.REDIRECT, NanoHTTPD.MIME_HTML, "<html><body>Redirected: <a href=\"" + uri + "\">" + uri + "</a></body></html>");
@@ -463,9 +502,11 @@ public class SimpleWebServer extends NanoHTTPD {
             // First look for index files (index.html, index.htm, etc) and if
             // none found, list the directory if readable.
             String indexFile = findIndexFileInDirectory(f);
+            Log.d("TAG", "defaultRespond: >>44>>"+indexFile);
             if (indexFile == null) {
                 if (f.canRead()) {
                     // No index file, list the directory if it is readable
+                    Log.d("TAG", "defaultRespond: >>55>>"+uri);
                     return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, listDirectory(uri, f));
                 } else {
                     return getForbiddenResponse("No directory listing.");
@@ -516,6 +557,7 @@ public class SimpleWebServer extends NanoHTTPD {
                 return getInternalErrorResponse("given path is not a directory (" + homeDir + ").");
             }
         }
+        Log.d("TAG", "serve: >>"+uri);
         return respond(Collections.unmodifiableMap(header), session, uri);
     }
 

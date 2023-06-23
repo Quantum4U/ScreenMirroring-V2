@@ -33,6 +33,8 @@ package io.github.dkbai.tinyhttpd.nanohttpd.core.protocols.http.content;
  * #L%
  */
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,6 +62,7 @@ public class CookieHandler implements Iterable<String> {
             String[] tokens = raw.split(";");
             for (String token : tokens) {
                 String[] data = token.trim().split("=");
+                Log.d("TAG", "execute: >>11>>"+data);
                 if (data.length == 2) {
                     this.cookies.put(data[0], data[1]);
                 }

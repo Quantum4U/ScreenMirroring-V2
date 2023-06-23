@@ -78,7 +78,6 @@ object CastHelper {
     ) {
         startServer(context)
 
-        GCMPreferences(context).setfilePath(path)
         Utils.showQueuePopup(
             context,
             Utils.buildMediaInfo(mediaData, path, thumb, type),

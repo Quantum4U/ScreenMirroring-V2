@@ -33,6 +33,8 @@ package io.github.dkbai.tinyhttpd.nanohttpd.core.protocols.http;
  * #L%
  */
 
+import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -127,6 +129,8 @@ public class HTTPSession implements IHTTPSession {
         this.remoteIp = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "127.0.0.1" : inetAddress.getHostAddress().toString();
         this.remoteHostname = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "localhost" : inetAddress.getHostName().toString();
         this.headers = new HashMap<>();
+
+        Log.d("TAG", "HTTPSession: >>"+inputStream+"//"+outputStream);
     }
 
     /**
@@ -136,11 +140,13 @@ public class HTTPSession implements IHTTPSession {
         try {
             // Read the request line
             String inLine = in.readLine();
+            Log.d("TAG", "decodeHeader: >>00>>"+inLine);
             if (inLine == null) {
                 return;
             }
 
             StringTokenizer st = new StringTokenizer(inLine);
+            Log.d("TAG", "decodeHeader: >>11>>"+st);
             if (!st.hasMoreTokens()) {
                 throw new NanoHTTPD.ResponseException(Status.BAD_REQUEST, "BAD REQUEST: Syntax error. Usage: GET /example/file.html");
             }
@@ -152,9 +158,11 @@ public class HTTPSession implements IHTTPSession {
             }
 
             String uri = st.nextToken();
+            Log.d("TAG", "decodeHeader: >>22>>"+uri);
 
             // Decode parameters from the URI
             int qmi = uri.indexOf('?');
+            Log.d("TAG", "decodeHeader: >>33>>"+qmi);
             if (qmi >= 0) {
                 decodeParms(uri.substring(qmi + 1), parms);
                 uri = NanoHTTPD.decodePercent(uri.substring(0, qmi));
@@ -162,6 +170,7 @@ public class HTTPSession implements IHTTPSession {
                 uri = NanoHTTPD.decodePercent(uri);
             }
 
+            Log.d("TAG", "decodeHeader: >>44>>"+uri);
             // If there's another token, its protocol version,
             // followed by HTTP headers.
             // NOTE: this now forces header names lower case since they are
@@ -172,7 +181,9 @@ public class HTTPSession implements IHTTPSession {
                 protocolVersion = "HTTP/1.1";
                 NanoHTTPD.LOG.log(Level.FINE, "no protocol version specified, strange. Assuming HTTP/1.1.");
             }
+            Log.d("TAG", "decodeHeader: >>55>>"+protocolVersion);
             String line = in.readLine();
+            Log.d("TAG", "decodeHeader: >>66>>"+line);
             while (line != null && !line.trim().isEmpty()) {
                 int p = line.indexOf(':');
                 if (p >= 0) {
@@ -181,6 +192,7 @@ public class HTTPSession implements IHTTPSession {
                 line = in.readLine();
             }
 
+            Log.d("TAG", "decodeHeader: >>77>>"+line);
             pre.put("uri", uri);
         } catch (IOException ioe) {
             throw new NanoHTTPD.ResponseException(Status.INTERNAL_ERROR, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage(), ioe);
@@ -191,6 +203,8 @@ public class HTTPSession implements IHTTPSession {
      * Decodes the Multipart Body data and put it into Key/Value pairs.
      */
     private void decodeMultipartFormData(ContentType contentType, ByteBuffer fbuf, Map<String, List<String>> parms, Map<String, String> files) throws NanoHTTPD.ResponseException {
+
+        Log.d("TAG", "decodeMultipartFormData: "+contentType+"//"+fbuf+"//"+parms+"//"+files);
         int pcount = 0;
         try {
             int[] boundaryIdxs = getBoundaryPositions(fbuf, contentType.getBoundary().getBytes());
@@ -285,6 +299,7 @@ public class HTTPSession implements IHTTPSession {
                         files.put(partName + count, path);
                     }
                     values.add(fileName);
+                    Log.d("TAG", "decodeMultipartFormData: >>"+values);
                 }
             }
         } catch (NanoHTTPD.ResponseException re) {
@@ -407,7 +422,10 @@ public class HTTPSession implements IHTTPSession {
 
             this.uri = pre.get("uri");
 
+            Log.d("TAG", "execute: >>00>>"+uri);
+
             this.cookies = new CookieHandler(this.headers);
+            Log.d("TAG", "execute: >>22>>"+cookies);
 
             String connection = this.headers.get("connection");
             boolean keepAlive = "HTTP/1.1".equals(protocolVersion) && (connection == null || !connection.matches("(?i).*close.*"));
@@ -427,6 +445,7 @@ public class HTTPSession implements IHTTPSession {
                 String acceptEncoding = this.headers.get("accept-encoding");
                 this.cookies.unloadQueue(r);
                 r.setRequestMethod(this.method);
+                Log.d("TAG", "execute: >>33>>"+method);
                 if (acceptEncoding == null || !acceptEncoding.contains("gzip")) {
                     r.setUseGzip(false);
                 }
@@ -437,6 +456,7 @@ public class HTTPSession implements IHTTPSession {
                // r.addHeader("Content-Type", "*/*");
                 r.addHeader("Access-Control-Allow-Methods", "GET, PUT, DELETE, UPDATE, HEAD, OPTIONS");
                 r.send(this.outputStream);
+                Log.d("TAG", "execute: >>44>>"+r+"//"+r.getData());
             }
             if (!keepAlive || r.isCloseConnection()) {
                 throw new SocketException("NanoHttpd Shutdown");
