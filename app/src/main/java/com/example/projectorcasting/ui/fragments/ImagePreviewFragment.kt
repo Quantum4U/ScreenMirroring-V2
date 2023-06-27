@@ -30,6 +30,7 @@ import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagePreviewBinding
 import engine.app.analytics.logGAEvents
+import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
 import java.util.*
 
 

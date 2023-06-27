@@ -39,7 +39,6 @@ class WebService(private val context: Context,workerParameters: WorkerParameters
                     Environment.getExternalStorageDirectory().absolutePath
                 )
             )
-            Log.d(TAG, "Service Started on ${CastHelper.deviceIpAddress}:9999")
         } catch (e: Exception) {
             Log.e(TAG, "Error: ${e.message}", e)
         }

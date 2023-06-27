@@ -62,6 +62,7 @@ import io.github.dkbai.tinyhttpd.nanohttpd.core.protocols.http.response.IStatus;
 import io.github.dkbai.tinyhttpd.nanohttpd.core.protocols.http.response.Response;
 import io.github.dkbai.tinyhttpd.nanohttpd.core.protocols.http.response.Status;
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.Logger;
+import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton;
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.ServerRunner;
 
 
@@ -329,7 +330,7 @@ public class SimpleWebServer extends NanoHTTPD {
 
     protected String listDirectory(String uri, File f) {
 
-        Log.d("TAG", "defaultRespond: >>11>>"+uri+"//"+f+"//"+f.getAbsolutePath());
+        Log.d("TAG", "defaultRespond: >>11>>" + uri + "//" + f + "//" + f.getAbsolutePath());
 
         String heading = "Directory " + uri;
         StringBuilder msg =
@@ -398,10 +399,10 @@ public class SimpleWebServer extends NanoHTTPD {
         return msg.toString();
     }
 
-    private String playMediaHtml(String uri){
-        Log.d("TAG", "playMediaHtml: >>00>."+uri);
+    private String playMediaHtml(String uri) {
+        Log.d("TAG", "playMediaHtml: >>00>." + uri);
         String path = uri.split("hitesh")[1];
-        Log.d("TAG", "playMediaHtml: >>11>>"+path);
+        Log.d("TAG", "playMediaHtml: >>11>>" + path);
 
         StringBuilder msg =
                 new StringBuilder("<html><body>");
@@ -415,17 +416,221 @@ public class SimpleWebServer extends NanoHTTPD {
         return msg.toString();
     }
 
-    private String showImageHtml(String uri){
+    private String playAudioHtml(String uri) {
+        Log.d("TAG", "playMediaHtml: >>00>." + uri);
         String path = uri.split("hitesh")[1];
+        Log.d("TAG", "playMediaHtml: >>11>>" + path);
 
         StringBuilder msg =
                 new StringBuilder("<html><body>");
 
-        msg.append("<div>");
-
-        msg.append("<img position=\"absolute\" top=\"0\" bottom=\"0\" margin=\"auto\" width=\"100%\" height=\"100%\" src=\"").append(path).
+        msg.append("<div style='text-align: center; background-color: #ffffff' padding-top:50%;>");
+        msg.append("<audio width=\"100%\" height=\"100%\" object-fit=\"fill\" controls autoplay><source src=\"").append(path).
                 append("\"");
-        msg.append("</img>");
+//                append("type=\"audio/mpeg\"/>");
+        msg.append("</audio>");
+        msg.append("</body></html>");
+        return msg.toString();
+    }
+
+    private String imageSLideShow(String uri) {
+        List<String> list = PathSingleton.INSTANCE.getImagePath();
+
+        StringBuilder msg =
+                new StringBuilder("<html>");
+
+        msg.append("<head>");
+
+        msg.append("<style>");
+        msg.append("body {font-family: Verdana, sans-serif; margin:0}\n" +
+                ".mySlides {display: none}\n" +
+                "img {vertical-align: middle;}\n" +
+                "\n" +
+                "/* Slideshow container */\n" +
+                ".slideshow-container {\n" +
+                "  max-width: 1000px;\n" +
+                "  position: relative;\n" +
+                "  margin: auto;\n" +
+                "}\n" +
+                "\n" +
+                "/* Next & previous buttons */\n" +
+                ".prev, .next {\n" +
+                "  cursor: pointer;\n" +
+                "  position: absolute;\n" +
+                "  top: 50%;\n" +
+                "  width: auto;\n" +
+                "  padding: 16px;\n" +
+                "  margin-top: -22px;\n" +
+                "  color: white;\n" +
+                "  font-weight: bold;\n" +
+                "  font-size: 18px;\n" +
+                "  transition: 0.6s ease;\n" +
+                "  border-radius: 0 3px 3px 0;\n" +
+                "  user-select: none;\n" +
+                "  right: 90%;\n"+
+                "}\n" +
+                "\n" +
+                "/* Position the \"next button\" to the right */\n" +
+                ".next {\n" +
+                "  right: 0;\n" +
+                "  border-radius: 3px 0 0 3px;\n" +
+                "}\n" +
+                "\n" +
+                "/* On hover, add a black background color with a little bit see-through */\n" +
+                ".prev:hover, .next:hover {\n" +
+                "  background-color: rgba(0,0,0,0.8);\n" +
+                "}\n" +
+                "\n" +
+                "/* Caption text */\n" +
+                ".text {\n" +
+                "  color: #f2f2f2;\n" +
+                "  font-size: 15px;\n" +
+                "  padding: 8px 12px;\n" +
+                "  position: absolute;\n" +
+                "  bottom: 8px;\n" +
+                "  width: 100%;\n" +
+                "  text-align: center;\n" +
+                "}\n" +
+                "\n" +
+                "/* Number text (1/3 etc) */\n" +
+                ".numbertext {\n" +
+                "  color: #f2f2f2;\n" +
+                "  font-size: 12px;\n" +
+                "  padding: 8px 12px;\n" +
+                "  position: absolute;\n" +
+                "  top: 0;\n" +
+                "}\n" +
+                "\n" +
+                "/* The dots/bullets/indicators */\n" +
+                ".dot {\n" +
+                "  cursor: pointer;\n" +
+                "  height: 15px;\n" +
+                "  width: 15px;\n" +
+                "  margin: 0 2px;\n" +
+                "  background-color: #bbb;\n" +
+                "  border-radius: 50%;\n" +
+                "  display: inline-block;\n" +
+                "  transition: background-color 0.6s ease;\n" +
+                "}\n" +
+                "\n" +
+                ".active, .dot:hover {\n" +
+                "  background-color: #717171;\n" +
+                "}\n" +
+                "\n" +
+                "/* Fading animation */\n" +
+                ".fade {\n" +
+                "  animation-name: fade;\n" +
+                "  animation-duration: 1.5s;\n" +
+                "}\n" +
+                "\n" +
+                "@keyframes fade {\n" +
+                "  from {opacity: .4} \n" +
+                "  to {opacity: 1}\n" +
+                "}\n" +
+                "\n" +
+                "/* On smaller screens, decrease text size */\n" +
+                "@media only screen and (max-width: 300px) {\n" +
+                "  .prev, .next,.text {font-size: 11px}\n" +
+                "}");
+        msg.append("</style>");
+
+        msg.append("</head>");
+
+        msg.append("<body style='text-align: center; background-color: #000000'>");
+
+        msg.append("<div class=\"slideshow-container\" >");
+
+        for (String imagePath : list) {
+            msg.append("<div class=\"mySlides fade\">\n" +
+                    "  <img src=\"/" + imagePath + "\" style=\"height:100%\">\n" +
+                    "</div>\n");
+        }
+
+        msg.append("</div>");
+
+        msg.append("<a class=\"prev\" onclick=\"plusSlides(-1)\">❮</a>\n");
+
+        msg.append("<a class=\"next\" onclick=\"plusSlides(1)\">❯</a>\n");
+
+        msg.append("<script>");
+        msg.append("let slideIndex = 1;\n" +
+                "showSlides(slideIndex);\n" +
+                "\n" +
+                "function plusSlides(n) {\n" +
+                "  showSlides(slideIndex += n);\n" +
+                "}\n" +
+                "\n" +
+                "function currentSlide(n) {\n" +
+                "  showSlides(slideIndex = n);\n" +
+                "}\n" +
+                "\n" +
+                "function showSlides(n) {\n" +
+                "  let i;\n" +
+                "  let slides = document.getElementsByClassName(\"mySlides\");\n" +
+                "  let dots = document.getElementsByClassName(\"dot\");\n" +
+                "  if (n > slides.length) {slideIndex = 1}    \n" +
+                "  if (n < 1) {slideIndex = slides.length}\n" +
+                "  for (i = 0; i < slides.length; i++) {\n" +
+                "    slides[i].style.display = \"none\";  \n" +
+                "  }\n" +
+                "  for (i = 0; i < dots.length; i++) {\n" +
+                "    dots[i].className = dots[i].className.replace(\" active\", \"\");\n" +
+                "  }\n" +
+                "  slides[slideIndex-1].style.display = \"block\";  \n" +
+                "  dots[slideIndex-1].className += \" active\";\n" +
+                "}");
+        msg.append("</script>");
+        msg.append("</body></html>");
+        return msg.toString();
+    }
+
+    private String showImageHtml(String uri) {
+        List<String> list = PathSingleton.INSTANCE.getImagePath();
+        String path = uri.split("hitesh")[1];
+
+        StringBuilder msg =
+                new StringBuilder("<html>");
+
+        msg.append("<head>");
+        msg.append("<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css\" integrity=\"sha512-UTNP5BXLIptsaj5WdKFrkFov94lDx+eBvbKyoe1YAfjeRPC+gT5kyZ10kOHCfNZqEui1sxmqvodNUx3KbuYI/A==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"/>");
+        msg.append("<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css\" integrity=\"sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"/>");
+        msg.append("</head>");
+
+        msg.append("<body>");
+
+
+        msg.append("<div id=\"carouselExampleControls\" class=\"carousel slide\" data-ride=\"carousel\">");
+        msg.append("<div class=\"carousel-inner\">");
+        for (String imagePath : list) {
+            msg.append("<div class=\"carousel-item\" >");
+            msg.append("<img class=\"d-block w-100\" src =\"/" + imagePath + "\"" + " alt = \"First slide\">");
+            msg.append("</div>");
+        }
+        msg.append("</div>");
+
+        msg.append("<a class=\"carousel-control-prev\" href = \"#carouselExampleControls\" role = \"button\"\n" + "data - slide = \"prev\">");
+        msg.append("<span class=\"carousel-control-prev-icon\" aria - hidden = \"true\" ></span>");
+        msg.append("<span class=\"sr-only\" > Previous </span >\n" + "</a>");
+        msg.append("<a class=\"carousel-control-next\" href = \"#carouselExampleControls\" role = \"button\"\n" + "data - slide = \"next\">");
+        msg.append("<span class=\"carousel-control-next-icon\" aria - hidden = \"true\" ></span>");
+        msg.append("<span class=\"sr-only\" > Next </span >\n" + "</a>");
+        msg.append("</div>");
+
+//        for (String imagePath : list) {
+//
+//            msg.append("<div style='text-align: center; background-color: #000000'>");
+//
+//            msg.append("<img height=\"100%\" src=\"").append("/" + imagePath).
+//                    append("\"");
+//            msg.append("</img>");
+//
+//            msg.append("</div>");
+//        }
+
+        msg.append("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js\" integrity=\"sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script>");
+        msg.append("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.js\" integrity=\"sha512-gY25nC63ddE0LcLPhxUJGFxa2GoIyA5FLym4UJqHDEMHjp8RET6Zn/SHo1sltt3WuVtqfyxECP38/daUc/WVEA==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script>");
+        msg.append("<script src=\"https://code.jquery.com/jquery-3.2.1.slim.min.js\">" +
+                "</script>");
         msg.append("</body></html>");
         return msg.toString();
     }
@@ -438,7 +643,7 @@ public class SimpleWebServer extends NanoHTTPD {
 
     private Response respond(Map<String, String> headers, IHTTPSession session, String uri) {
         // First let's handle CORS OPTION query
-        System.out.println("SimpleWebServer.respon "+" "+uri);
+        System.out.println("SimpleWebServer.respon " + " " + uri);
         Response r;
         if (cors != null && Method.OPTIONS.equals(session.getMethod())) {
             Log.d("TAG", "respond: >>00>>");
@@ -455,20 +660,20 @@ public class SimpleWebServer extends NanoHTTPD {
     }
 
     private Response defaultRespond(Map<String, String> headers, IHTTPSession session, String uri) {
-        Log.d("TAG", "defaultRespond: >>00>>"+uri);
+        Log.d("TAG", "defaultRespond: >>00>>" + uri);
 
-        if (uri.contains("hitesh")){
-            return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, showImageHtml(uri));
+        if (uri.contains("hitesh")) {
+            return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, imageSLideShow(uri));
         }
 
         // Remove URL arguments
         uri = uri.trim().replace(File.separatorChar, '/');
-        Log.d("TAG", "defaultRespond: >>11>>"+uri);
+        Log.d("TAG", "defaultRespond: >>11>>" + uri);
         if (uri.indexOf('?') >= 0) {
             uri = uri.substring(0, uri.indexOf('?'));
         }
 
-        Log.d("TAG", "defaultRespond: >>22>>"+uri);
+        Log.d("TAG", "defaultRespond: >>22>>" + uri);
         // Prohibit getting out of current directory
         if (uri.contains("../")) {
             Log.d("TAG", "defaultRespond: >>22 -- 11>>");
@@ -481,7 +686,7 @@ public class SimpleWebServer extends NanoHTTPD {
             homeDir = this.rootDirs.get(i);
             canServeUri = canServeUri(uri, homeDir);
         }
-        Log.d("TAG", "defaultRespond: >>22 -- 22>>"+canServeUri);
+        Log.d("TAG", "defaultRespond: >>22 -- 22>>" + canServeUri);
         if (!canServeUri) {
             return getNotFoundResponse();
         }
@@ -489,8 +694,8 @@ public class SimpleWebServer extends NanoHTTPD {
         // Browsers get confused without '/' after the directory, send a
         // redirect.
         File f = new File(homeDir, uri);
-        System.out.println("SimpleWebServer.defaultRespond olaola 002"+" "+f.getAbsolutePath());
-        Log.d("TAG", "defaultRespond: >>33>>"+f.isDirectory()+"//"+uri.endsWith("/"));
+        System.out.println("SimpleWebServer.defaultRespond olaola 002" + " " + f.getAbsolutePath());
+        Log.d("TAG", "defaultRespond: >>33>>" + f.isDirectory() + "//" + uri.endsWith("/"));
         if (f.isDirectory() && !uri.endsWith("/")) {
             uri += "/";
             Response res = newFixedLengthResponse(Status.REDIRECT, NanoHTTPD.MIME_HTML, "<html><body>Redirected: <a href=\"" + uri + "\">" + uri + "</a></body></html>");
@@ -502,11 +707,11 @@ public class SimpleWebServer extends NanoHTTPD {
             // First look for index files (index.html, index.htm, etc) and if
             // none found, list the directory if readable.
             String indexFile = findIndexFileInDirectory(f);
-            Log.d("TAG", "defaultRespond: >>44>>"+indexFile);
+            Log.d("TAG", "defaultRespond: >>44>>" + indexFile);
             if (indexFile == null) {
                 if (f.canRead()) {
                     // No index file, list the directory if it is readable
-                    Log.d("TAG", "defaultRespond: >>55>>"+uri);
+                    Log.d("TAG", "defaultRespond: >>55>>" + uri);
                     return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, listDirectory(uri, f));
                 } else {
                     return getForbiddenResponse("No directory listing.");
@@ -557,7 +762,7 @@ public class SimpleWebServer extends NanoHTTPD {
                 return getInternalErrorResponse("given path is not a directory (" + homeDir + ").");
             }
         }
-        Log.d("TAG", "serve: >>"+uri);
+        Log.d("TAG", "serve: >>" + uri);
         return respond(Collections.unmodifiableMap(header), session, uri);
     }
 

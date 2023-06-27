@@ -103,6 +103,14 @@ object CastHelper {
         }
     }
 
+    fun showImagesInHtml(context: Context?,
+                         mediaData: MediaData?,
+                         path: String,
+                         type: Int){
+        startServer(context)
+        Utils.buildMediaInfo(mediaData, path, path, type)
+    }
+
     fun startServer(context: Context?) {
         /** Find the IpAddress of the device and save it to [deviceIpAddress]
          *  so that Service class can pick it up to create a small http server */

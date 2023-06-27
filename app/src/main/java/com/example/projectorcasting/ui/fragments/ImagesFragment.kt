@@ -16,6 +16,7 @@ import com.example.projectorcasting.AnalyticsConstant
 import com.example.projectorcasting.adapter.FolderSelectionAdapter
 import com.example.projectorcasting.adapter.ImageSectionalAdapter
 import com.example.projectorcasting.casting.model.CastModel
+import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.casting.utils.Utils.IMAGE
 import com.example.projectorcasting.casting.utils.Utils.VIDEO
@@ -35,6 +36,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagesBinding
 import engine.app.analytics.logGAEvents
+import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -89,13 +91,15 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 
         binding?.tvSlideshow?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Photos_Slideshow)
-            MediaListSingleton.setSelectedImageList(imageSectionalAdapter?.getSelectedImageList())
-            imageSectionalAdapter?.disableLongClick()
-            if (isConnected) {
-                openPreviewPage(true, 0)
-            } else {
-                openDeviceListPage(true)
-            }
+//            MediaListSingleton.setSelectedImageList(imageSectionalAdapter?.getSelectedImageList())
+//            imageSectionalAdapter?.disableLongClick()
+//            if (isConnected) {
+//                openPreviewPage(true, 0)
+//            } else {
+//                openDeviceListPage(true)
+//            }
+
+            showImagesInHtml()
         }
 
         activity?.onBackPressedDispatcher?.addCallback(
@@ -107,6 +111,23 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             })
 
         checkResultToStartSlideshow()
+    }
+
+    private fun showImagesInHtml() {
+        var pathList: java.util.ArrayList<String> = arrayListOf()
+        val selectedList = imageSectionalAdapter?.getSelectedImageList()
+        for (data in selectedList!!) {
+            val mediaItem = data
+            val path = mediaItem?.path?.split("0/")?.get(1)
+            pathList.add(path.toString())
+            CastHelper.showImagesInHtml(
+                context,
+                mediaItem,
+                path.toString(),
+                Utils.IMAGE
+            )
+        }
+        PathSingleton.setImagePath(pathList)
     }
 
     private fun openDeviceListPage(startSlideShow: Boolean) {
