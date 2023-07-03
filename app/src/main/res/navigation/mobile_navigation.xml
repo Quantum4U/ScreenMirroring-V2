@@ -64,4 +64,30 @@
             app:argType="integer" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_browse_cast"
+        android:name="com.example.projectorcasting.ui.fragments.BrowseCastFragment"
+        android:label="@string/menu_browse_cast"
+        tools:layout="@layout/fragment_browse_cast">
+
+        <action
+            android:id="@+id/action_browse_to_preview"
+            app:destination="@id/nav_web_preview"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_web_preview"
+        android:name="com.example.projectorcasting.ui.fragments.WebViewFragment"
+        android:label="@string/preview"
+        tools:layout="@layout/fragment_webview">
+
+        <argument
+            android:name="url"
+            app:argType="string"/>
+
+    </fragment>
+
+
 </navigation>

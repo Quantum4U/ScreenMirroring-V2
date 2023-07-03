@@ -21,6 +21,7 @@ import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.images.WebImage
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import engine.app.analytics.logGAEvents
+import io.github.dkbai.tinyhttpd.nanohttpd.core.util.ServerConstants
 import org.json.JSONObject
 import java.io.File
 import java.net.InetAddress
@@ -67,16 +68,16 @@ object Utils {
          *  media files.
          */
         val sampleVideoStream =
-            "http://${CastHelper.deviceIpAddress}:9999/${path}"
+            "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${path}"
         val sampleVideoSubtitle = ""
 //            "http://${deviceIpAddress}:9999/${edt_subtitle.text}"
 
         Log.d("MainActivity", "buildMediaInfo A13 : >>$sampleVideoStream")
 
         val imageUrl1 =
-            "http://${CastHelper.deviceIpAddress}:9999/${thumb}"
+            "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${thumb}"
         val imageUrl2 =
-            "http://${CastHelper.deviceIpAddress}:9999/${thumb}"
+            "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${thumb}"
 
 
         /** (Optional) Setting a subtitle track, You can add more subtitle

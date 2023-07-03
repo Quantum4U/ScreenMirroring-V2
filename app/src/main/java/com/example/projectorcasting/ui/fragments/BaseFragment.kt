@@ -67,6 +67,10 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
         (activity as BaseActivity).stopCasting()
     }
 
+    fun stopServer(){
+        (activity as BaseActivity).stopServer()
+    }
+
     fun isCastingConnected(): Boolean? {
         return (activity as BaseActivity).isCastingConnected()
     }

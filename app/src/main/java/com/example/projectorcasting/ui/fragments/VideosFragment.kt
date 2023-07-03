@@ -10,22 +10,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.projectorcasting.AnalyticsConstant
-import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.adapter.VideoHorizontalAdapter
 import com.example.projectorcasting.adapter.VideoSectionalAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
-import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentVideosBinding
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.models.SectionModel
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
+import com.example.projectorcasting.utils.PromptHelper
 import com.example.projectorcasting.viewmodels.VideoViewModel
 import com.google.android.gms.cast.framework.CastState
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
+import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentVideosBinding
 import engine.app.analytics.logGAEvents
+import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,6 +42,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     private var videoAdapter: VideoHorizontalAdapter? = null
     private var videoSectionalAdapter: VideoSectionalAdapter? = null
     private var mediaMapList: ArrayList<SectionModel>? = null
+    private var isCastConnected = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -102,10 +105,12 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     private fun observeCastingLiveData() {
         castingLiveData().observe(viewLifecycleOwner, Observer { state ->
             if (state == CastState.CONNECTED) {
+                isCastConnected = true
                 binding?.llConnected?.visibility = View.VISIBLE
                 binding?.llConnect?.visibility = View.GONE
                 binding?.tvConnected?.text = getString(R.string.connected, getConnectedDeviceName())
             } else if (state == CastState.NOT_CONNECTED) {
+                isCastConnected = false
                 binding?.llConnected?.visibility = View.GONE
                 binding?.llConnect?.visibility = View.VISIBLE
             }
@@ -161,16 +166,28 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
                 thumbPath.toString(), Utils.VIDEO, ::checkForQueue
             )
         }
+
+    }
+
+    private fun showVideoInHtml(mediaData: MediaData?) {
+        val path = mediaData?.file?.path?.split("0/")?.get(1)
+        var pathList: java.util.ArrayList<String> = arrayListOf()
+        pathList.add(path.toString())
+        PathSingleton.setVideoPath(pathList)
     }
 
     private fun itemClick(mediaData: MediaData) {
-        showLoader()
-        CoroutineScope(Dispatchers.IO).launch {
-            val thumb = AppUtils.saveTempThumb(context,mediaData.bitmap)
+        if (isCastConnected) {
+            showLoader()
+            CoroutineScope(Dispatchers.IO).launch {
+                val thumb = AppUtils.saveTempThumb(context, mediaData.bitmap)
 
-            withContext(Dispatchers.Main) {
-                playMedia(thumb, mediaData)
+                withContext(Dispatchers.Main) {
+                    playMedia(thumb, mediaData)
+                }
             }
+        } else {
+            PromptHelper.showCastingPrompt(context, ::castPromtAction, isCastConnected, mediaData)
         }
     }
 
@@ -218,9 +235,24 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
             stopCasting()
     }
 
+    private fun castPromtAction(isCastDeviceClick: Boolean,mediaData: MediaData?) {
+        if (isCastDeviceClick) {
+            if (!isCastConnected)
+                findNavController().navigate(R.id.nav_scan_device)
+            else
+                stopCasting()
+        } else {
+            showVideoInHtml(mediaData)
+            findNavController().navigate(R.id.nav_browse_cast)
+            showFullAds(activity)
+        }
+    }
+
     private fun checkForQueue(count: Int) {
         Log.d("VideosFragment", "onViewCreated A13 : ><<<" + count)
-        binding?.tvQueued?.visibility = View.VISIBLE
+        if(count > 0) {
+            binding?.tvQueued?.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {

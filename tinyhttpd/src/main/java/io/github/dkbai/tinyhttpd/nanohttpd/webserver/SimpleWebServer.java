@@ -63,6 +63,7 @@ import io.github.dkbai.tinyhttpd.nanohttpd.core.protocols.http.response.Response
 import io.github.dkbai.tinyhttpd.nanohttpd.core.protocols.http.response.Status;
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.Logger;
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton;
+import io.github.dkbai.tinyhttpd.nanohttpd.core.util.ServerConstants;
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.ServerRunner;
 
 
@@ -104,7 +105,7 @@ public class SimpleWebServer extends NanoHTTPD {
 
     public static void main(String[] args) {
         // Defaults
-        int port = 9999;
+        int port = ServerConstants.PORT_VALUE;
 
         String host = null; // bind to all interfaces by default
         List<File> rootDirs = new ArrayList<File>();
@@ -399,24 +400,40 @@ public class SimpleWebServer extends NanoHTTPD {
         return msg.toString();
     }
 
+    public void showToast(){
+        Log.d("TAG", "showToast: >>");
+    }
+
     private String playMediaHtml(String uri) {
-        Log.d("TAG", "playMediaHtml: >>00>." + uri);
-        String path = uri.split("hitesh")[1];
-        Log.d("TAG", "playMediaHtml: >>11>>" + path);
+        List<String> list = PathSingleton.INSTANCE.getVideoPath();
+        Log.d("TAG", "playMediaHtml: >>00>." + list.size()+"//"+list.get(0));
+        String path = uri.split("Projector")[1];
 
         StringBuilder msg =
                 new StringBuilder("<html><body>");
 
         msg.append("<div>");
-        msg.append("<video width=\"100%\" height=\"100%\" object-fit=\"fill\" controls autoplay><source src=\"").append(path).
-                append("\"").
-                append("type=\"video/mp4\"/>");
-        msg.append("</video>");
+        for (String videoPath : list) {
+            Log.d("TAG", "playMediaHtml: >>11>>" + videoPath);
+            msg.append("<video id=\"myVideo\" width=\"100%\" height=\"100%\" object-fit=\"fill\" controls autoplay><source src=\"/").append(videoPath).
+                    append("\"").
+                    append("type=\"video/mp4\"/>");
+            msg.append("</video>");
+        }
+        msg.append("</div>");
+        msg.append("<script>");
+        msg.append("let vid = document.getElementById(\"myVideo\");\n" +
+                "vid.onseeking = function() {\n" +
+//                  "  showToast(); \n"+
+                "  alert(\"Seek operation began\");\n" +
+                "};");
+        msg.append("</script>");
         msg.append("</body></html>");
         return msg.toString();
     }
 
     private String playAudioHtml(String uri) {
+        List<String> list = PathSingleton.INSTANCE.getAudioPath();
         Log.d("TAG", "playMediaHtml: >>00>." + uri);
         String path = uri.split("hitesh")[1];
         Log.d("TAG", "playMediaHtml: >>11>>" + path);
@@ -425,10 +442,12 @@ public class SimpleWebServer extends NanoHTTPD {
                 new StringBuilder("<html><body>");
 
         msg.append("<div style='text-align: center; background-color: #ffffff' padding-top:50%;>");
-        msg.append("<audio width=\"100%\" height=\"100%\" object-fit=\"fill\" controls autoplay><source src=\"").append(path).
-                append("\"");
+        for (String audioPath : list) {
+            msg.append("<audio width=\"100%\" height=\"100%\" object-fit=\"fill\" controls autoplay><source src=\"/").append(audioPath).
+                    append("\"");
 //                append("type=\"audio/mpeg\"/>");
-        msg.append("</audio>");
+            msg.append("</audio>");
+        }
         msg.append("</body></html>");
         return msg.toString();
     }
@@ -662,8 +681,8 @@ public class SimpleWebServer extends NanoHTTPD {
     private Response defaultRespond(Map<String, String> headers, IHTTPSession session, String uri) {
         Log.d("TAG", "defaultRespond: >>00>>" + uri);
 
-        if (uri.contains("hitesh")) {
-            return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, imageSLideShow(uri));
+        if (uri.contains("Projector")) {
+            return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, playMediaHtml(uri));
         }
 
         // Remove URL arguments

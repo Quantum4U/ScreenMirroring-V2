@@ -13,6 +13,7 @@
     <string name="menu_audio">Audios</string>
     <string name="menu_scan_device">Scan Device</string>
     <string name="menu_queue">Queue</string>
+    <string name="menu_browse_cast">Browse Cast</string>
 
     <string name="preview">Preview</string>
     <string name="images">Photos</string>
@@ -77,4 +78,13 @@
     <string name="unselect_all">Unselect all</string>
     <string name="connect_to_cast_device_text">Please connect to a device</string>
     <string name="accept_privacy_policy">Please accept privacy policy conditions</string>
+    <string name="cast_your_media">Cast your Media</string>
+    <string name="cast_prompt_mssg">Make sure your phone and cast device are connected to the same Wi-Fi.</string>
+    <string name="cast_on_smart_tv">Cast on \nSmart TV</string>
+    <string name="cast_on_other_tv">Cast on \nOther TV</string>
+    <string name="browser_text1">Make sure your phone and cast device are connected to the same Wi-Fi.</string>
+    <string name="browser_text2">Open this link on the other device</string>
+    <string name="check_preview">Check Preview</string>
+    <string name="share">Share</string>
+
 </resources>

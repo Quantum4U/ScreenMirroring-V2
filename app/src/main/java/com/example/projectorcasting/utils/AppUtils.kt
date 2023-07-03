@@ -646,4 +646,18 @@ object AppUtils {
         }
     }
 
+    fun shareUrl(context: Context?,url: String){
+        val sharingIntent = Intent(Intent.ACTION_SEND)
+        sharingIntent.type = "text/plain"
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, url)
+        context?.startActivity(
+            Intent.createChooser(sharingIntent, context?.getString(R.string.share))
+                .addFlags(
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+    }
+
 }

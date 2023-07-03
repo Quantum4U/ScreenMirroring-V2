@@ -5,6 +5,7 @@ import android.os.Environment
 import android.util.Log
 import androidx.work.*
 import com.example.projectorcasting.casting.utils.CastHelper
+import io.github.dkbai.tinyhttpd.nanohttpd.core.util.ServerConstants
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 
 class WebService(private val context: Context,workerParameters: WorkerParameters) : Worker(context,workerParameters) {
@@ -34,7 +35,7 @@ class WebService(private val context: Context,workerParameters: WorkerParameters
                 arrayOf(
                     "-h",
                     CastHelper.deviceIpAddress,
-                    "-p 9999",
+                    "-p ${ServerConstants.PORT_VALUE}",
                     "-d",
                     Environment.getExternalStorageDirectory().absolutePath
                 )

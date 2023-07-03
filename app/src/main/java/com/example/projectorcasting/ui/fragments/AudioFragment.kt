@@ -22,6 +22,7 @@ import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.viewmodels.AudioViewModel
 import com.google.android.gms.cast.framework.CastState
 import engine.app.analytics.logGAEvents
+import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
 import java.io.File
 
 class AudioFragment : BaseFragment(R.layout.fragment_audio) {
@@ -131,6 +132,14 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
         path?.let {
             CastHelper.playMedia(context, mediaData, it, thumb, Utils.AUDIO, ::checkForQueue)
         }
+
+        showAudioInHtml(path)
+    }
+
+    private fun showAudioInHtml(path: String?) {
+        var pathList: java.util.ArrayList<String> = arrayListOf()
+        pathList.add(path.toString())
+        PathSingleton.setAudioPath(pathList)
     }
 
     private fun sortMediaList() {

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/rl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:actionBarSize">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding20dp"
+            android:padding="@dimen/padding5dp"
+            app:srcCompat="@drawable/ic_back_arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/inter_semibold"
+            android:text="@string/menu_browse_cast"
+            android:textColor="@color/heading"
+            android:textSize="@dimen/textsize20sp" />
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_below="@+id/rl_toolbar"
+        android:id="@+id/recyclerview"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding2dp"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_url"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="@dimen/padding20dp"
+        android:layout_marginRight="@dimen/padding20dp"
+        android:layout_marginLeft="@dimen/padding20dp"
+        android:layout_marginTop="@dimen/padding30dp"
+        android:layout_below="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding60dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_browse"
+                android:layout_marginLeft="@dimen/padding12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_browse_icon"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/tv_url"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textSize="@dimen/textsize14sp"
+                android:textColor="@color/heading"
+                android:layout_marginLeft="@dimen/margin_5"
+                android:layout_marginRight="@dimen/padding5dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/iv_browse"
+                android:layout_toLeftOf="@+id/iv_share"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_share"
+                android:padding="@dimen/padding5dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="@dimen/padding12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_share_icon"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tv_preview"
+        android:background="@drawable/dash_mirror_start_bg"
+        android:backgroundTint="#5EB4FA"
+        android:textSize="@dimen/textsize18sp"
+        android:paddingTop="@dimen/padding12dp"
+        android:paddingBottom="@dimen/padding12dp"
+        android:textColor="@color/white"
+        android:text="@string/check_preview"
+        android:layout_marginTop="@dimen/padding30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/cv_url"
+        android:layout_width="150dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_disconnect"
+        android:background="@drawable/cast_btn_bg"
+        android:backgroundTint="#FA5E5E"
+        android:textSize="@dimen/textsize18sp"
+        android:paddingTop="@dimen/padding12dp"
+        android:paddingBottom="@dimen/padding12dp"
+        android:textColor="#FA5E5E"
+        android:text="@string/disconnect"
+        android:layout_marginTop="@dimen/padding20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tv_preview"
+        android:layout_width="150dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

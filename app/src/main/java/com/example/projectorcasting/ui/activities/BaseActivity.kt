@@ -184,6 +184,10 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
     fun stopCasting() {
         mMediaRouter?.unselect(MediaRouter.UNSELECT_REASON_DISCONNECTED)
         mCastSession?.remoteMediaClient?.stop()
+        stopServer()
+    }
+
+    fun stopServer(){
         SimpleWebServer.stopServer()
     }
 
