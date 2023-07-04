@@ -27,7 +27,8 @@ import java.io.File
 import java.net.InetAddress
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import kotlin.reflect.KFunction1
+import kotlin.reflect.KFunction2
+import kotlin.reflect.KFunction3
 
 object Utils {
 
@@ -180,7 +181,7 @@ object Utils {
      * Show a popup to select whether the selected item should play immediately, be added to the
      * end of queue or be added to the queue right after the current item.
      */
-    fun showQueuePopup(context: Context?, mediaInfo: MediaInfo?, checkForQueue: KFunction1<Int, Unit>) {
+    fun showQueuePopup(context: Context?, mediaInfo: MediaInfo?, checkForQueue: KFunction3<Int, Boolean, Boolean, Unit>,deviceName: String?) {
         val castSession: CastSession? =
             context?.let { CastContext.getSharedInstance(it).sessionManager.currentCastSession }
         if (castSession == null || !castSession.isConnected) {
@@ -194,7 +195,7 @@ object Utils {
             return
         }
 
-        showQueuePrompt(context,mediaInfo,remoteMediaClient,checkForQueue)
+        showQueuePrompt(context,mediaInfo,remoteMediaClient,checkForQueue,deviceName)
 
 //        val provider: QueueDataProvider? = QueueDataProvider.Companion.getInstance(context)
 //
@@ -274,13 +275,17 @@ object Utils {
         context: Context?,
         mediaInfo: MediaInfo?,
         remoteMediaClient: RemoteMediaClient?,
-        checkForQueue: KFunction1<Int, Unit>
+        checkForQueue: KFunction3<Int, Boolean, Boolean, Unit>,
+        deviceName: String?
     ) {
         val sheetDialog = context?.let { BottomSheetDialog(it, R.style.BottomSheetDialog) }
         sheetDialog?.setContentView(R.layout.queue_prompt_layout)
         val playNow: TextView? = sheetDialog?.findViewById(R.id.tv_play_now)
         val playNext: TextView? = sheetDialog?.findViewById(R.id.tv_play_next)
         val addToQueue: TextView? = sheetDialog?.findViewById(R.id.tv_add_to_queue)
+        val connectedName: TextView? = sheetDialog?.findViewById(R.id.tv_connected_name)
+        val castOtherDevice: TextView? = sheetDialog?.findViewById(R.id.tv_cast_other_device)
+        val cancel: TextView? = sheetDialog?.findViewById(R.id.tv_cancel)
         val view: View? = sheetDialog?.findViewById(R.id.view)
 
         val cardView: LinearLayout? = sheetDialog?.findViewById(R.id.rl_root)
@@ -303,6 +308,8 @@ object Utils {
         var toastMessage: String? = null
 
         val currentId: Int = provider.currentItemId
+
+        connectedName?.text = context?.getString(R.string.connected_with,deviceName)
 
         playNow?.setOnClickListener {
             if(mediaInfo.metadata?.mediaType?.equals(MediaMetadata.MEDIA_TYPE_MOVIE) == true){
@@ -385,8 +392,22 @@ object Utils {
             }
 
             Log.d("Utils", "showQueuePrompt A13 : "+remoteMediaClient?.mediaStatus)
-            checkForQueue(provider.count)
+            checkForQueue(provider.count,false,false)
 
+            sheetDialog.cancel()
+        }
+
+        connectedName?.setOnClickListener {
+            checkForQueue(provider.count,false,true)
+            sheetDialog.cancel()
+        }
+
+        castOtherDevice?.setOnClickListener {
+            checkForQueue(provider.count,true,false)
+            sheetDialog.cancel()
+        }
+
+        cancel?.setOnClickListener {
             sheetDialog.cancel()
         }
 

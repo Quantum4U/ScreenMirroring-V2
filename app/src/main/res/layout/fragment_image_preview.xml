@@ -85,16 +85,30 @@
             android:visibility="visible">
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_casting"
+                app:srcCompat="@drawable/ic_cast_icon"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/padding15dp"
-                app:srcCompat="@drawable/ic_cast_icon" />
+                android:layout_height="wrap_content"/>
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_marginLeft="@dimen/padding15dp"
+                android:id="@+id/iv_browser"
+                android:layout_toRightOf="@+id/iv_casting"
+                app:srcCompat="@drawable/ic_browse_white_disable"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/connect"
-                android:textColor="@color/white" />
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_marginLeft="@dimen/padding15dp"
+                android:layout_toRightOf="@+id/iv_browser"
+                app:srcCompat="@drawable/ic_arrow_orange"
+                app:tint="@color/white"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
 
         </LinearLayout>
 

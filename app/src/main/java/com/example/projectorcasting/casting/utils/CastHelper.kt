@@ -17,6 +17,7 @@ import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import engine.app.fcm.GCMPreferences
 import kotlin.reflect.KFunction1
 import kotlin.reflect.KFunction2
+import kotlin.reflect.KFunction3
 
 object CastHelper {
 
@@ -74,14 +75,15 @@ object CastHelper {
         path: String,
         thumb: String,
         type: Int,
-        checkForQueue: KFunction1<Int, Unit>
+        checkForQueue: KFunction3<Int, Boolean, Boolean,Unit>,
+        deviceName: String?
     ) {
         startServer(context)
 
         Utils.showQueuePopup(
             context,
             Utils.buildMediaInfo(mediaData, path, thumb, type),
-            checkForQueue
+            checkForQueue,deviceName
         )
     }
 

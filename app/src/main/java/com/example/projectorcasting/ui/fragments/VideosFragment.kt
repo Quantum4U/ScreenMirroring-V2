@@ -43,6 +43,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     private var videoSectionalAdapter: VideoSectionalAdapter? = null
     private var mediaMapList: ArrayList<SectionModel>? = null
     private var isCastConnected = false
+    private var itemMediaData:MediaData?=null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,8 +62,8 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
         binding?.llConnect?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Videos_Cast_Connect)
-            findNavController().navigate(R.id.nav_scan_device)
-            showFullAds(activity)
+//            openScanDevicePage()
+            PromptHelper.showCastingPrompt(context, ::castPromtAction, isCastConnected, itemMediaData)
         }
 
         binding?.llConnected?.setOnClickListener {
@@ -86,6 +87,12 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         else
             binding?.tvQueued?.visibility = View.GONE
 
+        setBrowserValue()
+    }
+
+    private fun openScanDevicePage(){
+        findNavController().navigate(R.id.nav_scan_device)
+        showFullAds(activity)
     }
 
     private fun doFetchingWork() {
@@ -106,16 +113,28 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         castingLiveData().observe(viewLifecycleOwner, Observer { state ->
             if (state == CastState.CONNECTED) {
                 isCastConnected = true
-                binding?.llConnected?.visibility = View.VISIBLE
-                binding?.llConnect?.visibility = View.GONE
-                binding?.tvConnected?.text = getString(R.string.connected, getConnectedDeviceName())
+//                binding?.llConnected?.visibility = View.VISIBLE
+//                binding?.llConnect?.visibility = View.GONE
+//                binding?.tvConnected?.text = getString(R.string.connected, getConnectedDeviceName())
+                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_enable,null))
             } else if (state == CastState.NOT_CONNECTED) {
                 isCastConnected = false
-                binding?.llConnected?.visibility = View.GONE
-                binding?.llConnect?.visibility = View.VISIBLE
+//                binding?.llConnected?.visibility = View.GONE
+//                binding?.llConnect?.visibility = View.VISIBLE
+                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_disable,null))
             }
 
+            setBrowserValue()
+
         })
+    }
+
+    private fun setBrowserValue(){
+        if(getServerValue() == true){
+            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browser_enable,null))
+        }else{
+            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browser_disable,null))
+        }
     }
 
     private fun observeVideoList() {
@@ -163,10 +182,12 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         path?.let {
             CastHelper.playMedia(
                 context, mediaData, it,
-                thumbPath.toString(), Utils.VIDEO, ::checkForQueue
+                thumbPath.toString(), Utils.VIDEO, ::checkForQueue,getConnectedDeviceName()
             )
         }
 
+        //set path for html
+        showVideoInHtml(mediaData)
     }
 
     private fun showVideoInHtml(mediaData: MediaData?) {
@@ -174,9 +195,12 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         var pathList: java.util.ArrayList<String> = arrayListOf()
         pathList.add(path.toString())
         PathSingleton.setVideoPath(pathList)
+        PathSingleton.setAudioPath(null)
+        PathSingleton.setImagePath(null)
     }
 
     private fun itemClick(mediaData: MediaData) {
+        itemMediaData = mediaData
         if (isCastConnected) {
             showLoader()
             CoroutineScope(Dispatchers.IO).launch {
@@ -237,22 +261,35 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
     private fun castPromtAction(isCastDeviceClick: Boolean,mediaData: MediaData?) {
         if (isCastDeviceClick) {
-            if (!isCastConnected)
+//            if (!isCastConnected)
                 findNavController().navigate(R.id.nav_scan_device)
-            else
-                stopCasting()
+//            else
+//                stopCasting()
         } else {
             showVideoInHtml(mediaData)
-            findNavController().navigate(R.id.nav_browse_cast)
-            showFullAds(activity)
+            openBrowserPage()
         }
     }
 
-    private fun checkForQueue(count: Int) {
+    private fun checkForQueue(count: Int,openBrowser:Boolean,openDeviceListPage:Boolean) {
         Log.d("VideosFragment", "onViewCreated A13 : ><<<" + count)
         if(count > 0) {
             binding?.tvQueued?.visibility = View.VISIBLE
         }
+
+        if(openBrowser){
+            openBrowserPage()
+        }
+
+        if (openDeviceListPage){
+            openScanDevicePage()
+        }
+
+    }
+
+    private fun openBrowserPage(){
+        findNavController().navigate(R.id.nav_browse_cast)
+        showFullAds(activity)
     }
 
     override fun onDestroyView() {

@@ -53,6 +53,7 @@
     <string name="cancel">Cancel</string>
     <string name="no_device_connected">No devices connected</string>
     <string name="connected">%s Connected</string>
+    <string name="connected_with">Connected with %s</string>
     <string name="connect_to_chrome_cast">Connect to Chromecast TV</string>
     <string name="connect_to_chrome_cast_subheading">Make sure your “app name “ is turned \non and connected to the same wifi</string>
     <string name="connect_to_wifi_text">You are offline. Please open your phone settings \nand connect to an active WiFi Network.</string>
@@ -82,9 +83,11 @@
     <string name="cast_prompt_mssg">Make sure your phone and cast device are connected to the same Wi-Fi.</string>
     <string name="cast_on_smart_tv">Cast on \nSmart TV</string>
     <string name="cast_on_other_tv">Cast on \nOther TV</string>
+    <string name="cast_to_other_device">Cast to other device</string>
     <string name="browser_text1">Make sure your phone and cast device are connected to the same Wi-Fi.</string>
     <string name="browser_text2">Open this link on the other device</string>
     <string name="check_preview">Check Preview</string>
     <string name="share">Share</string>
+    <string name="share_link">Share link</string>
 
 </resources>

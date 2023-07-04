@@ -45,6 +45,7 @@
     </RelativeLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:layout_above="@+id/rl_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/rl_toolbar"
@@ -391,5 +392,92 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/rl_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/v_shadow"
+            android:background="#1A000000"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding1dp"/>
+
+        <RelativeLayout
+            android:layout_below="@+id/v_shadow"
+            android:padding="@dimen/padding10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/ll_icon_layout"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    app:srcCompat="@drawable/ic_browse_icon"
+                    app:tint="@color/black"
+                    android:layout_width="@dimen/padding25dp"
+                    android:layout_height="@dimen/padding25dp"/>
+
+                <View
+                    android:layout_marginLeft="-5dp"
+                    android:background="@drawable/active_dot_bg"
+                    android:backgroundTint="#2CC958"
+                    android:layout_width="@dimen/padding10dp"
+                    android:layout_height="@dimen/padding10dp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginLeft="@dimen/padding5dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/tv_share_link"
+                android:layout_toRightOf="@+id/ll_icon_layout"
+                android:text="@string/cast_to_other_device"
+                android:textColor="@color/heading"
+                android:fontFamily="@font/inter_semibold"
+                android:singleLine="true"
+                android:textSize="@dimen/textsize12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:gravity="center"
+                android:id="@+id/tv_share_link"
+                android:layout_toLeftOf="@+id/tv_bottom_disconnect"
+                android:background="@drawable/dash_mirror_start_bg"
+                android:backgroundTint="#1A0E0E2C"
+                android:paddingTop="@dimen/padding10dp"
+                android:paddingBottom="@dimen/padding10dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/inter_semibold"
+                android:layout_marginRight="@dimen/padding10dp"
+                android:text="@string/share_link"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:gravity="center"
+                android:id="@+id/tv_bottom_disconnect"
+                android:background="@drawable/dash_mirror_start_bg"
+                android:backgroundTint="#1A0E0E2C"
+                android:paddingTop="@dimen/padding10dp"
+                android:paddingBottom="@dimen/padding10dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/inter_semibold"
+                android:layout_alignParentRight="true"
+                android:text="@string/disconnect"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

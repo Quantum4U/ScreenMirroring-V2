@@ -95,4 +95,11 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
         return (activity as BaseActivity).getCastContext()
     }
 
+    fun getServerValue(): Boolean? {
+        return (activity as BaseActivity).getServerValue()
+    }
+
+    fun setServerValue(value:Boolean){
+        return (activity as BaseActivity).setServerValue(value)
+    }
 }

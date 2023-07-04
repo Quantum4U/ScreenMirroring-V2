@@ -23,6 +23,7 @@ import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.MediaListSingleton
+import com.example.projectorcasting.utils.PromptHelper
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.CastState
@@ -31,6 +32,9 @@ import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videopr
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagePreviewBinding
 import engine.app.analytics.logGAEvents
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -80,7 +84,8 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
         binding?.llConnect?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Photo_Preview_Cast_Connect)
-            openDeviceListPage(true)
+//            openDeviceListPage(true)
+            PromptHelper.showCastingPrompt(context, ::castPromtAction, isCastConnected, null)
         }
 
         binding?.llConnected?.setOnClickListener {
@@ -97,6 +102,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         }
 
         checkResultToStartSlideshow()
+        setBrowserValue()
 
     }
 
@@ -195,19 +201,32 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         castingLiveData().observe(viewLifecycleOwner, Observer { state ->
             if (state == CastState.CONNECTED) {
                 isCastConnected = true
-                binding?.llConnected?.visibility = View.VISIBLE
-                binding?.llConnect?.visibility = View.GONE
-                binding?.tvConnected?.text = getString(R.string.connected, getConnectedDeviceName())
+//                binding?.llConnected?.visibility = View.VISIBLE
+//                binding?.llConnect?.visibility = View.GONE
+//                binding?.tvConnected?.text = getString(R.string.connected, getConnectedDeviceName())
 
+                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_white_enable,null))
                 CastHelper.startServer(context)
                 establishSession()
                 castImage(filePosition)
             } else if (state == CastState.NOT_CONNECTED) {
                 isCastConnected = false
-                binding?.llConnected?.visibility = View.GONE
-                binding?.llConnect?.visibility = View.VISIBLE
+//                binding?.llConnected?.visibility = View.GONE
+//                binding?.llConnect?.visibility = View.VISIBLE
+                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_icon,null))
             }
+
+            setBrowserValue()
+
         })
+    }
+
+    private fun setBrowserValue(){
+        if(getServerValue() == true){
+            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browse_white_enable,null))
+        }else{
+            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browse_white_disable,null))
+        }
     }
 
     private fun actionPerform(isConnect: Boolean, castModel: CastModel?) {
@@ -220,6 +239,45 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
             startSlideShow()
             stopTimer()
         }
+    }
+
+    private fun castPromtAction(isCastDeviceClick: Boolean,mediaData: MediaData?) {
+        if (isCastDeviceClick) {
+//            if (!isConnected)
+//                findNavController().navigate(R.id.nav_scan_device)
+//            else
+//                stopCasting()
+            openDeviceListPage(true)
+        } else {
+            GlobalScope.launch(Dispatchers.Default) {
+                showImagesInHtml()
+            }
+            openBrowserPage()
+        }
+    }
+
+    private fun showImagesInHtml() {
+        var pathList: java.util.ArrayList<String> = arrayListOf()
+        val selectedList = imagePreviewAdapter?.getList()
+        for (data in selectedList!!) {
+            val mediaItem = data
+            val path = mediaItem?.path?.split("0/")?.get(1)
+            pathList.add(path.toString())
+            CastHelper.showImagesInHtml(
+                context,
+                mediaItem,
+                path.toString(),
+                Utils.IMAGE
+            )
+        }
+        PathSingleton.setImagePath(pathList)
+        PathSingleton.setVideoPath(null)
+        PathSingleton.setAudioPath(null)
+    }
+
+    private fun openBrowserPage(){
+        findNavController().navigate(R.id.nav_browse_cast)
+        showFullAds(activity)
     }
 
     private val runnable = Runnable {

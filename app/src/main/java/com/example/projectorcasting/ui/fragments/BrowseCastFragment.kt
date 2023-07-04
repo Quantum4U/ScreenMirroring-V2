@@ -27,6 +27,8 @@ class BrowseCastFragment : BaseFragment(R.layout.fragment_browse_cast) {
         //start server
         CastHelper.startServer(context)
 
+        setServerValue(true)
+
         itemList.add(
             BrowserModel(
                 ResourcesCompat.getDrawable(
@@ -53,7 +55,7 @@ class BrowseCastFragment : BaseFragment(R.layout.fragment_browse_cast) {
         adapter = BrowserAdapter(itemList)
         binding?.recyclerview?.adapter = adapter
 
-        val url = "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/Projector/"
+        val url = "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${ServerConstants.URL_KEYWORD}/"
         binding?.tvUrl?.text = url
 
         binding?.ivShare?.setOnClickListener {
@@ -69,5 +71,13 @@ class BrowseCastFragment : BaseFragment(R.layout.fragment_browse_cast) {
                 BrowseCastFragmentDirections.actionBrowseToPreview(url)
             findNavController().navigate(action)
         }
+
+        binding?.ivBack?.setOnClickListener {
+            exitPage()
+        }
+    }
+
+    private fun exitPage() {
+        findNavController().navigateUp()
     }
 }

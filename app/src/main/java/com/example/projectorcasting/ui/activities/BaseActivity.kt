@@ -30,6 +30,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.mediarouter.media.MediaRouter
 import androidx.viewbinding.BuildConfig
 import com.example.projectorcasting.casting.utils.Utils
+import com.example.projectorcasting.prefrences.AppPreference
 import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.viewmodels.DashboardViewModel
 import com.google.android.gms.cast.CastDevice
@@ -57,6 +58,7 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
     private val REQUEST_CODE = 100
     private var type = 0
+    private var appPreference: AppPreference? = null
 
     //casting variables
     private var mSessionManagerListener: SessionManagerListener<CastSession>? = null
@@ -73,6 +75,7 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // setContentView()
+        appPreference = AppPreference(this)
         establishCastSession()
     }
 
@@ -187,7 +190,8 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
         stopServer()
     }
 
-    fun stopServer(){
+    fun stopServer() {
+        setServerValue(false)
         SimpleWebServer.stopServer()
     }
 
@@ -425,12 +429,12 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
     fun startMirroring() {
         if (engine.app.serviceprovider.Utils.isNetworkConnected(this)) {
-        try {
-            startActivity(Intent("android.settings.CAST_SETTINGS"))
-        } catch (e: Exception) {
-            Toast.makeText(this, getString(R.string.device_not_supported), Toast.LENGTH_LONG)
-                .show()
-        }
+            try {
+                startActivity(Intent("android.settings.CAST_SETTINGS"))
+            } catch (e: Exception) {
+                Toast.makeText(this, getString(R.string.device_not_supported), Toast.LENGTH_LONG)
+                    .show()
+            }
         } else {
             Toast.makeText(this, getString(R.string.required_wifi_network), Toast.LENGTH_SHORT)
                 .show()
@@ -449,25 +453,35 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 //            }
 //            window.insetsController?.setSystemBarsAppearance(systemUiAppearance, APPEARANCE_LIGHT_STATUS_BARS)
 //        } else {
-            // Does bitwise operations (or to add, inverse or to remove)
-            // This is depreciated but the new version is API 30+ so I should have this here
+        // Does bitwise operations (or to add, inverse or to remove)
+        // This is depreciated but the new version is API 30+ so I should have this here
         val flags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
-                    if (Build.VERSION.SDK_INT >= 26) View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR else 0
+                if (Build.VERSION.SDK_INT >= 26) View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR else 0
 
-            if (!darkTheme) {
-                window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or flags
-                window.statusBarColor = ResourcesCompat.getColor(resources,R.color.white,null)
-            } else {
-                window.decorView.systemUiVisibility = (window.decorView.systemUiVisibility.inv() or flags).inv()
-                window.statusBarColor = ResourcesCompat.getColor(resources,R.color.preview_page_bg_color,null)
-            }
+        if (!darkTheme) {
+            window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or flags
+            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.white, null)
+        } else {
+            window.decorView.systemUiVisibility =
+                (window.decorView.systemUiVisibility.inv() or flags).inv()
+            window.statusBarColor =
+                ResourcesCompat.getColor(resources, R.color.preview_page_bg_color, null)
+        }
 //        }
     }
 
-    fun showToolbarBackgroundInStatusBar(){
+    fun showToolbarBackgroundInStatusBar() {
         val decorView = window.decorView
         decorView.systemUiVisibility =
             (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+    }
+
+    fun setServerValue(value: Boolean) {
+        appPreference?.setServerOpen(value)
+    }
+
+    fun getServerValue(): Boolean? {
+        return appPreference?.isServerOpen()
     }
 
 }

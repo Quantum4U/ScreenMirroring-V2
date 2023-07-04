@@ -19,6 +19,7 @@ import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videopr
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentDashboardBinding
 import engine.app.adshandler.AHandler
 import engine.app.analytics.logGAEvents
+import io.github.dkbai.tinyhttpd.nanohttpd.core.util.ServerConstants
 
 class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
 
@@ -82,6 +83,35 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
                 }
             })
 
+        binding?.rlBottomLayout?.setOnClickListener {
+            openBrowserPage()
+        }
+
+        binding?.tvShareLink?.setOnClickListener {
+            val url =
+                "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${ServerConstants.URL_KEYWORD}/"
+            AppUtils.shareUrl(context, url)
+        }
+
+        binding?.tvBottomDisconnect?.setOnClickListener {
+            stopServer()
+            manageBrowserLayout()
+        }
+
+        manageBrowserLayout()
+    }
+
+    private fun openBrowserPage() {
+        findNavController().navigate(R.id.nav_browse_cast)
+        showFullAds(activity)
+    }
+
+    private fun manageBrowserLayout() {
+        if (getServerValue() == true) {
+            binding?.rlBottomLayout?.visibility = View.VISIBLE
+        } else {
+            binding?.rlBottomLayout?.visibility = View.GONE
+        }
     }
 
     private fun observeCastingLiveData() {

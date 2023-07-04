@@ -6,8 +6,57 @@
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <RelativeLayout
+        android:layout_marginTop="@dimen/padding10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_connected_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/padding10dp"
+            android:layout_toLeftOf="@+id/v_center"
+            android:background="@drawable/cast_btn_bg"
+            android:backgroundTint="#159400"
+            android:gravity="center"
+            android:fontFamily="@font/inter_semibold"
+            android:paddingTop="@dimen/padding10dp"
+            android:paddingBottom="@dimen/padding10dp"
+            android:singleLine="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:text="@string/connected_with"
+            android:textColor="#159400" />
+
+        <View
+            android:id="@+id/v_center"
+            android:layout_centerInParent="true"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <TextView
+            android:id="@+id/tv_cast_other_device"
+            android:layout_centerVertical="true"
+            android:text="@string/cast_to_other_device"
+            android:gravity="center"
+            android:background="@drawable/dash_mirror_start_bg"
+            android:backgroundTint="@color/text_orange"
+            android:paddingTop="@dimen/padding10dp"
+            android:paddingBottom="@dimen/padding10dp"
+            android:singleLine="true"
+            android:layout_margin="@dimen/padding10dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/inter_semibold"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:layout_toRightOf="@+id/v_center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
     <TextView
-        android:layout_marginTop="@dimen/padding30dp"
+        android:layout_marginTop="@dimen/padding20dp"
         android:layout_marginLeft="@dimen/padding20dp"
         android:layout_marginBottom="@dimen/padding10dp"
         android:id="@+id/tv_play_now"
@@ -19,7 +68,6 @@
         android:text="@string/play_now"
         android:textColor="@color/nav_text_color"
         android:textSize="@dimen/textsize15sp"/>
-
 
     <View
         android:layout_margin="@dimen/padding10dp"
@@ -62,5 +110,23 @@
         android:textColor="@color/nav_text_color"
         android:textSize="@dimen/textsize15sp"/>
 
+    <TextView
+        android:visibility="visible"
+        android:id="@+id/tv_cancel"
+        android:layout_marginTop="@dimen/padding20dp"
+        android:layout_marginBottom="@dimen/padding20dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/dash_mirror_start_bg"
+        android:backgroundTint="#F0F0F0"
+        android:paddingTop="@dimen/padding12dp"
+        android:paddingBottom="@dimen/padding12dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_marginRight="@dimen/padding30dp"
+        android:layout_marginLeft="@dimen/padding30dp"
+        android:textSize="@dimen/textsize16sp"
+        android:text="@string/cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

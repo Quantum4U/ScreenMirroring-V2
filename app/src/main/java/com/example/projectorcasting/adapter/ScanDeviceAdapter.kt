@@ -47,19 +47,26 @@ class ScanDeviceAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var card: RelativeLayout = itemView.findViewById(R.id.rl_parent) as RelativeLayout
         private var deviceName: TextView = itemView.findViewById(R.id.tv_device_name) as TextView
+        private var disconnectBtn: TextView = itemView.findViewById(R.id.tv_disconnect) as TextView
         private val activeDot: View = itemView.findViewById(R.id.v_active_dot) as View
 
         fun updateData(item: CastModel) {
 
             if (isCastEnabled && deviceId == item.castDevice?.deviceId) {
                 activeDot.visibility = View.VISIBLE
+                disconnectBtn.visibility = View.VISIBLE
             } else {
                 activeDot.visibility = View.GONE
+                disconnectBtn.visibility = View.GONE
             }
             deviceName.text = item.castDevice?.friendlyName
 
             card.setOnClickListener {
                 itemClick(!activeDot.isVisible,item)
+            }
+
+            disconnectBtn.setOnClickListener {
+                itemClick(false,item)
             }
         }
     }

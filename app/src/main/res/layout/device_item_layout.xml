@@ -36,6 +36,7 @@
         </RelativeLayout>
 
         <TextView
+            android:layout_toLeftOf="@+id/tv_disconnect"
             android:layout_marginLeft="@dimen/padding20dp"
             android:textColor="@color/heading"
             android:textSize="@dimen/textsize16sp"
@@ -43,6 +44,20 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/rl_icon"
             android:id="@+id/tv_device_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_disconnect"
+            android:background="@drawable/dash_mirror_start_bg"
+            android:backgroundTint="#1A0E0E2C"
+            android:padding="@dimen/padding10dp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/inter_semibold"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/padding10dp"
+            android:text="@string/disconnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

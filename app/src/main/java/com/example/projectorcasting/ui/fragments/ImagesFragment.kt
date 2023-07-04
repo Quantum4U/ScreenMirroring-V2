@@ -18,30 +18,20 @@ import com.example.projectorcasting.adapter.ImageSectionalAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
-import com.example.projectorcasting.casting.utils.Utils.IMAGE
-import com.example.projectorcasting.casting.utils.Utils.VIDEO
 import com.example.projectorcasting.models.FolderModel
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.models.SectionModel
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.MediaListSingleton
+import com.example.projectorcasting.utils.PromptHelper
 import com.example.projectorcasting.utils.SpacesItemDecoration
-import com.google.android.gms.cast.MediaQueueItem
-import com.google.android.gms.cast.MediaStatus
-import com.google.android.gms.cast.framework.CastContext
-import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.CastState
-import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagesBinding
 import engine.app.analytics.logGAEvents
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
+import kotlinx.coroutines.*
 
 
 class ImagesFragment : BaseFragment(R.layout.fragment_images) {
@@ -72,7 +62,8 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 
         binding?.llConnect?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Photos_Cast_Connect)
-            openDeviceListPage(false)
+//            openDeviceListPage(false)
+            PromptHelper.showCastingPrompt(context, ::castPromtAction, isConnected, null)
         }
 
         binding?.llConnected?.setOnClickListener {
@@ -91,15 +82,14 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 
         binding?.tvSlideshow?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Photos_Slideshow)
-//            MediaListSingleton.setSelectedImageList(imageSectionalAdapter?.getSelectedImageList())
-//            imageSectionalAdapter?.disableLongClick()
-//            if (isConnected) {
-//                openPreviewPage(true, 0)
-//            } else {
+            MediaListSingleton.setSelectedImageList(imageSectionalAdapter?.getSelectedImageList())
+            imageSectionalAdapter?.disableLongClick()
+            if (isConnected) {
+                openPreviewPage(true, 0)
+            } else {
 //                openDeviceListPage(true)
-//            }
-
-            showImagesInHtml()
+                PromptHelper.showCastingPrompt(context, ::castPromtAction, isConnected, null)
+            }
         }
 
         activity?.onBackPressedDispatcher?.addCallback(
@@ -111,23 +101,28 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             })
 
         checkResultToStartSlideshow()
+        setBrowserValue()
     }
 
     private fun showImagesInHtml() {
         var pathList: java.util.ArrayList<String> = arrayListOf()
-        val selectedList = imageSectionalAdapter?.getSelectedImageList()
-        for (data in selectedList!!) {
-            val mediaItem = data
-            val path = mediaItem?.path?.split("0/")?.get(1)
-            pathList.add(path.toString())
-            CastHelper.showImagesInHtml(
-                context,
-                mediaItem,
-                path.toString(),
-                Utils.IMAGE
-            )
+        val selectedList = MediaListSingleton.getSelectedImageList()
+        Log.d("ImagesFragment", "showImagesInHtml A13 : >>"+selectedList?.size)
+        if (selectedList != null) {
+            for (data in selectedList) {
+                val path = data.path?.split("0/")?.get(1)
+                pathList.add(path.toString())
+                CastHelper.showImagesInHtml(
+                    context,
+                    data,
+                    path.toString(),
+                    Utils.IMAGE
+                )
+            }
         }
         PathSingleton.setImagePath(pathList)
+        PathSingleton.setVideoPath(null)
+        PathSingleton.setAudioPath(null)
     }
 
     private fun openDeviceListPage(startSlideShow: Boolean) {
@@ -171,16 +166,28 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         castingLiveData().observe(viewLifecycleOwner, Observer { state ->
             if (state == CastState.CONNECTED) {
                 isConnected = true
-                binding?.llConnected?.visibility = View.VISIBLE
-                binding?.llConnect?.visibility = View.GONE
-                binding?.tvConnected?.text = getString(R.string.connected, getConnectedDeviceName())
+//                binding?.llConnected?.visibility = View.VISIBLE
+//                binding?.llConnect?.visibility = View.GONE
+//                binding?.tvConnected?.text = getString(R.string.connected, getConnectedDeviceName())
+                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_enable,null))
             } else if (state == CastState.NOT_CONNECTED) {
                 isConnected = false
-                binding?.llConnected?.visibility = View.GONE
-                binding?.llConnect?.visibility = View.VISIBLE
+//                binding?.llConnected?.visibility = View.GONE
+//                binding?.llConnect?.visibility = View.VISIBLE
+                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_disable,null))
             }
 
+            setBrowserValue()
+
         })
+    }
+
+    private fun setBrowserValue(){
+        if(getServerValue() == true){
+            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browser_enable,null))
+        }else{
+            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browser_disable,null))
+        }
     }
 
     private fun observeImageList() {
@@ -329,6 +336,21 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             stopCasting()
     }
 
+    private fun castPromtAction(isCastDeviceClick: Boolean,mediaData: MediaData?) {
+        if (isCastDeviceClick) {
+//            if (!isConnected)
+//                findNavController().navigate(R.id.nav_scan_device)
+//            else
+//                stopCasting()
+            openDeviceListPage(true)
+        } else {
+            GlobalScope.launch(Dispatchers.Default) {
+                showImagesInHtml()
+            }
+            openBrowserPage()
+        }
+    }
+
     fun showFolderSortingPrompt() {
         folderDialog = context?.let { BottomSheetDialog(it, R.style.BottomSheetDialog) }
         folderDialog?.setContentView(R.layout.folder_sorting_layout)
@@ -356,6 +378,11 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         imageSectionalAdapter?.refreshList(folderModel.sectionList as ArrayList<SectionModel>?)
 
         setListForPreview()
+    }
+
+    private fun openBrowserPage(){
+        findNavController().navigate(R.id.nav_browse_cast)
+        showFullAds(activity)
     }
 
     override fun onDestroyView() {

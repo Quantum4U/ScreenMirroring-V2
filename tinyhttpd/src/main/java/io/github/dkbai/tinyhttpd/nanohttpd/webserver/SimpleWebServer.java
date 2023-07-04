@@ -400,13 +400,13 @@ public class SimpleWebServer extends NanoHTTPD {
         return msg.toString();
     }
 
-    public void showToast(){
+    public void showToast() {
         Log.d("TAG", "showToast: >>");
     }
 
     private String playMediaHtml(String uri) {
         List<String> list = PathSingleton.INSTANCE.getVideoPath();
-        Log.d("TAG", "playMediaHtml: >>00>." + list.size()+"//"+list.get(0));
+        Log.d("TAG", "playMediaHtml: >>00>." + list.size() + "//" + list.get(0));
         String path = uri.split("Projector")[1];
 
         StringBuilder msg =
@@ -435,7 +435,7 @@ public class SimpleWebServer extends NanoHTTPD {
     private String playAudioHtml(String uri) {
         List<String> list = PathSingleton.INSTANCE.getAudioPath();
         Log.d("TAG", "playMediaHtml: >>00>." + uri);
-        String path = uri.split("hitesh")[1];
+        String path = uri.split("Projector")[1];
         Log.d("TAG", "playMediaHtml: >>11>>" + path);
 
         StringBuilder msg =
@@ -486,7 +486,7 @@ public class SimpleWebServer extends NanoHTTPD {
                 "  transition: 0.6s ease;\n" +
                 "  border-radius: 0 3px 3px 0;\n" +
                 "  user-select: none;\n" +
-                "  right: 90%;\n"+
+                "  right: 90%;\n" +
                 "}\n" +
                 "\n" +
                 "/* Position the \"next button\" to the right */\n" +
@@ -682,7 +682,13 @@ public class SimpleWebServer extends NanoHTTPD {
         Log.d("TAG", "defaultRespond: >>00>>" + uri);
 
         if (uri.contains("Projector")) {
-            return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, playMediaHtml(uri));
+            if (PathSingleton.INSTANCE.getVideoPath() != null) {
+                return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, playMediaHtml(uri));
+            } else if (PathSingleton.INSTANCE.getAudioPath() != null) {
+                return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, playAudioHtml(uri));
+            } else if (PathSingleton.INSTANCE.getImagePath() != null) {
+                return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, imageSLideShow(uri));
+            }
         }
 
         // Remove URL arguments
