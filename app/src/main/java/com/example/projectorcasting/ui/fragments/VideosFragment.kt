@@ -130,7 +130,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     }
 
     private fun setBrowserValue(){
-        if(getServerValue() == true){
+        if(isServerRunning()){
             binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browser_enable,null))
         }else{
             binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browser_disable,null))

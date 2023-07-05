@@ -484,6 +484,10 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
         return appPreference?.isServerOpen()
     }
 
+    fun isServerRunning(): Boolean {
+        return SimpleWebServer.serverRunning()
+    }
+
 }
 
 

@@ -222,7 +222,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     private fun setBrowserValue(){
-        if(getServerValue() == true){
+        if(isServerRunning()){
             binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browse_white_enable,null))
         }else{
             binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browse_white_disable,null))

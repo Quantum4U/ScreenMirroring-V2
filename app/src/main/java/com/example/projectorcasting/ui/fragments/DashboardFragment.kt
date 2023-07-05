@@ -20,6 +20,7 @@ import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videopr
 import engine.app.adshandler.AHandler
 import engine.app.analytics.logGAEvents
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.ServerConstants
+import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 
 class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
 
@@ -99,6 +100,7 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
         }
 
         manageBrowserLayout()
+
     }
 
     private fun openBrowserPage() {
@@ -107,7 +109,7 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
     }
 
     private fun manageBrowserLayout() {
-        if (getServerValue() == true) {
+        if (isServerRunning()) {
             binding?.rlBottomLayout?.visibility = View.VISIBLE
         } else {
             binding?.rlBottomLayout?.visibility = View.GONE

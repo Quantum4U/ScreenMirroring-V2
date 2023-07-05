@@ -99,6 +99,10 @@ public class SimpleWebServer extends NanoHTTPD {
         ServerRunner.stopServer();
     }
 
+    public static boolean serverRunning() {
+        return ServerRunner.serverRunning();
+    }
+
     /**
      * Starts as a standalone file server and waits for Enter.
      */

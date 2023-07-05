@@ -11,6 +11,7 @@ import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import engine.app.adshandler.AHandler
+import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import java.io.File
 
 open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
@@ -101,5 +102,9 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
 
     fun setServerValue(value:Boolean){
         return (activity as BaseActivity).setServerValue(value)
+    }
+
+    fun isServerRunning(): Boolean {
+        return (activity as BaseActivity).isServerRunning()
     }
 }

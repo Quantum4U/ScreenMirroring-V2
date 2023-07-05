@@ -122,7 +122,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
     }
 
     private fun setBrowserValue() {
-        if (getServerValue() == true) {
+        if (isServerRunning()) {
             binding?.ivBrowser?.setImageDrawable(
                 ResourcesCompat.getDrawable(
                     resources,

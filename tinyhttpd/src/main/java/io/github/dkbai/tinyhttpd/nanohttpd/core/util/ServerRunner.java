@@ -89,6 +89,13 @@ public class ServerRunner {
         downLatch = null;
     }
 
+    public static boolean serverRunning(){
+        if (downLatch == null)
+            return false;
+        else
+            return true;
+    }
+
     public static <T extends NanoHTTPD> void run(Class<T> serverClass) {
         try {
             executeInstance(serverClass.newInstance());
