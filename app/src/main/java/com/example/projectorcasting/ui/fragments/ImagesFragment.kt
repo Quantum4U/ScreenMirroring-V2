@@ -53,6 +53,8 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         observeCastingLiveData()
         observeListForPreview()
 
+        getConnectionStatus()
+
         doFetchingWork()
 
         binding?.llSorting?.setOnClickListener {
@@ -180,6 +182,14 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             setBrowserValue()
 
         })
+    }
+
+    private fun getConnectionStatus(){
+        isConnected = isCastingConnected() == true
+        if(isConnected)
+            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_enable,null))
+        else
+            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_disable,null))
     }
 
     private fun setBrowserValue(){

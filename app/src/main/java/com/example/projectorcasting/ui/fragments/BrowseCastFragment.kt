@@ -52,8 +52,10 @@ class BrowseCastFragment : BaseFragment(R.layout.fragment_browse_cast) {
             context,
             LinearLayoutManager.HORIZONTAL, false
         )
+
         adapter = BrowserAdapter(itemList)
         binding?.recyclerview?.adapter = adapter
+        binding?.circleIndicator?.setRecyclerView(binding?.recyclerview)
 
         val url = "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${ServerConstants.URL_KEYWORD}/"
         binding?.tvUrl?.text = url

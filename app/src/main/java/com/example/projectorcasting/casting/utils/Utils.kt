@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.text.htmlEncode
 import com.example.projectorcasting.AnalyticsConstant
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.casting.activities.ExpandedControlsActivity
@@ -25,6 +26,7 @@ import io.github.dkbai.tinyhttpd.nanohttpd.core.util.ServerConstants
 import org.json.JSONObject
 import java.io.File
 import java.net.InetAddress
+import java.net.URL
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.reflect.KFunction2
@@ -70,6 +72,10 @@ object Utils {
          */
         val sampleVideoStream =
             "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${path}"
+        Log.d("Utils", "buildMediaInfo A13 : >>00>>"+sampleVideoStream)
+//        sampleVideoStream.htmlEncode()
+        Log.d("Utils", "buildMediaInfo A13 : >>11>>"+sampleVideoStream)
+
         val sampleVideoSubtitle = ""
 //            "http://${deviceIpAddress}:9999/${edt_subtitle.text}"
 

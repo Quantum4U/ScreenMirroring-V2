@@ -44,6 +44,8 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
         observeAudioList()
         doFetchingWork()
 
+        getConnectionStatus()
+
         binding?.llSorting?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Audio_Date_Sorting)
             sortMediaList()
@@ -119,6 +121,14 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
             setBrowserValue()
 
         })
+    }
+
+    private fun getConnectionStatus(){
+        isCastConnected = isCastingConnected() == true
+        if(isCastConnected)
+            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_enable,null))
+        else
+            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_disable,null))
     }
 
     private fun setBrowserValue() {

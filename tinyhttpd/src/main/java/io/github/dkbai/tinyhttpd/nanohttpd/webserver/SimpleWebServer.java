@@ -425,13 +425,13 @@ public class SimpleWebServer extends NanoHTTPD {
             msg.append("</video>");
         }
         msg.append("</div>");
-        msg.append("<script>");
-        msg.append("let vid = document.getElementById(\"myVideo\");\n" +
-                "vid.onseeking = function() {\n" +
-//                  "  showToast(); \n"+
-                "  alert(\"Seek operation began\");\n" +
-                "};");
-        msg.append("</script>");
+//        msg.append("<script>");
+//        msg.append("let vid = document.getElementById(\"myVideo\");\n" +
+//                "vid.onseeking = function() {\n" +
+////                  "  showToast(); \n"+
+//                "  alert(\"Seek operation began\");\n" +
+//                "};");
+//        msg.append("</script>");
         msg.append("</body></html>");
         return msg.toString();
     }

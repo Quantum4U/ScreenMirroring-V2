@@ -29,7 +29,7 @@ class ImagePreviewAdapter(private val pathList: List<MediaData>?): PagerAdapter(
         val itemView = LayoutInflater.from(ctx).inflate(R.layout.image_preview_item, container, false)
 
         holder.imageView = itemView?.findViewById(R.id.iv_image_preview) as ImageView
-        holder.imageView.let { Glide.with(ctx).load(pathList?.get(position)?.path).into(it) }
+        holder.imageView.let { Glide.with(ctx).load(pathList?.get(position)?.path).placeholder(R.drawable.ic_image_placeholder).into(it) }
 
         (container as ViewPager).addView(itemView)
         return itemView

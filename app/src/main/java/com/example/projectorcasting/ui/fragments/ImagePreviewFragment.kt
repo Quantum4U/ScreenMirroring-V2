@@ -67,6 +67,8 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
         observeCastingLiveData()
 
+        getConnectionStatus()
+
         mProvider = QueueDataProvider.Companion.getInstance(context)
 
         fromSlideshow = argument.fromSlideshow
@@ -219,6 +221,14 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
             setBrowserValue()
 
         })
+    }
+
+    private fun getConnectionStatus(){
+        isCastConnected = isCastingConnected() == true
+        if(isCastConnected)
+            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_enable,null))
+        else
+            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_disable,null))
     }
 
     private fun setBrowserValue(){

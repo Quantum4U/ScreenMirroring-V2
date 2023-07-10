@@ -107,7 +107,7 @@
         android:layout_marginBottom="@dimen/padding20dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/dash_mirror_start_bg"
-        android:backgroundTint="#F0F0F0"
+        android:backgroundTint="#E0E0E0"
         android:paddingTop="@dimen/padding12dp"
         android:paddingBottom="@dimen/padding12dp"
         android:textColor="@color/black"

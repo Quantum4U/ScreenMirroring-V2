@@ -91,4 +91,7 @@ dependencies {
     // Recommended: Add the Google Analytics SDK.
     implementation 'com.google.firebase:firebase-analytics:17.6.0'
 
+    //indicator
+    implementation 'com.kingfisherphuoc:easy-recyclerview-indicator:1.3'
+
 }

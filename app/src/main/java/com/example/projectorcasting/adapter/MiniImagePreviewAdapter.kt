@@ -45,7 +45,7 @@ class MiniImagePreviewAdapter(
         fun updateData(item: MediaData, position: Int) {
 
 
-            ctx?.let { Glide.with(it).load(item.path).into(icon) }
+            ctx?.let { Glide.with(it).load(item.path).placeholder(R.drawable.ic_image_placeholder).into(icon) }
 
             card.setOnClickListener {
                 itemClick(item,position)

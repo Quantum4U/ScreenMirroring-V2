@@ -37,6 +37,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding2dp"/>
 
+    <com.kingfisher.easyviewindicator.RecyclerViewIndicator
+        android:layout_below="@+id/recyclerview"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/circleIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/margin_left_20"
+        app:avi_animation_enable="true"
+        app:avi_drawable="@drawable/blue_radius"
+        app:avi_drawable_unselected="@drawable/blue_radius"
+        app:avi_height="5dp"
+        app:avi_margin="5dp"
+        app:avi_width="5dp" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_url"
         app:cardUseCompatPadding="true"

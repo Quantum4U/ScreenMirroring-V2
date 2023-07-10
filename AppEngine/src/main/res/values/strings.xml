@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Screen Cast new</string>
+    <string name="app_name">Projector: Cast &amp; Mirror to TV</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="showdata">Show Data From</string>
@@ -78,7 +78,7 @@
 
     <string name="purchase_now">Purchase Now</string>
     <string name="inapp_get_premium_m24apps">Get Access to all Pro features</string>
-    <string name="dont_show_again">Don\'t show again</string>
+    <string name="dont_show_again"><u>Don\'t show again</u></string>
     <string name="get_all_new_exciting">Get All New Exciting Features </string>
     <string name="remove_ads">Remove ads</string>
     <string name="enjoy_ads_free_surfing">Enjoy Ad-free surfing for an uninterrupted experience</string>

@@ -54,6 +54,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         observeVideoList()
         doFetchingWork()
 //        observeMediaThumbnailCreated(thumb)
+        getConnectionStatus()
 
         binding?.llSorting?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Videos_Date_Sorting)
@@ -127,6 +128,14 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
             setBrowserValue()
 
         })
+    }
+
+    private fun getConnectionStatus(){
+        isCastConnected = isCastingConnected() == true
+        if(isCastConnected)
+            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_enable,null))
+        else
+            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_disable,null))
     }
 
     private fun setBrowserValue(){

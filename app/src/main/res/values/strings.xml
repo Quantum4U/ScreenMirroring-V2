@@ -1,6 +1,6 @@
 <resources>
     <string name="cast_app_id">248F0F11</string>
-    <string name="app_name">Screen Cast new</string>
+    <string name="app_name">Projector: Cast &amp; Mirror to TV</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -34,7 +34,7 @@
     <string name="start_cast">Start Cast</string>
     <string name="start">Start</string>
     <string name="tv_cast">TV Cast</string>
-    <string name="tv_cast_subtitle">Lorem Ipsum is simply dummy text of </string>
+    <string name="tv_cast_subtitle">Cast anything on a bigger screen</string>
     <string name="cast_photos">Cast Photos</string>
     <string name="cast_videos">Cast Videos</string>
     <string name="cast_audios">Cast Audios</string>
