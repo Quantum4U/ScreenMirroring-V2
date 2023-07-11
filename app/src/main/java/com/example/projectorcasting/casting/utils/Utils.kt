@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.text.htmlEncode
 import com.example.projectorcasting.AnalyticsConstant
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.casting.activities.ExpandedControlsActivity
@@ -24,12 +23,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import engine.app.analytics.logGAEvents
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.ServerConstants
 import org.json.JSONObject
-import java.io.File
 import java.net.InetAddress
-import java.net.URL
+import java.net.URLEncoder
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import kotlin.reflect.KFunction2
 import kotlin.reflect.KFunction3
 
 object Utils {
@@ -67,11 +64,15 @@ object Utils {
      */
     fun buildMediaInfo(mediaData: MediaData?, path: String, thumb: String, type: Int): MediaInfo? {
 
+        //encode path for % in its
+        val encodedFilePath = URLEncoder.encode(path, "utf-8")
+        val encodedThumbPath = URLEncoder.encode(thumb, "utf-8")
+
         /** Here we are setting the web server url for our
          *  media files.
          */
         val sampleVideoStream =
-            "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${path}"
+            "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${encodedFilePath}"
         Log.d("Utils", "buildMediaInfo A13 : >>00>>"+sampleVideoStream)
 //        sampleVideoStream.htmlEncode()
         Log.d("Utils", "buildMediaInfo A13 : >>11>>"+sampleVideoStream)
@@ -82,9 +83,9 @@ object Utils {
         Log.d("MainActivity", "buildMediaInfo A13 : >>$sampleVideoStream")
 
         val imageUrl1 =
-            "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${thumb}"
+            "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${encodedThumbPath}"
         val imageUrl2 =
-            "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${thumb}"
+            "http://${CastHelper.deviceIpAddress}:${ServerConstants.PORT_VALUE}/${encodedThumbPath}"
 
 
         /** (Optional) Setting a subtitle track, You can add more subtitle

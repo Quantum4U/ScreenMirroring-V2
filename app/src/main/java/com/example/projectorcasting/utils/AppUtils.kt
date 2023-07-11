@@ -140,8 +140,13 @@ object AppUtils {
                 if (listOfFolder?.contains(bucketName) == false) {
                     listOfFolder.add(bucketName)
                     val sortedList = getImagesFromFolders(context, bucketId, bucketName)
-                    if (sortedList?.isNotEmpty() == true)
-                        folderMap?.add(FolderModel(bucketId, bucketName, sortedList))
+                    if (sortedList?.isNotEmpty() == true) folderMap?.add(
+                        FolderModel(
+                            bucketId,
+                            bucketName,
+                            sortedList
+                        )
+                    )
 
                 }
 
@@ -160,8 +165,7 @@ object AppUtils {
         //add all images list
         if (MediaListSingleton.getGalleryImageList()?.isNotEmpty() == true) {
             folderMap?.add(
-                0,
-                FolderModel(
+                0, FolderModel(
                     "all",
                     context?.getString(R.string.all_photos),
                     MediaListSingleton.getGalleryImageList()
@@ -189,7 +193,8 @@ object AppUtils {
                 null,
                 searchParams,
                 arrayOf(bucketId),
-                MediaStore.Images.Media.DATE_MODIFIED + " DESC", null
+                MediaStore.Images.Media.DATE_MODIFIED + " DESC",
+                null
             ).use { galCursor ->
                 if (galCursor != null) {
                     while (galCursor.moveToNext()) {
@@ -204,14 +209,7 @@ object AppUtils {
 
                             list?.add(
                                 MediaData(
-                                    file,
-                                    null,
-                                    null,
-                                    null,
-                                    bucketId,
-                                    bucketName,
-                                    path,
-                                    false
+                                    file, null, null, null, bucketId, bucketName, path, false
                                 )
                             )
                         }
@@ -252,14 +250,7 @@ object AppUtils {
                         if (!path.contains("Quantum_CastingFolder")) {
                             list?.add(
                                 MediaData(
-                                    file,
-                                    null,
-                                    null,
-                                    null,
-                                    id,
-                                    folderName,
-                                    path,
-                                    false
+                                    file, null, null, null, id, folderName, path, false
                                 )
                             )
                         }
@@ -288,41 +279,48 @@ object AppUtils {
         var list: ArrayList<MediaData>? = arrayListOf()
         var mapList: ArrayList<MediaData>? = arrayListOf()
 
-        try {
-            context.contentResolver.query(
-                queryUri,
-                projectionVideo,
-                vidSelection,
-                null,
-                MediaStore.Images.Media.DATE_TAKEN + " ASC"
-            ).use { galCursor ->
-                Log.d("Utils", "getAllGalleryVideos A13 : >> 33")
-                if (galCursor != null) {
-                    Log.d("Utils", "getAllGalleryVideos A13 : >> 44")
-                    while (galCursor.moveToNext()) {
+//        try {
+        context.contentResolver.query(
+            queryUri,
+            projectionVideo,
+            vidSelection,
+            null,
+            MediaStore.Images.Media.DATE_TAKEN + " ASC"
+        ).use { galCursor ->
+            Log.d("Utils", "getAllGalleryVideos A13 : >> 33")
+            if (galCursor != null) {
+                while (galCursor.moveToNext()) {
 //                        val id = galCursor.getString(0)
 //                        val name = galCursor.getString(1)
-                        val path = galCursor.getString(2)
-                        val file = File(path)
+                    val path = galCursor.getString(2)
+                    val file = File(path)
 //                        val date = galCursor.getString(3)
 //                        val galData = GalleryData(id, name, path, date)
+                    var duration =
+                        galCursor.getString(7)
 
-                        mapList?.add(
-                            MediaData(
-                                file,
-                                convertDate(file.lastModified().toString()),
-                                getMediaDuration(context, Uri.fromFile(file)),
-                                getMediaBitmap(file)
-                            )
+                    val fileBitmap = getMediaBitmap(file)
+//                            val duration = getMediaDuration(context, Uri.fromFile(file))
+
+//                    if(duration == null)
+//                        duration = getMediaDuration(context, Uri.fromFile(file))
+
+                    val dur = getDurationFormatValue(duration)
+                    Log.d("AppUtils", "getAllGalleryVideos A13 : ><><"+path+"//"+duration+"//"+dur)
+
+                    mapList?.add(
+                        MediaData(
+                            file, convertDate(file.lastModified().toString()), dur, fileBitmap
                         )
+                    )
 
-                    }
                 }
             }
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-
         }
+//        } catch (e: java.lang.Exception) {
+//            Log.d("Utils", "getAllGalleryVideos A13 : >> 55"+e.message)
+//            e.printStackTrace()
+//        }
 
         Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + list?.size)
         Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + mapList?.size)
@@ -334,7 +332,7 @@ object AppUtils {
         mapList?.let { list?.addAll(it) }
 
         for (i in 1..AppConstants.MAX_HORIZONTAL_ITEM) {
-            mapList?.removeAt(0)
+            if (mapList?.size!! > 0) mapList.removeAt(0)
         }
 
         MediaListSingleton.setGalleryVideoSectionedList(mapList?.let { getSortedHashMap(it) })
@@ -362,25 +360,15 @@ object AppUtils {
                         val path = galCursor.getString(2)
                         val file = File(path)
 
-//                        if (count <= AppConstants.MAX_HORIZONTAL_ITEM) {
+                        val dur = getDurationFormatValue(galCursor.getString(7))
+
                         list?.add(
                             MediaData(
                                 file,
                                 convertDate(file.lastModified().toString()),
-                                getMediaDuration(context, Uri.fromFile(file)),
+                                dur,
                             )
                         )
-//                        } else {
-//                            mapList?.add(
-//                                MediaData(
-//                                    file,
-//                                    convertDate(file.lastModified().toString()),
-//                                    getMediaDuration(context, Uri.fromFile(file)),
-//                                    getMediaBitmap(file)
-//                                )
-//                            )
-//                        }
-//                        count += 1
                     }
                 }
             }
@@ -452,19 +440,27 @@ object AppUtils {
     }
 
     private fun getMediaDuration(context: Context, uri: Uri): String {
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(context, uri)
-        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        retriever.release()
+        var hh = 0L
+        var mm = 0L
+        var ss = 0L
+        var duration = "0"
+        try {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(context, uri)
+            duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toString()
+            retriever.release()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
 
-        var durInMillis = duration?.toLong()
-        var hh = durInMillis?.let { TimeUnit.MILLISECONDS.toHours(it) }
-        val hoursMillis = hh?.let { TimeUnit.HOURS.toMillis(it) }
-        durInMillis = hoursMillis?.let { durInMillis?.minus(it) }
-        var mm = durInMillis?.let { TimeUnit.MILLISECONDS.toMinutes(it) }
-        val minutesMillis = mm?.let { TimeUnit.MINUTES.toMillis(it) }
-        durInMillis = minutesMillis?.let { durInMillis?.minus(it) }
-        var ss = durInMillis?.let { TimeUnit.MILLISECONDS.toSeconds(it) }
+//        var durInMillis = duration?.toLong()
+//        hh = durInMillis?.let { TimeUnit.MILLISECONDS.toHours(it) }!!
+//        val hoursMillis = hh?.let { TimeUnit.HOURS.toMillis(it) }
+//        durInMillis = hoursMillis?.let { durInMillis?.minus(it) }
+//        mm = durInMillis?.let { TimeUnit.MILLISECONDS.toMinutes(it) }!!
+//        val minutesMillis = mm?.let { TimeUnit.MINUTES.toMillis(it) }
+//        durInMillis = minutesMillis?.let { durInMillis?.minus(it) }
+//        ss = durInMillis?.let { TimeUnit.MILLISECONDS.toSeconds(it) }!!
 
 
 //        var standardValue = "1"
@@ -479,6 +475,20 @@ object AppUtils {
 //            ss = standardValue.toLong()
 
         Log.d("AppUtils", "getMediaDuration A13 : >>" + hh + ":" + mm + ":" + ss)
+
+//        return "$hh:$mm:$ss"
+        return duration.toString()
+    }
+
+    private fun getDurationFormatValue(duration: String?): String {
+        var durInMillis = duration?.toLong()
+        var hh = durInMillis?.let { TimeUnit.MILLISECONDS.toHours(it) }
+        val hoursMillis = hh?.let { TimeUnit.HOURS.toMillis(it) }
+        durInMillis = hoursMillis?.let { durInMillis?.minus(it) }
+        var mm = durInMillis?.let { TimeUnit.MILLISECONDS.toMinutes(it) }
+        val minutesMillis = mm?.let { TimeUnit.MINUTES.toMillis(it) }
+        durInMillis = minutesMillis?.let { durInMillis?.minus(it) }
+        var ss = durInMillis?.let { TimeUnit.MILLISECONDS.toSeconds(it) }
 
         return "$hh:$mm:$ss"
     }
@@ -532,8 +542,7 @@ object AppUtils {
 //                mMap[convertDate(mDateHolder).toString()] = mHolderList
                 if (mHolderList.isNotEmpty()) mMap.add(
                     SectionModel(
-                        convertDate(mDateHolder),
-                        mHolderList
+                        convertDate(mDateHolder), mHolderList
                     )
                 )
                 mHolderList = ArrayList()
@@ -567,7 +576,7 @@ object AppUtils {
 
     }
 
-    fun saveTempThumb(context: Context?,bitmap: Bitmap?): File {
+    fun saveTempThumb(context: Context?, bitmap: Bitmap?): File {
         val path = createTempImagePath(context)
 
         if (!path.exists()) {
@@ -639,24 +648,19 @@ object AppUtils {
     private fun scanMedia(context: Context?) {
         if (context != null) {
             MediaScannerConnection.scanFile(
-                context,
-                arrayOf(Environment.getExternalStorageDirectory().toString()),
-                null
+                context, arrayOf(Environment.getExternalStorageDirectory().toString()), null
             ) { path, uri -> }
         }
     }
 
-    fun shareUrl(context: Context?,url: String){
+    fun shareUrl(context: Context?, url: String) {
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, url)
         context?.startActivity(
-            Intent.createChooser(sharingIntent, context?.getString(R.string.share))
-                .addFlags(
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                )
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            Intent.createChooser(sharingIntent, context?.getString(R.string.share)).addFlags(
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         )
     }
 

@@ -418,8 +418,14 @@ public class SimpleWebServer extends NanoHTTPD {
 
         msg.append("<div>");
         for (String videoPath : list) {
-            Log.d("TAG", "playMediaHtml: >>11>>" + videoPath);
-            msg.append("<video id=\"myVideo\" width=\"100%\" height=\"100%\" object-fit=\"fill\" controls autoplay><source src=\"/").append(videoPath).
+            String encodedFilePath;
+            try {
+                encodedFilePath = URLEncoder.encode(videoPath, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                encodedFilePath = videoPath;
+            }
+            Log.d("TAG", "playMediaHtml: >>11>>" + encodedFilePath);
+            msg.append("<video id=\"myVideo\" width=\"100%\" height=\"100%\" object-fit=\"fill\" controls autoplay><source src=\"/").append(encodedFilePath).
                     append("\"").
                     append("type=\"video/mp4\"/>");
             msg.append("</video>");
@@ -447,7 +453,13 @@ public class SimpleWebServer extends NanoHTTPD {
 
         msg.append("<div style='text-align: center; background-color: #ffffff' padding-top:50%;>");
         for (String audioPath : list) {
-            msg.append("<audio width=\"100%\" height=\"100%\" object-fit=\"fill\" controls autoplay><source src=\"/").append(audioPath).
+            String encodedFilePath;
+            try {
+                encodedFilePath = URLEncoder.encode(audioPath, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                encodedFilePath = audioPath;
+            }
+            msg.append("<audio width=\"100%\" height=\"100%\" object-fit=\"fill\" controls autoplay><source src=\"/").append(encodedFilePath).
                     append("\"");
 //                append("type=\"audio/mpeg\"/>");
             msg.append("</audio>");
@@ -564,8 +576,14 @@ public class SimpleWebServer extends NanoHTTPD {
         msg.append("<div class=\"slideshow-container\" >");
 
         for (String imagePath : list) {
+            String encodedFilePath;
+            try {
+                encodedFilePath = URLEncoder.encode(imagePath, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                encodedFilePath = imagePath;
+            }
             msg.append("<div class=\"mySlides fade\">\n" +
-                    "  <img src=\"/" + imagePath + "\" style=\"height:100%\">\n" +
+                    "  <img src=\"/" + encodedFilePath + "\" style=\"height:100%\">\n" +
                     "</div>\n");
         }
 
