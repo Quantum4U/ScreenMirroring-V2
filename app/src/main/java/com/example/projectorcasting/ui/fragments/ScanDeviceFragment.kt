@@ -51,13 +51,18 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
             checkWifiNetwork()
         }
 
+        binding?.tvOpenWifi?.setOnClickListener {
+            openWifi()
+        }
+
         checkWifiNetwork()
         showNativeMedium(binding?.bottomBannerAd, activity)
     }
 
     private fun observeDeviceList() {
         scanViewModel.deviceList.observe(viewLifecycleOwner, Observer { list ->
-            hideLoader()
+//            hideLoader()
+            binding?.progressBar?.visibility = View.GONE
             if (list != null && list.isNotEmpty()) {
                 binding?.llItemLayout?.visibility = View.VISIBLE
                 binding?.llNoDeviceFound?.visibility = View.GONE
@@ -132,7 +137,8 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
     }
 
     private fun fetchDeviceList() {
-        showLoader()
+//        showLoader()
+        binding?.progressBar?.visibility = View.VISIBLE
         binding?.llScanning?.visibility = View.VISIBLE
         binding?.llNoNetwork?.visibility = View.GONE
         binding?.llNoDeviceFound?.visibility = View.GONE

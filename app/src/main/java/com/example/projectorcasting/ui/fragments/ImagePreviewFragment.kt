@@ -52,6 +52,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
     private var fromSlideshow = false
     private var filePosition = 0
+    private var isAscending = true
 
     private var mHandler: Handler? = null
     private var timer: Timer? = null
@@ -72,13 +73,20 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         mProvider = QueueDataProvider.Companion.getInstance(context)
 
         fromSlideshow = argument.fromSlideshow
-        if (!fromSlideshow)
+        isAscending = argument.isAscending
+
+        if (!fromSlideshow) {
             filePosition = argument.filePosition
+        }
 
         if (fromSlideshow)
             MediaListSingleton.getSelectedImageList()?.let { itemList.addAll(it) }
         else
             MediaListSingleton.getAllImageListForPreview()?.let { itemList.addAll(it) }
+
+
+        if (!isAscending)
+            itemList.reversed()
 
         initViewpager()
         initRecyclerview()
@@ -92,7 +100,13 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
         binding?.llConnected?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Photo_Preview_Cast_DisConnect)
-            getDashViewModel()?.showConnectionPrompt(context, ::actionPerform, false, null)
+            getDashViewModel()?.showConnectionPrompt(
+                context,
+                ::actionPerform,
+                false,
+                null,
+                ""
+            )
         }
 
         binding?.ivBack?.setOnClickListener {
@@ -106,6 +120,8 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         checkResultToStartSlideshow()
         setBrowserValue()
 
+        if (isCastConnected)
+            castImage(filePosition)
     }
 
     private fun openDeviceListPage(startSlideShow: Boolean) {
@@ -207,7 +223,13 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 //                binding?.llConnect?.visibility = View.GONE
 //                binding?.tvConnected?.text = getString(R.string.connected, getConnectedDeviceName())
 
-                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_white_enable,null))
+                binding?.ivCasting?.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_cast_white_enable,
+                        null
+                    )
+                )
                 CastHelper.startServer(context)
                 establishSession()
                 castImage(filePosition)
@@ -215,7 +237,13 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
                 isCastConnected = false
 //                binding?.llConnected?.visibility = View.GONE
 //                binding?.llConnect?.visibility = View.VISIBLE
-                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_icon,null))
+                binding?.ivCasting?.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_cast_icon,
+                        null
+                    )
+                )
             }
 
             setBrowserValue()
@@ -223,19 +251,43 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         })
     }
 
-    private fun getConnectionStatus(){
+    private fun getConnectionStatus() {
         isCastConnected = isCastingConnected() == true
-        if(isCastConnected)
-            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_white_enable,null))
+        if (isCastConnected)
+            binding?.ivCasting?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_cast_white_enable,
+                    null
+                )
+            )
         else
-            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_icon,null))
+            binding?.ivCasting?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_cast_icon,
+                    null
+                )
+            )
     }
 
-    private fun setBrowserValue(){
-        if(isServerRunning()){
-            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browse_white_enable,null))
-        }else{
-            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browse_white_disable,null))
+    private fun setBrowserValue() {
+        if (isServerRunning()) {
+            binding?.ivBrowser?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_browse_white_enable,
+                    null
+                )
+            )
+        } else {
+            binding?.ivBrowser?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_browse_white_disable,
+                    null
+                )
+            )
         }
     }
 
@@ -251,13 +303,14 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         }
     }
 
-    private fun castPromtAction(isCastDeviceClick: Boolean,mediaData: MediaData?) {
+    private fun castPromtAction(isCastDeviceClick: Boolean, mediaData: MediaData?) {
         if (isCastDeviceClick) {
 //            if (!isConnected)
 //                findNavController().navigate(R.id.nav_scan_device)
 //            else
 //                stopCasting()
-            openDeviceListPage(true)
+//            openDeviceListPage(true)
+            findNavController().navigate(R.id.nav_scan_device)
         } else {
             GlobalScope.launch(Dispatchers.Default) {
                 showImagesInHtml()
@@ -285,7 +338,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         PathSingleton.setAudioPath(null)
     }
 
-    private fun openBrowserPage(){
+    private fun openBrowserPage() {
         findNavController().navigate(R.id.nav_browse_cast)
         showFullAds(activity)
     }
@@ -312,8 +365,8 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     override fun onDestroyView() {
-        if (isCastConnected)
-            stopCasting()
+//        if (isCastConnected)
+//            stopCasting()
         super.onDestroyView()
         binding = null
         mHandler?.removeCallbacks(runnable)
@@ -331,8 +384,8 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     override fun onPageSelected(position: Int) {
         if (fromSlideshow) {
             binding?.tvCount?.text = "" + (position + 1) + "/" + itemList.size
-            if (isCastConnected)
-                castImage(position)
+//            if (isCastConnected)
+//                castImage(position)
         } else {
             val previousItemPos: Int = currentItemPos
             currentItemPos = position
@@ -340,6 +393,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
             changeItem(position, previousItemPos)
         }
 
+        castImage(position)
     }
 
     override fun onPageScrollStateChanged(state: Int) {
@@ -407,5 +461,11 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
                 startSlideShow()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isCastConnected)
+            castImage(filePosition)
     }
 }

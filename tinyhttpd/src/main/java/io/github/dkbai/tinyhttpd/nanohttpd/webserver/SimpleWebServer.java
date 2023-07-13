@@ -490,6 +490,7 @@ public class SimpleWebServer extends NanoHTTPD {
                 "\n" +
                 "/* Next & previous buttons */\n" +
                 ".prev, .next {\n" +
+                "font-size: 50 !important;\n" +
                 "  cursor: pointer;\n" +
                 "  position: absolute;\n" +
                 "  top: 50%;\n" +

@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.mediarouter.media.MediaRouter
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.casting.utils.CastHelper
-import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.PromptHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -24,6 +23,12 @@ class ScanViewModel @Inject constructor() : ViewModel() {
     }
 
     fun showConnectionPrompt(context: Context?,actionPerform: KFunction2<Boolean, CastModel?, Unit>, isConnect: Boolean, castModel: CastModel?){
-        PromptHelper.showConnectionPrompt(context,actionPerform,isConnect,castModel)
+        PromptHelper.showConnectionPrompt(
+            context,
+            actionPerform,
+            isConnect,
+            castModel,
+            ""
+        )
     }
 }

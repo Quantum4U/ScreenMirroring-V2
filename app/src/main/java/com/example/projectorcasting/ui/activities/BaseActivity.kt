@@ -438,8 +438,12 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
         } else {
             Toast.makeText(this, getString(R.string.required_wifi_network), Toast.LENGTH_SHORT)
                 .show()
-            AppUtils.openWifiPopUpInApp(this)
+            openWifi()
         }
+    }
+
+    fun openWifi(){
+        AppUtils.openWifiPopUpInApp(this)
     }
 
     @Suppress("DEPRECATION")

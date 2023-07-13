@@ -5,15 +5,19 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
-import com.example.projectorcasting.adapter.FolderSelectionAdapter
 import com.example.projectorcasting.casting.model.CastModel
 import com.example.projectorcasting.models.MediaData
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlin.reflect.KFunction1
 import kotlin.reflect.KFunction2
 
 object PromptHelper {
-    fun showConnectionPrompt(context: Context?, actionPerform: KFunction2<Boolean, CastModel?, Unit>, isConnect: Boolean, castModel: CastModel?) {
+    fun showConnectionPrompt(
+        context: Context?,
+        actionPerform: KFunction2<Boolean, CastModel?, Unit>,
+        isConnect: Boolean,
+        castModel: CastModel?,
+        connectedName: String
+    ) {
         val sheetDialog = context?.let { BottomSheetDialog(it, R.style.BottomSheetDialog) }
         sheetDialog?.setContentView(R.layout.connecton_prompt_layout)
         val title: TextView? = sheetDialog?.findViewById(R.id.tv_heading)
@@ -26,11 +30,18 @@ object PromptHelper {
         val name = castModel?.castDevice?.modelName
 
         if (isConnect){
-            title?.text = context?.getString(R.string.connect_to,name)
+            if (name != null)
+                title?.text = context?.getString(R.string.connect_to,name)
+            else
+                title?.text = context?.getString(R.string.connect_to,connectedName)
+
             action?.text = context?.getString(R.string.connect)
             context?.resources?.getColor(R.color.text_green)?.let { action?.setTextColor(it) }
         }else{
-            title?.text = context?.getString(R.string.disconnect_to,name)
+            if (name != null)
+                title?.text = context?.getString(R.string.connect_to,name)
+            else
+                title?.text = context?.getString(R.string.connect_to,connectedName)
             action?.text = context?.getString(R.string.disconnect)
             context?.resources?.getColor(R.color.text_red)?.let { action?.setTextColor(it) }
         }

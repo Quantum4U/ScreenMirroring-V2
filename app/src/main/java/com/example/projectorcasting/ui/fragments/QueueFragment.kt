@@ -151,7 +151,13 @@ class QueueFragment : BaseFragment(R.layout.fragment_queue),QueueListAdapter.OnS
 
         binding?.llConnected?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Queue_Cast_DisConnect)
-            getDashViewModel()?.showConnectionPrompt(context, ::actionPerform, false, null)
+            getDashViewModel()?.showConnectionPrompt(
+                context,
+                ::actionPerform,
+                false,
+                null,
+                ""
+            )
         }
 
         binding?.ivBack?.setOnClickListener {

@@ -43,9 +43,10 @@ class DashboardViewModel : ViewModel() {
         context: Context?,
         actionPerform: KFunction2<Boolean, CastModel?, Unit>,
         isConnect: Boolean,
-        castModel: CastModel?
+        castModel: CastModel?,
+        connectedName: String
     ) {
-        PromptHelper.showConnectionPrompt(context, actionPerform, isConnect, castModel)
+        PromptHelper.showConnectionPrompt(context, actionPerform, isConnect, castModel,connectedName)
     }
 
     fun fetchImages(context: Context?){

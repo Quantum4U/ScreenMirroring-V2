@@ -3,6 +3,7 @@ package com.example.projectorcasting.ui.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -33,6 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.*
 
 class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
@@ -89,6 +91,38 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
             binding?.tvQueued?.visibility = View.GONE
 
         setBrowserValue()
+
+
+        binding?.searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filter(newText.toString())
+                return false
+            }
+        })
+    }
+
+    private fun filter(text: String) {
+        Log.d("VideosFragment", "filter A13 : >>"+text)
+//        for (item in videoListing_mainModels) {
+//            if (item.getVideoTitle().toLowerCase().contains(text.lowercase(Locale.getDefault()))) {
+//                // if the item is matched we are
+//                // adding it to our filtered list.
+//                filteredlist.add(item)
+//            }
+//            if (filteredlist.isEmpty()) {
+//                // if no item is added in filtered list we are
+//                // displaying a toast message as no data found.
+//                // Toast.makeText(getActivity(), "No Data Found..", Toast.LENGTH_SHORT).show();
+//            } else {
+//                // at last we are passing that filtered
+//                // list to our adapter class.
+//                allMediaRcyclrAdapter.filterList(filteredlist)
+//            }
+//        }
     }
 
     private fun openScanDevicePage(){

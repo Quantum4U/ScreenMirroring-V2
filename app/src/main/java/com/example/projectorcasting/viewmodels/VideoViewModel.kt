@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projectorcasting.casting.model.CastModel
-import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.PromptHelper
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +26,13 @@ class VideoViewModel @Inject constructor() : ViewModel() {
         isConnect: Boolean,
         castModel: CastModel?
     ) {
-        PromptHelper.showConnectionPrompt(context, actionPerform, isConnect, castModel)
+        PromptHelper.showConnectionPrompt(
+            context,
+            actionPerform,
+            isConnect,
+            castModel,
+            ""
+        )
     }
 
     fun saveThumbnailAndPlayMedia(context: Context?,bitmap: Bitmap?){

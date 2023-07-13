@@ -31,7 +31,9 @@ import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videopr
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagesBinding
 import engine.app.analytics.logGAEvents
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class ImagesFragment : BaseFragment(R.layout.fragment_images) {
@@ -44,6 +46,9 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     private var isListReadyForPreview = false
     private var isItemClick = false
     private var isConnected = false
+    private var isFromPreviewPage = false
+    private var alteredList: List<SectionModel> = arrayListOf()
+    private var isAscending = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,7 +75,13 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 
         binding?.llConnected?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Photos_Cast_DisConnect)
-            getDashViewModel()?.showConnectionPrompt(context, ::actionPerform, false, null)
+            getDashViewModel()?.showConnectionPrompt(
+                context,
+                ::actionPerform,
+                false,
+                null,
+                ""
+            )
         }
 
         binding?.llFolder?.setOnClickListener {
@@ -87,7 +98,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             MediaListSingleton.setSelectedImageList(imageSectionalAdapter?.getSelectedImageList())
             imageSectionalAdapter?.disableLongClick()
             if (isConnected) {
-                openPreviewPage(true, 0)
+                openPreviewPage(true, 0,"")
             } else {
 //                openDeviceListPage(true)
                 PromptHelper.showCastingPrompt(context, ::castPromtAction, isConnected, null)
@@ -109,7 +120,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     private fun showImagesInHtml() {
         var pathList: java.util.ArrayList<String> = arrayListOf()
         val selectedList = MediaListSingleton.getSelectedImageList()
-        Log.d("ImagesFragment", "showImagesInHtml A13 : >>"+selectedList?.size)
+        Log.d("ImagesFragment", "showImagesInHtml A13 : >>" + selectedList?.size)
         if (selectedList != null) {
             for (data in selectedList) {
                 val path = data.path?.split("0/")?.get(1)
@@ -171,12 +182,24 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 //                binding?.llConnected?.visibility = View.VISIBLE
 //                binding?.llConnect?.visibility = View.GONE
 //                binding?.tvConnected?.text = getString(R.string.connected, getConnectedDeviceName())
-                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_enable,null))
+                binding?.ivCasting?.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_cast_enable,
+                        null
+                    )
+                )
             } else if (state == CastState.NOT_CONNECTED) {
                 isConnected = false
 //                binding?.llConnected?.visibility = View.GONE
 //                binding?.llConnect?.visibility = View.VISIBLE
-                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_disable,null))
+                binding?.ivCasting?.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_cast_disable,
+                        null
+                    )
+                )
             }
 
             setBrowserValue()
@@ -184,19 +207,43 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         })
     }
 
-    private fun getConnectionStatus(){
+    private fun getConnectionStatus() {
         isConnected = isCastingConnected() == true
-        if(isConnected)
-            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_enable,null))
+        if (isConnected)
+            binding?.ivCasting?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_cast_enable,
+                    null
+                )
+            )
         else
-            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_disable,null))
+            binding?.ivCasting?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_cast_disable,
+                    null
+                )
+            )
     }
 
-    private fun setBrowserValue(){
-        if(isServerRunning()){
-            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browser_enable,null))
-        }else{
-            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browser_disable,null))
+    private fun setBrowserValue() {
+        if (isServerRunning()) {
+            binding?.ivBrowser?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_browser_enable,
+                    null
+                )
+            )
+        } else {
+            binding?.ivBrowser?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_browser_disable,
+                    null
+                )
+            )
         }
     }
 
@@ -222,9 +269,12 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         binding?.rvImages?.adapter = imageSectionalAdapter
         binding?.rvImages?.addItemDecoration(SpacesItemDecoration(1))
 
-        imageSectionalAdapter?.refreshList(
-            MediaListSingleton.getGalleryImageFolderList()?.get(0)?.sectionList
-        )
+        if (!isFromPreviewPage) {
+            alteredList = ArrayList(MediaListSingleton.getGalleryImageFolderList()?.get(0)?.sectionList)
+        }else{
+            sortingIconPlacement(!isAscending)
+        }
+        imageSectionalAdapter?.refreshList(alteredList)
         setListForPreview()
     }
 
@@ -234,7 +284,17 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     }
 
     private fun sortMediaList() {
-        if (binding?.tvSortingText?.text?.equals(getString(R.string.ascending)) == true) {
+        sortingIconPlacement(isAscending)
+
+        val adapterList = imageSectionalAdapter?.getItemList()?.reversed()
+        imageSectionalAdapter?.refreshList(adapterList)
+        alteredList = ArrayList(imageSectionalAdapter?.getItemList()!!)
+    }
+
+    private fun sortingIconPlacement(isAscendingBoolean:Boolean){
+        if (isAscendingBoolean) {
+            Log.d("ImagesFragment", "sortingIconPlacement A13 : >>00")
+            isAscending = false
             binding?.ivSortingIcon?.setImageDrawable(
                 ResourcesCompat.getDrawable(
                     resources,
@@ -244,6 +304,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             )
             binding?.tvSortingText?.text = getString(R.string.descending)
         } else {
+            isAscending = true
             binding?.ivSortingIcon?.setImageDrawable(
                 ResourcesCompat.getDrawable(
                     resources,
@@ -253,9 +314,6 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             )
             binding?.tvSortingText?.text = getString(R.string.ascending)
         }
-
-        val adapterList = imageSectionalAdapter?.getItemList()?.reversed()
-        imageSectionalAdapter?.refreshList(adapterList)
     }
 
     private fun itemClick(mediaData: MediaData?) {
@@ -265,7 +323,8 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             isItemClick = false
             openPreviewPage(
                 false,
-                MediaListSingleton.getAllImageListForPreview()?.indexOf(mediaData)!!
+                MediaListSingleton.getAllImageListForPreview()?.indexOf(mediaData)!!,
+                mediaData?.file?.name.toString()
             )
         } else {
             showLoader()
@@ -273,7 +332,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         }
     }
 
-    private fun openPreviewPage(startSlideshow: Boolean, pos: Int) {
+    private fun openPreviewPage(startSlideshow: Boolean, pos:Int,name: String) {
 
 //        val imageList = MediaListSingleton.getSelectedImageList()
 //        var count =0
@@ -319,8 +378,9 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 //            }
 //        }
 
+        isFromPreviewPage = true
         val action =
-            ImagesFragmentDirections.actionImageToPreview(startSlideshow, pos)
+            ImagesFragmentDirections.actionImageToPreview(startSlideshow, pos,isAscending)
         findNavController().navigate(action)
         showFullAds(activity)
     }
@@ -346,13 +406,14 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             stopCasting()
     }
 
-    private fun castPromtAction(isCastDeviceClick: Boolean,mediaData: MediaData?) {
+    private fun castPromtAction(isCastDeviceClick: Boolean, mediaData: MediaData?) {
         if (isCastDeviceClick) {
 //            if (!isConnected)
 //                findNavController().navigate(R.id.nav_scan_device)
 //            else
 //                stopCasting()
-            openDeviceListPage(true)
+//            openDeviceListPage(true)
+            findNavController().navigate(R.id.nav_scan_device)
         } else {
             GlobalScope.launch(Dispatchers.Default) {
                 showImagesInHtml()
@@ -362,6 +423,8 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     }
 
     fun showFolderSortingPrompt() {
+        isAscending = true
+        sortingIconPlacement(!isAscending)
         folderDialog = context?.let { BottomSheetDialog(it, R.style.BottomSheetDialog) }
         folderDialog?.setContentView(R.layout.folder_sorting_layout)
         val recyclerview: RecyclerView? = folderDialog?.findViewById(R.id.rv_folder)
@@ -385,12 +448,14 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         imgFolder = folderModel
         folderDialog?.cancel()
         binding?.tvFolderName?.text = folderModel.folderName
-        imageSectionalAdapter?.refreshList(folderModel.sectionList as ArrayList<SectionModel>?)
+        val folderList = folderModel.sectionList
+        imageSectionalAdapter?.refreshList( folderList as ArrayList<SectionModel>?)
+        alteredList = ArrayList(folderList)
 
         setListForPreview()
     }
 
-    private fun openBrowserPage(){
+    private fun openBrowserPage() {
         findNavController().navigate(R.id.nav_browse_cast)
         showFullAds(activity)
     }
@@ -413,7 +478,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         setFragmentResultListener(AppConstants.START_SLIDESHOW_REQUEST_KEY) { requestKey: String, bundle: Bundle ->
             val result = bundle.getBoolean(AppConstants.START_SLIDESHOW)
             if (result)
-                openPreviewPage(true, 0)
+                openPreviewPage(true, 0,"")
         }
     }
 }

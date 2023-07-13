@@ -107,4 +107,8 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
     fun isServerRunning(): Boolean {
         return (activity as BaseActivity).isServerRunning()
     }
+
+    fun openWifi(){
+        return (activity as BaseActivity).openWifi()
+    }
 }

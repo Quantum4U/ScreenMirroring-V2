@@ -20,12 +20,12 @@ import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videopr
 import engine.app.adshandler.AHandler
 import engine.app.analytics.logGAEvents
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.ServerConstants
-import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 
 class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
 
     private val viewModel: DashboardViewModel by viewModels()
     private var binding: FragmentDashboardBinding? = null
+    private var connectedName = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,7 +73,7 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
 
         binding?.tvDisconnect?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Dashboard_Cast_DisConnect)
-            getDashViewModel()?.showConnectionPrompt(context, ::actionPerform, false, null)
+            getDashViewModel()?.showConnectionPrompt(context, ::actionPerform, false, null,connectedName)
         }
 
         activity?.onBackPressedDispatcher?.addCallback(
@@ -145,6 +145,7 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
 
     private fun checkCastConnection(isConnected: Boolean, deviceName: String?) {
         if (isConnected) {
+            connectedName = deviceName.toString()
             binding?.tvConnectedDeviceName?.text = getString(R.string.connected, deviceName)
 
             binding?.llConnectedDeviceName?.visibility = View.VISIBLE
