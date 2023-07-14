@@ -1,6 +1,7 @@
 package com.example.projectorcasting.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,11 +22,20 @@ class VideoSectionalAdapter(
     private val itemClick: KFunction1<MediaData, Unit>
 ) : SectionedRecyclerViewAdapter<RecyclerView.ViewHolder>() {
 
-    private val sectionKeysList = mediaMap?.size
+    private var sectionKeysList = mediaMap?.size
     private val VIEW_TYPE_HEADER = -2
 
     fun refreshList(mediaList: ArrayList<SectionModel>?) {
+        sectionKeysList = mediaList?.size
         mediaMap = mediaList?.let { ArrayList(it) }
+        Log.d("VideoSectionalAdapter", "filtereList A13 : >> refresh"+mediaMap)
+        notifyDataSetChanged()
+    }
+
+    fun filtereList(mediaList: ArrayList<SectionModel>?){
+        mediaMap = mediaList?.let { ArrayList(it) }
+        sectionKeysList = mediaMap?.size
+        Log.d("VideoSectionalAdapter", "filtereList A13 : >>"+mediaMap)
         notifyDataSetChanged()
     }
 

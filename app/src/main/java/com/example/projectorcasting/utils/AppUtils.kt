@@ -31,11 +31,11 @@ import java.util.concurrent.TimeUnit
 object AppUtils {
 
     fun createTempImagePath(context: Context?): File {
-        return File(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-            "Quantum_CastingFolder/VideoThumb"
-        )
-//        return File(context?.filesDir, "VideoThumb")
+//        return File(
+//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+//            "Quantum_CastingFolder/VideoThumb"
+//        )
+        return File(context?.filesDir, "VideoThumb")
     }
 
     fun createAudioThumbPath(context: Context?): File {

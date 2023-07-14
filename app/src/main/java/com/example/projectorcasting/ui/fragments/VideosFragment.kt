@@ -3,6 +3,7 @@ package com.example.projectorcasting.ui.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
@@ -34,7 +35,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.*
 
 class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
@@ -45,7 +45,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     private var videoSectionalAdapter: VideoSectionalAdapter? = null
     private var mediaMapList: ArrayList<SectionModel>? = null
     private var isCastConnected = false
-    private var itemMediaData:MediaData?=null
+    private var itemMediaData: MediaData? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,7 +66,12 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         binding?.llConnect?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Videos_Cast_Connect)
 //            openScanDevicePage()
-            PromptHelper.showCastingPrompt(context, ::castPromtAction, isCastConnected, itemMediaData)
+            PromptHelper.showCastingPrompt(
+                context,
+                ::castPromtAction,
+                isCastConnected,
+                itemMediaData
+            )
         }
 
         binding?.llConnected?.setOnClickListener {
@@ -75,8 +80,23 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         }
 
         binding?.ivBack?.setOnClickListener {
-            exitPage()
+            if (binding?.searchView?.isIconified == true)
+                exitPage()
+            else{
+                binding?.rlToolbarLayout?.visibility = View.VISIBLE
+                binding?.searchView?.setQuery("", false)
+                binding?.searchView?.isIconified = true
+            }
         }
+
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    exitPage()
+                }
+            })
+
 
         binding?.tvQueued?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Videos_Queue_Button)
@@ -92,6 +112,17 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
         setBrowserValue()
 
+        binding?.searchView?.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // searchView expanded
+                binding?.rlToolbarLayout?.visibility = View.GONE
+            } else {
+                // searchView not expanded
+                binding?.rlToolbarLayout?.visibility = View.VISIBLE
+                binding?.searchView?.setQuery("", false)
+                binding?.searchView?.isIconified = true
+            }
+        }
 
         binding?.searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -106,26 +137,62 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     }
 
     private fun filter(text: String) {
-        Log.d("VideosFragment", "filter A13 : >>"+text)
-//        for (item in videoListing_mainModels) {
-//            if (item.getVideoTitle().toLowerCase().contains(text.lowercase(Locale.getDefault()))) {
-//                // if the item is matched we are
-//                // adding it to our filtered list.
-//                filteredlist.add(item)
-//            }
-//            if (filteredlist.isEmpty()) {
-//                // if no item is added in filtered list we are
-//                // displaying a toast message as no data found.
-//                // Toast.makeText(getActivity(), "No Data Found..", Toast.LENGTH_SHORT).show();
-//            } else {
-//                // at last we are passing that filtered
-//                // list to our adapter class.
-//                allMediaRcyclrAdapter.filterList(filteredlist)
-//            }
-//        }
+        Log.d("VideosFragment", "filter A13 : >>" + mediaMapList?.size)
+        if (text.isEmpty()) {
+            binding?.rvHorizontal?.visibility = View.VISIBLE
+            binding?.rvVertical?.visibility = View.VISIBLE
+            binding?.tvNoVideosFound?.visibility = View.GONE
+            videoSectionalAdapter?.refreshList(mediaMapList)
+            return
+        } else
+            binding?.rvHorizontal?.visibility = View.GONE
+
+        var filteredDataList: ArrayList<MediaData>? = arrayListOf()
+
+        Log.d(
+            "VideosFragment",
+            "filter A13 : >>" + "//" + filteredDataList?.size + mediaMapList?.size
+        )
+        for (section in mediaMapList!!) {
+            var filteredList: ArrayList<SectionModel>? = arrayListOf()
+
+            for (data in section.sectionList!!) {
+                Log.d(
+                    "VideosFragment",
+                    "filter A13 : >>11<<" + data.file?.name + "//" + text + "//" + data.file?.name?.lowercase()
+                        ?.trim()?.contains(text.lowercase().trim())
+                )
+                if (data.file?.name?.lowercase()?.trim()
+                        ?.contains(text.lowercase().trim()) == true
+                ) {
+                    // if the item is matched we are
+                    // adding it to our filtered list.
+                    filteredDataList?.add(data)
+                }
+            }
+
+            filteredList?.add(SectionModel("", filteredDataList))
+            Log.d(
+                "VideosFragment",
+                "filter A13 : >>22<<" + filteredList?.size + "//" + filteredDataList?.size + mediaMapList?.size
+            )
+
+            if (filteredList?.isEmpty() == true) {
+                // if no item is added in filtered list we are
+                // displaying a message as no data found.
+                binding?.rvVertical?.visibility = View.GONE
+                binding?.tvNoVideosFound?.visibility = View.VISIBLE
+            } else {
+                // at last we are passing that filtered
+                // list to our adapter class.
+                binding?.rvVertical?.visibility = View.VISIBLE
+                binding?.tvNoVideosFound?.visibility = View.GONE
+                videoSectionalAdapter?.filtereList(filteredList)
+            }
+        }
     }
 
-    private fun openScanDevicePage(){
+    private fun openScanDevicePage() {
         findNavController().navigate(R.id.nav_scan_device)
         showFullAds(activity)
     }
@@ -151,12 +218,24 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 //                binding?.llConnected?.visibility = View.VISIBLE
 //                binding?.llConnect?.visibility = View.GONE
 //                binding?.tvConnected?.text = getString(R.string.connected, getConnectedDeviceName())
-                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_enable,null))
+                binding?.ivCasting?.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_cast_enable,
+                        null
+                    )
+                )
             } else if (state == CastState.NOT_CONNECTED) {
                 isCastConnected = false
 //                binding?.llConnected?.visibility = View.GONE
 //                binding?.llConnect?.visibility = View.VISIBLE
-                binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_disable,null))
+                binding?.ivCasting?.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_cast_disable,
+                        null
+                    )
+                )
             }
 
             setBrowserValue()
@@ -164,19 +243,43 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         })
     }
 
-    private fun getConnectionStatus(){
+    private fun getConnectionStatus() {
         isCastConnected = isCastingConnected() == true
-        if(isCastConnected)
-            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_enable,null))
+        if (isCastConnected)
+            binding?.ivCasting?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_cast_enable,
+                    null
+                )
+            )
         else
-            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_disable,null))
+            binding?.ivCasting?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_cast_disable,
+                    null
+                )
+            )
     }
 
-    private fun setBrowserValue(){
-        if(isServerRunning()){
-            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browser_enable,null))
-        }else{
-            binding?.ivBrowser?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_browser_disable,null))
+    private fun setBrowserValue() {
+        if (isServerRunning()) {
+            binding?.ivBrowser?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_browser_enable,
+                    null
+                )
+            )
+        } else {
+            binding?.ivBrowser?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_browser_disable,
+                    null
+                )
+            )
         }
     }
 
@@ -225,7 +328,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         path?.let {
             CastHelper.playMedia(
                 context, mediaData, it,
-                thumbPath.toString(), Utils.VIDEO, ::checkForQueue,getConnectedDeviceName()
+                thumbPath.toString(), Utils.VIDEO, ::checkForQueue, getConnectedDeviceName()
             )
         }
 
@@ -302,10 +405,10 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
             stopCasting()
     }
 
-    private fun castPromtAction(isCastDeviceClick: Boolean,mediaData: MediaData?) {
+    private fun castPromtAction(isCastDeviceClick: Boolean, mediaData: MediaData?) {
         if (isCastDeviceClick) {
 //            if (!isCastConnected)
-                findNavController().navigate(R.id.nav_scan_device)
+            findNavController().navigate(R.id.nav_scan_device)
 //            else
 //                stopCasting()
         } else {
@@ -314,23 +417,23 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         }
     }
 
-    private fun checkForQueue(count: Int,openBrowser:Boolean,openDeviceListPage:Boolean) {
+    private fun checkForQueue(count: Int, openBrowser: Boolean, openDeviceListPage: Boolean) {
         Log.d("VideosFragment", "onViewCreated A13 : ><<<" + count)
-        if(count > 0) {
+        if (count > 0) {
             binding?.tvQueued?.visibility = View.VISIBLE
         }
 
-        if(openBrowser){
+        if (openBrowser) {
             openBrowserPage()
         }
 
-        if (openDeviceListPage){
+        if (openDeviceListPage) {
             openScanDevicePage()
         }
 
     }
 
-    private fun openBrowserPage(){
+    private fun openBrowserPage() {
         findNavController().navigate(R.id.nav_browse_cast)
         showFullAds(activity)
     }

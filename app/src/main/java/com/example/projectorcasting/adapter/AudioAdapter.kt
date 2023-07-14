@@ -1,5 +1,6 @@
 package com.example.projectorcasting.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projectorcasting.models.MediaData
+import com.example.projectorcasting.models.SectionModel
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import kotlin.reflect.KFunction1
 
@@ -16,6 +18,11 @@ class AudioAdapter(private val itemClick: KFunction1<MediaData, Unit>) :
     private var audioList: ArrayList<MediaData>? = null
 
     fun refreshList(mediaList: List<MediaData>?) {
+        audioList = mediaList?.let { ArrayList(it) }
+        notifyDataSetChanged()
+    }
+
+    fun filtereList(mediaList: ArrayList<MediaData>?){
         audioList = mediaList?.let { ArrayList(it) }
         notifyDataSetChanged()
     }

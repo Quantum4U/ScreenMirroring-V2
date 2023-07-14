@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,22 +18,23 @@
             android:padding="@dimen/padding5dp"
             app:srcCompat="@drawable/ic_back_arrow" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:fontFamily="@font/inter_semibold"
-            android:text="@string/videos"
-            android:textColor="@color/heading"
-            android:textSize="@dimen/textsize20sp" />
 
-        <LinearLayout
-            android:gravity="center"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_toRightOf="@+id/iv_back"
+            android:id="@+id/rl_toolbar_layout"
+            android:layout_toLeftOf="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/inter_semibold"
+                android:text="@string/videos"
+                android:textColor="@color/heading"
+                android:textSize="@dimen/textsize20sp" />
+
 
             <TextView
                 android:id="@+id/tv_queued"
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/padding20dp"
+                android:layout_marginRight="@dimen/padding5dp"
                 android:drawableLeft="@drawable/ic_queued_icon"
                 android:drawablePadding="@dimen/padding5dp"
                 android:fontFamily="@font/inter_medium"
@@ -51,26 +51,27 @@
                 android:textSize="@dimen/textsize15sp"
                 android:visibility="gone" />
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView"
-                app:searchIcon="@drawable/ic_searchicon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
+        <androidx.appcompat.widget.SearchView
+            android:padding="@dimen/padding5dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/searchView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:searchIcon="@drawable/ic_searchicon" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_above="@+id/cast_mini_controller"
-        android:visibility="gone"
         android:id="@+id/rl_view"
-        android:layout_below="@+id/rl_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/cast_mini_controller"
+        android:layout_below="@+id/rl_toolbar"
+        android:visibility="gone">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_horizontal"
@@ -81,50 +82,50 @@
             android:paddingEnd="@dimen/padding50dp" />
 
         <RelativeLayout
-            android:visibility="gone"
+            android:id="@+id/rl_sorting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rv_horizontal"
             android:layout_marginTop="@dimen/padding20dp"
             android:layout_marginBottom="@dimen/padding10dp"
-            android:padding="@dimen/padding10dp"
-            android:id="@+id/rl_sorting"
-            android:layout_below="@+id/rv_horizontal"
             android:background="@drawable/sheet_dialog_bg"
             android:backgroundTint="#1A000000"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:padding="@dimen/padding10dp"
+            android:visibility="gone">
 
             <TextView
-                android:layout_marginLeft="@dimen/padding10dp"
-                android:textSize="@dimen/textsize16sp"
-                android:textColor="@color/heading"
-                android:text="@string/sort_by_date"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding10dp"
+                android:text="@string/sort_by_date"
+                android:textColor="@color/heading"
+                android:textSize="@dimen/textsize16sp" />
 
             <LinearLayout
                 android:id="@+id/ll_sorting"
-                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/padding10dp"
-                android:layout_alignParentRight="true"
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_sorting_icon"
-                    app:srcCompat="@drawable/ic_ascending_icon"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_ascending_icon" />
 
                 <TextView
                     android:id="@+id/tv_sorting_text"
-                    android:layout_marginLeft="@dimen/padding10dp"
-                    android:text="@string/ascending"
-                    android:textSize="@dimen/textsize16sp"
-                    android:fontFamily="@font/inter_medium"
-                    android:textColor="@color/heading"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padding10dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="@string/ascending"
+                    android:textColor="@color/heading"
+                    android:textSize="@dimen/textsize16sp" />
 
             </LinearLayout>
 
@@ -134,94 +135,94 @@
             android:id="@+id/rv_vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/rl_sorting"
             android:layout_above="@+id/rl_connected"
+            android:layout_below="@+id/rl_sorting"
             android:clipToPadding="false"
-            android:padding="@dimen/padding10dp"/>
+            android:padding="@dimen/padding10dp" />
 
         <RelativeLayout
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             android:id="@+id/rl_connected"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true">
 
             <LinearLayout
-                android:visibility="gone"
-                android:gravity="center"
                 android:id="@+id/ll_connected"
-                android:background="@drawable/splash_btn_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding10dp"
                 android:layout_marginBottom="@dimen/padding10dp"
-                android:paddingLeft="@dimen/padding15dp"
-                android:paddingRight="@dimen/padding15dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:background="@drawable/splash_btn_bg"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:paddingLeft="@dimen/padding15dp"
+                android:paddingTop="8dp"
+                android:paddingRight="@dimen/padding15dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone">
 
                 <View
-                    android:layout_marginRight="@dimen/padding5dp"
-                    android:background="@drawable/active_dot_bg"
                     android:layout_width="@dimen/padding10dp"
-                    android:layout_height="@dimen/padding10dp"/>
+                    android:layout_height="@dimen/padding10dp"
+                    android:layout_marginRight="@dimen/padding5dp"
+                    android:background="@drawable/active_dot_bg" />
 
                 <TextView
                     android:id="@+id/tv_connected"
-                    android:text="@string/connected"
                     android:layout_width="wrap_content"
-                    android:textColor="@color/white"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:text="@string/connected"
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 
             <RelativeLayout
-                android:visibility="visible"
-                android:gravity="center"
                 android:id="@+id/ll_connect"
-                android:background="@drawable/cast_btn_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding10dp"
                 android:layout_marginBottom="@dimen/padding10dp"
-                android:paddingLeft="@dimen/padding15dp"
-                android:paddingRight="@dimen/padding15dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:background="@drawable/cast_btn_bg"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:paddingLeft="@dimen/padding15dp"
+                android:paddingTop="8dp"
+                android:paddingRight="@dimen/padding15dp"
+                android:paddingBottom="8dp"
+                android:visibility="visible">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_casting"
-                    app:srcCompat="@drawable/ic_cast_disable"
-                    android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_cast_disable" />
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_marginLeft="@dimen/padding15dp"
                     android:id="@+id/iv_browser"
-                    android:layout_toRightOf="@+id/iv_casting"
-                    app:srcCompat="@drawable/ic_browser_disable"
-                    android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/padding15dp"
+                    android:layout_toRightOf="@+id/iv_casting"
+                    app:srcCompat="@drawable/ic_browser_disable" />
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/padding15dp"
                     android:layout_toRightOf="@+id/iv_browser"
-                    app:srcCompat="@drawable/ic_arrow_orange"
                     android:rotation="180"
-                    android:layout_centerVertical="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    app:srcCompat="@drawable/ic_arrow_orange" />
 
                 <TextView
-                    android:visibility="gone"
-                    android:text="@string/connect"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/connect"
                     android:textColor="#FC654B"
-                    android:layout_height="wrap_content"/>
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -230,21 +231,21 @@
     </RelativeLayout>
 
     <TextView
-        android:visibility="visible"
         android:id="@+id/tv_no_videos_found"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="@string/no_videos_found"
-        android:textSize="@dimen/textsize20sp" />
+        android:textSize="@dimen/textsize20sp"
+        android:visibility="visible" />
 
-    <fragment
-        android:id="@+id/cast_mini_controller"
-        class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        app:castShowImageThumbnail="true" />
+        <fragment
+            android:id="@+id/cast_mini_controller"
+            class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            app:castShowImageThumbnail="true" />
 
 </RelativeLayout>

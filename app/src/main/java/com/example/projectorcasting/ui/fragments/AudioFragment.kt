@@ -1,7 +1,9 @@
 package com.example.projectorcasting.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -14,6 +16,7 @@ import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.models.MediaData
+import com.example.projectorcasting.models.SectionModel
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
@@ -34,6 +37,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
     private var audioAdapter: AudioAdapter? = null
     private var isCastConnected = false
     private var itemMediaData: MediaData? = null
+    private var mediaMapList: ArrayList<MediaData>? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,7 +72,13 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
         }
 
         binding?.ivBack?.setOnClickListener {
-            exitPage()
+            if (binding?.searchView?.isIconified == true)
+                exitPage()
+            else{
+                binding?.rlToolbarLayout?.visibility = View.VISIBLE
+                binding?.searchView?.setQuery("", false)
+                binding?.searchView?.isIconified = true
+            }
         }
 
         binding?.tvQueued?.setOnClickListener {
@@ -84,6 +94,63 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
             binding?.tvQueued?.visibility = View.GONE
 
         setBrowserValue()
+
+        binding?.searchView?.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // searchView expanded
+                binding?.rlToolbarLayout?.visibility = View.GONE
+            } else {
+                // searchView not expanded
+                binding?.rlToolbarLayout?.visibility = View.VISIBLE
+                binding?.searchView?.setQuery("", false)
+                binding?.searchView?.isIconified = true
+            }
+        }
+
+        binding?.searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filter(newText.toString())
+                return false
+            }
+        })
+    }
+
+    private fun filter(text: String) {
+        Log.d("VideosFragment", "filter A13 : >>" + mediaMapList?.size)
+        if (text.isEmpty()) {
+            binding?.rvAudio?.visibility = View.VISIBLE
+            binding?.tvNoAudiosFound?.visibility = View.GONE
+            audioAdapter?.refreshList(mediaMapList)
+            return
+        }
+
+        var filteredDataList: ArrayList<MediaData>? = arrayListOf()
+
+            for (data in mediaMapList!!) {
+                if (data.file?.name?.lowercase()?.trim()?.contains(text.lowercase().trim()) == true) {
+                    // if the item is matched we are
+                    // adding it to our filtered list.
+                    filteredDataList?.add(data)
+                }
+            }
+
+            if (filteredDataList?.isEmpty() == true) {
+                // if no item is added in filtered list we are
+                // displaying a message as no data found.
+                binding?.rvAudio?.visibility = View.GONE
+                binding?.tvNoAudiosFound?.visibility = View.VISIBLE
+            } else {
+                // at last we are passing that filtered
+                // list to our adapter class.
+                binding?.rvAudio?.visibility = View.VISIBLE
+                binding?.tvNoAudiosFound?.visibility = View.GONE
+                audioAdapter?.filtereList(filteredDataList)
+            }
+
     }
 
     private fun openScanDevicePage() {
@@ -160,6 +227,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
     }
 
     private fun setAdapter(audioList: List<MediaData>) {
+        mediaMapList = ArrayList(audioList)
         if (audioList.isNotEmpty()) {
             binding?.rlView?.visibility = View.VISIBLE
             binding?.tvNoAudiosFound?.visibility = View.GONE

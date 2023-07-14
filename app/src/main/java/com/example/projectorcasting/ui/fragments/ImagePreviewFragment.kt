@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.bumptech.glide.Glide
 import com.example.projectorcasting.AnalyticsConstant
 import com.example.projectorcasting.adapter.ImagePreviewAdapter
 import com.example.projectorcasting.adapter.MiniImagePreviewAdapter
@@ -30,6 +31,7 @@ import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagePreviewBinding
+import engine.app.adshandler.AHandler
 import engine.app.analytics.logGAEvents
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
 import kotlinx.coroutines.Dispatchers
@@ -115,6 +117,10 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
         binding?.tvSlideshow?.setOnClickListener {
             slideshowButtonClick()
+        }
+
+        binding?.llReplay?.setOnClickListener {
+            hideCompletionPage()
         }
 
         checkResultToStartSlideshow()
@@ -349,11 +355,33 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         if (filePosition < itemList.size)
             scrollViewpager(filePosition)
         else {
+            openCompletionPage()
+
             filePosition = 0
             scrollViewpager(filePosition)
             binding?.tvSlideshow?.text = getString(R.string.start_slideshow)
             stopTimer()
         }
+    }
+
+    private fun openCompletionPage(){
+        binding?.vpImgPreview?.visibility = View.GONE
+        binding?.llSlideshow?.visibility = View.GONE
+        binding?.replayLayout?.visibility = View.VISIBLE
+        binding?.llMiniPreview?.visibility = View.VISIBLE
+
+        context?.let { Glide.with(it).load(itemList[0].file).into(binding?.ivReplayImage!!) }
+        showNativeMedium(binding?.nativeAd,activity)
+    }
+
+    private fun hideCompletionPage(){
+        binding?.vpImgPreview?.visibility = View.VISIBLE
+        binding?.llSlideshow?.visibility = View.VISIBLE
+        binding?.replayLayout?.visibility = View.GONE
+        binding?.llMiniPreview?.visibility = View.GONE
+
+        binding?.tvSlideshow?.text = getString(R.string.stop_slideshow)
+        startSlideShow()
     }
 
     private fun scrollViewpager(pos: Int) {

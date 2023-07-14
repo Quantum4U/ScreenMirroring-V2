@@ -86,42 +86,113 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_casting"
-                app:srcCompat="@drawable/ic_cast_icon"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_cast_icon" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_marginLeft="@dimen/padding15dp"
                 android:id="@+id/iv_browser"
-                android:layout_toRightOf="@+id/iv_casting"
-                app:srcCompat="@drawable/ic_browse_white_disable"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/padding15dp"
+                android:layout_toRightOf="@+id/iv_casting"
+                app:srcCompat="@drawable/ic_browse_white_disable" />
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/padding15dp"
                 android:layout_toRightOf="@+id/iv_browser"
                 app:srcCompat="@drawable/ic_arrow_orange"
-                app:tint="@color/white"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                app:tint="@color/white" />
 
 
         </LinearLayout>
 
     </RelativeLayout>
 
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/replay_layout"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rl_bottom"
+        android:layout_below="@+id/rl_toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_margin="@dimen/padding10dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="@dimen/padding5dp"
+                app:cardElevation="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_replay_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_replay"
+                        android:gravity="center"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            app:srcCompat="@drawable/ic_replay_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:textSize="@dimen/textsize18sp"
+                            android:layout_marginTop="@dimen/padding10dp"
+                            android:textColor="@color/white"
+                            android:text="@string/replay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:id="@+id/native_ad"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding20dp" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
     <androidx.viewpager.widget.ViewPager
-        android:layout_marginTop="@dimen/padding30dp"
-        android:layout_marginBottom="@dimen/padding30dp"
         android:id="@+id/vp_img_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/rl_bottom"
-        android:layout_below="@+id/rl_toolbar" />
+        android:layout_below="@+id/rl_toolbar"
+        android:layout_marginTop="@dimen/padding30dp"
+        android:layout_marginBottom="@dimen/padding30dp" />
 
     <RelativeLayout
         android:id="@+id/rl_bottom"
@@ -130,28 +201,28 @@
         android:layout_alignParentBottom="true">
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/ll_slideshow"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginBottom="@dimen/padding15dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding15dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
-                android:layout_marginBottom="@dimen/padding30dp"
                 android:id="@+id/tv_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding30dp"
                 android:background="@drawable/folder_btn_bg"
                 android:backgroundTint="#80FFFFFF"
-                android:paddingStart="@dimen/padding25dp"
-                android:paddingEnd="@dimen/padding25dp"
-                android:paddingTop="@dimen/padding5dp"
-                android:paddingBottom="@dimen/padding5dp"
                 android:fontFamily="@font/inter_medium"
+                android:paddingStart="@dimen/padding25dp"
+                android:paddingTop="@dimen/padding5dp"
+                android:paddingEnd="@dimen/padding25dp"
+                android:paddingBottom="@dimen/padding5dp"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize15sp"/>
+                android:textSize="@dimen/textsize15sp" />
 
             <TextView
                 android:id="@+id/tv_slideshow"
@@ -159,8 +230,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/cast_btn_bg"
                 android:drawablePadding="@dimen/padding5dp"
-                android:padding="@dimen/padding10dp"
                 android:fontFamily="@font/inter_medium"
+                android:padding="@dimen/padding10dp"
                 android:text="@string/stop_slideshow"
                 android:textColor="@color/text_orange"
                 android:textSize="@dimen/textsize15sp"
@@ -176,7 +247,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_horizontal_preview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
         </RelativeLayout>
     </RelativeLayout>

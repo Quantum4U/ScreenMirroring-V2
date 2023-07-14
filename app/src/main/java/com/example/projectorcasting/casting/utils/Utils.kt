@@ -66,8 +66,7 @@ object Utils {
 
         //encode path for % in its
         val encodedFilePath = URLEncoder.encode(path, "utf-8")
-//        val encodedThumbPath = URLEncoder.encode(thumb, "utf-8")
-        val encodedThumbPath = URLEncoder.encode("", "utf-8")
+        val encodedThumbPath = URLEncoder.encode(thumb, "utf-8")
 
         /** Here we are setting the web server url for our
          *  media files.

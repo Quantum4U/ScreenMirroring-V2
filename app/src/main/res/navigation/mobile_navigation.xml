@@ -93,5 +93,12 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/nav_completion_page"
+        android:name="com.example.projectorcasting.ui.fragments.CompletionPageFragment"
+        android:label="@string/completion_page"
+        tools:layout="@layout/fragment_completion_page" />
+
+
 
 </navigation>
