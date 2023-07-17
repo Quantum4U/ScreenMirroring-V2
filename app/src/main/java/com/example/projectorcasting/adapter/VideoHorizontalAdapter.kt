@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.utils.AppConstants
+import com.example.projectorcasting.utils.AppUtils
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import kotlin.reflect.KFunction1
 
@@ -61,7 +62,7 @@ class VideoHorizontalAdapter(
             }
 
             albumName.text = item.file?.name
-            albumDate.text = item.date
+            albumDate.text = AppUtils.convertDate(item.file?.lastModified().toString())
             albumDuration.text = item.duration
 
             card.setOnClickListener {

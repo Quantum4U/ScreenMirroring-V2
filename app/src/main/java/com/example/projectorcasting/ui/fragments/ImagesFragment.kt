@@ -147,7 +147,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     }
 
     private fun doFetchingWork() {
-        if (MediaListSingleton.getGalleryImageFolderList() == null || MediaListSingleton.getGalleryImageFolderList()
+        if (MediaListSingleton.getGalleryImageList() == null || MediaListSingleton.getGalleryImageList()
                 ?.isEmpty() == true
         ) {
             if (getDashViewModel()?.isLoading == true)
@@ -248,7 +248,8 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     }
 
     private fun observeImageList() {
-        getDashViewModel()?.imagesFolderList?.observe(viewLifecycleOwner, Observer { imageList ->
+        getDashViewModel()?.imagesList?.observe(viewLifecycleOwner, Observer { imageList ->
+            Log.d("AppUtils>>", "getGalleryAllImages A14 : >> check time>> all images fragment")
             hideLoader()
             if (imageList != null && imageList.isNotEmpty()) {
                 setAdapter()

@@ -244,8 +244,8 @@
                     android:id="@+id/cv_cast_photos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/padding5dp"
-                    android:layout_toLeftOf="@+id/v_center"
+                    android:layout_marginLeft="@dimen/padding5dp"
+                    android:layout_toRightOf="@+id/v_center"
                     app:cardCornerRadius="@dimen/padding10dp"
                     app:cardUseCompatPadding="true">
 
@@ -282,8 +282,8 @@
                     android:id="@+id/cv_cast_videos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding5dp"
-                    android:layout_toRightOf="@+id/v_center"
+                    android:layout_marginRight="@dimen/padding5dp"
+                    android:layout_toLeftOf="@+id/v_center"
                     app:cardCornerRadius="@dimen/padding10dp"
                     app:cardUseCompatPadding="true">
 

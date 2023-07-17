@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="@font/inter_semibold"
-                android:text="@string/videos"
+                android:text="@string/audios"
                 android:textColor="@color/heading"
                 android:textSize="@dimen/textsize20sp" />
 

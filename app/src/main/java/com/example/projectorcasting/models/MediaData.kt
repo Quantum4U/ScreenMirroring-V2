@@ -7,7 +7,7 @@ data class MediaData(
     val file: File? = null,
     val date: String? = null,
     val duration: String? = null,
-    val bitmap: Bitmap? = null,
+    var bitmap: Bitmap? = null,
     val folderId: String? = null,
     val folderName: String? = null,
     val path: String? = null,

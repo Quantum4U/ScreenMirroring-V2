@@ -31,7 +31,6 @@ import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagePreviewBinding
-import engine.app.adshandler.AHandler
 import engine.app.analytics.logGAEvents
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
 import kotlinx.coroutines.Dispatchers
@@ -72,7 +71,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
         getConnectionStatus()
 
-        mProvider = QueueDataProvider.Companion.getInstance(context)
+        mProvider = QueueDataProvider.getInstance(context)
 
         fromSlideshow = argument.fromSlideshow
         isAscending = argument.isAscending
@@ -87,8 +86,11 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
             MediaListSingleton.getAllImageListForPreview()?.let { itemList.addAll(it) }
 
 
-        if (!isAscending)
-            itemList.reversed()
+        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>"+isAscending)
+        if (!isAscending) {
+//            itemList.reversed()
+            Log.d("ImagePreviewFragment", "onViewCreated A13 : >>111"+isAscending)
+        }
 
         initViewpager()
         initRecyclerview()
@@ -138,6 +140,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     private fun initViewpager() {
+        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>222"+isAscending)
         imagePreviewAdapter = ImagePreviewAdapter(itemList)
         binding?.vpImgPreview?.adapter = imagePreviewAdapter
         binding?.vpImgPreview?.addOnPageChangeListener(this)
@@ -145,6 +148,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     private fun initRecyclerview() {
+        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>333"+isAscending)
         recyclerAdapter = MiniImagePreviewAdapter(itemList, ::recyclerItemClick)
         binding?.rvHorizontalPreview?.adapter = recyclerAdapter
         binding?.rvHorizontalPreview?.addOnChildAttachStateChangeListener(this)
@@ -326,11 +330,12 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     private fun showImagesInHtml() {
-        var pathList: java.util.ArrayList<String> = arrayListOf()
+        var pathList: ArrayList<String> = arrayListOf()
         val selectedList = imagePreviewAdapter?.getList()
-        for (data in selectedList!!) {
-            val mediaItem = data
-            val path = mediaItem?.path?.split("0/")?.get(1)
+        val iterator: Iterator<MediaData>? = selectedList?.iterator()
+        while (iterator?.hasNext() == true) {
+            val mediaItem = iterator.next()
+            val path = mediaItem.path?.split("0/")?.get(1)
             pathList.add(path.toString())
             CastHelper.showImagesInHtml(
                 context,
@@ -339,6 +344,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
                 Utils.IMAGE
             )
         }
+
         PathSingleton.setImagePath(pathList)
         PathSingleton.setVideoPath(null)
         PathSingleton.setAudioPath(null)
@@ -364,17 +370,17 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         }
     }
 
-    private fun openCompletionPage(){
+    private fun openCompletionPage() {
         binding?.vpImgPreview?.visibility = View.GONE
         binding?.llSlideshow?.visibility = View.GONE
         binding?.replayLayout?.visibility = View.VISIBLE
         binding?.llMiniPreview?.visibility = View.VISIBLE
 
         context?.let { Glide.with(it).load(itemList[0].file).into(binding?.ivReplayImage!!) }
-        showNativeMedium(binding?.nativeAd,activity)
+        showNativeMedium(binding?.nativeAd, activity)
     }
 
-    private fun hideCompletionPage(){
+    private fun hideCompletionPage() {
         binding?.vpImgPreview?.visibility = View.VISIBLE
         binding?.llSlideshow?.visibility = View.VISIBLE
         binding?.replayLayout?.visibility = View.GONE

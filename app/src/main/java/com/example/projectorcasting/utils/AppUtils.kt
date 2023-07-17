@@ -162,19 +162,23 @@ object AppUtils {
 //
 //
 
+        Log.d("AppUtils>>", "getGalleryAllImages A14 : >> check time>> folder list")
         //add all images list
-        if (MediaListSingleton.getGalleryImageList()?.isNotEmpty() == true) {
-            folderMap?.add(
-                0, FolderModel(
-                    "all",
-                    context?.getString(R.string.all_photos),
-                    MediaListSingleton.getGalleryImageList()
-                )
-            )
+//        if (MediaListSingleton.getGalleryImageList()?.isNotEmpty() == true) {
+//            folderMap?.add(
+//                0, FolderModel(
+//                    "all",
+//                    context?.getString(R.string.all_photos),
+//                    MediaListSingleton.getGalleryImageList()
+//                )
+//            )
+//
+//        }
 
-        }
 
-        MediaListSingleton.setGalleryImageFolderList(folderMap)
+        var folderList = MediaListSingleton.getGalleryImageFolderList()
+        folderMap?.let { folderList?.addAll(it) }
+        MediaListSingleton.setGalleryImageFolderList(folderList)
 
         return folderMap
     }
@@ -212,6 +216,8 @@ object AppUtils {
                                     file, null, null, null, bucketId, bucketName, path, false
                                 )
                             )
+
+                            Log.d("AppUtils", "getImagesFromFolders A13 : fetching gggg>>>")
                         }
                     }
 
@@ -230,6 +236,7 @@ object AppUtils {
 
     fun getGalleryAllImages(context: Context?): ArrayList<SectionModel>? {
         var list: ArrayList<MediaData>? = arrayListOf()
+        var folderMap: ArrayList<FolderModel>? = arrayListOf()
 
         try {
             context?.contentResolver?.query(
@@ -246,7 +253,7 @@ object AppUtils {
                         val id = galCursor.getString(5)
                         val folderName = galCursor.getString(6)
 
-                        Log.d("Utils", "getAllGalleryImages A13 : >>check for all" + folderName)
+
                         if (!path.contains("Quantum_CastingFolder")) {
                             list?.add(
                                 MediaData(
@@ -259,6 +266,7 @@ object AppUtils {
 
                 }
             }
+            Log.d("Utils", "getAllGalleryImages A13 : >>check for all" + list?.size)
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
 
@@ -270,6 +278,15 @@ object AppUtils {
 
         val sortedList = list?.let { getSortedMap(it) }
         MediaListSingleton.setGalleryImageList(sortedList)
+
+        Log.d("AppUtils>>", "getGalleryAllImages A14 : >> check time>> all images")
+
+        folderMap?.add(FolderModel(
+            "all",
+            context?.getString(R.string.all_photos),
+            MediaListSingleton.getGalleryImageList()
+        ))
+        MediaListSingleton.setGalleryImageFolderList(folderMap)
 
         return sortedList
     }
@@ -299,7 +316,7 @@ object AppUtils {
                     var duration =
                         galCursor.getString(7)
 
-                    val fileBitmap = getMediaBitmap(file)
+//                    val fileBitmap = getMediaBitmap(file)
 //                            val duration = getMediaDuration(context, Uri.fromFile(file))
 
 //                    if(duration == null)
@@ -310,8 +327,7 @@ object AppUtils {
 
                     mapList?.add(
                         MediaData(
-                            file, convertDate(file.lastModified().toString()), dur, fileBitmap
-                        )
+                            file, /*convertDate(file.lastModified().toString())*/"", dur)
                     )
 
                 }
@@ -322,8 +338,8 @@ object AppUtils {
 //            e.printStackTrace()
 //        }
 
-        Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + list?.size)
-        Log.d("Utils", "getAllGalleryVideos A13 : >> exception" + mapList?.size)
+        Log.d("Utils", "getAllGalleryVideos A13 : >> video size" + list?.size)
+        Log.d("Utils", "getAllGalleryVideos A13 : >> video size" + mapList?.size)
 
         Collections.sort(mapList, Comparator<MediaData> { o1, o2 ->
             o2.file?.lastModified()?.compareTo(o1.file?.lastModified()!!)!!
@@ -365,7 +381,7 @@ object AppUtils {
                         list?.add(
                             MediaData(
                                 file,
-                                convertDate(file.lastModified().toString()),
+                                null,
                                 dur,
                             )
                         )
@@ -511,7 +527,7 @@ object AppUtils {
             } else {
 
                 if (mHolderList.isNotEmpty()) {
-                    mMap.add(SectionModel(convertDate(mDateHolder), mHolderList, false))
+                    mMap.add(SectionModel(mDateHolder, mHolderList, false))
                 }
                 mHolderList = ArrayList()
                 mHolderList.add(mList[i])
@@ -520,7 +536,7 @@ object AppUtils {
             }
             if (i == mList.size - 1) {
 //                mMap[convertDate(mDateHolder).toString()] = mHolderList
-                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList, false))
+                mMap.add(SectionModel(mDateHolder, mHolderList, false))
             }
 
         }
@@ -541,8 +557,7 @@ object AppUtils {
             } else {
 //                mMap[convertDate(mDateHolder).toString()] = mHolderList
                 if (mHolderList.isNotEmpty()) mMap.add(
-                    SectionModel(
-                        convertDate(mDateHolder), mHolderList
+                    SectionModel(mDateHolder, mHolderList
                     )
                 )
                 mHolderList = ArrayList()
@@ -551,7 +566,7 @@ object AppUtils {
             }
             if (i == mList.size - 1) {
 //                mMap[convertDate(mDateHolder).toString()] = mHolderList
-                mMap.add(SectionModel(convertDate(mDateHolder), mHolderList, false))
+                mMap.add(SectionModel(mDateHolder, mHolderList, false))
             }
 
             println("here is the final size owngallery" + " " + mMap)

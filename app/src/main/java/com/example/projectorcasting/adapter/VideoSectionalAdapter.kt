@@ -1,6 +1,8 @@
 package com.example.projectorcasting.adapter
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +12,12 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.models.SectionModel
+import com.example.projectorcasting.utils.AppUtils
 import kotlin.reflect.KFunction1
 
 
@@ -78,7 +83,7 @@ class VideoSectionalAdapter(
     override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder?, section: Int) {
         val holderHeader = holder as ViewHolder
 //        val key = sectionKeysList?.elementAt(section)
-        holderHeader.txtHeader?.text = mediaMap?.get(section)?.date
+        holderHeader.txtHeader?.text = AppUtils.convertDate(mediaMap?.get(section)?.date.toString())
     }
 
     override fun onBindViewHolder(
@@ -91,13 +96,36 @@ class VideoSectionalAdapter(
         val media = list?.get(relativePosition)
 
 
-        if (media?.bitmap != null) {
-            holderItem.imgFile?.setImageBitmap(media.bitmap)
-        } else {
-            holderItem.imgFile?.let {
-                Glide.with(context).load(media?.file).into(it)
-            }
-        }
+//        if (media?.bitmap != null) {
+//            holderItem.imgFile?.let {
+//                Glide.with(context).load(media.bitmap).placeholder(R.drawable.ic_video_placeholder).into(it)
+//            }
+//        } else {
+//            holderItem.imgFile?.let {
+//                Glide.with(context).load(media?.file).placeholder(R.drawable.ic_video_placeholder).into(it)
+//            }
+
+            Log.d("VideoSectionalAdapter", "onBindViewHolder A13 : >>"+media?.bitmap)
+
+            Glide.with(context)
+                .asBitmap()
+                .load(media?.file)
+                .placeholder(R.drawable.ic_video_placeholder)
+                .into(object : CustomTarget<Bitmap>(){
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        holderItem.imgFile?.setImageBitmap(resource)
+                        media?.bitmap = resource
+                        Log.d("VideoSectionalAdapter", "onBindViewHolder A13 : >>"+media?.bitmap+"//"+resource)
+                    }
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        // this is called when imageView is cleared on lifecycle call or for
+                        // some other reason.
+                        // if you are referencing the bitmap somewhere else too other than this imageView
+                        // clear it here as you can no longer have the bitmap
+                    }
+                })
+
+//        }
 
         holderItem.albumName?.text = media?.file?.name
         holderItem.albumDuration?.text = media?.duration
