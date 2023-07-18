@@ -83,7 +83,7 @@ class VideoSectionalAdapter(
     override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder?, section: Int) {
         val holderHeader = holder as ViewHolder
 //        val key = sectionKeysList?.elementAt(section)
-        holderHeader.txtHeader?.text = AppUtils.convertDate(mediaMap?.get(section)?.date.toString())
+        holderHeader.txtHeader?.text = AppUtils.convertDate(mediaMap?.get(section)?.date)
     }
 
     override fun onBindViewHolder(

@@ -20,11 +20,11 @@
 
 
         <RelativeLayout
-            android:layout_toRightOf="@+id/iv_back"
             android:id="@+id/rl_toolbar_layout"
-            android:layout_toLeftOf="@+id/searchView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/searchView"
+            android:layout_toRightOf="@+id/iv_back">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -55,12 +55,12 @@
         </RelativeLayout>
 
         <androidx.appcompat.widget.SearchView
-            android:padding="@dimen/padding5dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:id="@+id/searchView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/padding5dp"
             app:searchIcon="@drawable/ic_searchicon" />
 
     </RelativeLayout>
@@ -239,13 +239,13 @@
         android:textSize="@dimen/textsize20sp"
         android:visibility="visible" />
 
-        <fragment
-            android:id="@+id/cast_mini_controller"
-            class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone"
-            app:castShowImageThumbnail="true" />
+    <fragment
+        android:id="@+id/cast_mini_controller"
+        class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        app:castShowImageThumbnail="true" />
 
 </RelativeLayout>

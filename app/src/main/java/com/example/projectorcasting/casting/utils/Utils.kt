@@ -303,8 +303,14 @@ object Utils {
             playNext?.visibility = View.GONE
             view?.visibility = View.GONE
         } else {
-            playNext?.visibility = View.VISIBLE
-            view?.visibility = View.VISIBLE
+            if(provider.getItem(provider.currentItemId)?.media?.metadata?.mediaType == MediaMetadata.MEDIA_TYPE_PHOTO){
+                provider.removeAll()
+                playNext?.visibility = View.GONE
+                view?.visibility = View.GONE
+            }else{
+                playNext?.visibility = View.VISIBLE
+                view?.visibility = View.VISIBLE
+            }
         }
 
         val queueItem: MediaQueueItem =

@@ -104,11 +104,23 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
             showFullAds(activity)
         }
 
-        val provider: QueueDataProvider? = QueueDataProvider.Companion.getInstance(context)
-        if (provider?.count!! > 0)
-            binding?.tvQueued?.visibility = View.VISIBLE
-        else
+        val provider: QueueDataProvider? = QueueDataProvider.getInstance(context)
+        if (provider?.count!! > 0) {
+            for (i in 0 until provider.count) {
+                Log.d("VideosFragment", "onViewCreated A13 : <><>"+i+"//"+provider.getItem(0)+"//"+provider.getItem(i))
+                if (provider.getItem(i) == null || provider.getItem(i)?.media?.metadata?.mediaType == null) {
+                    Log.d("VideosFragment", "onViewCreated A13 : <><> remove")
+                    provider.removeFromQueue(i)
+                }
+            }
+            if (provider.count > 0)
+                binding?.tvQueued?.visibility = View.VISIBLE
+        }else
             binding?.tvQueued?.visibility = View.GONE
+
+
+        Log.d("VideosFragment", "onViewCreated A13 : <><>"+provider.currentItemId+"//"+provider.getItem(0)?.media?.metadata?.mediaType)
+        Log.d("VideosFragment", "onViewCreated A13 : <><>"+provider.getPositionByItemId(1)+"//"+provider.count)
 
         setBrowserValue()
 
@@ -140,12 +152,15 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         Log.d("VideosFragment", "filter A13 : >>" + mediaMapList?.size)
         if (text.isEmpty()) {
             binding?.rvHorizontal?.visibility = View.VISIBLE
+            binding?.rlSorting?.visibility = View.VISIBLE
             binding?.rvVertical?.visibility = View.VISIBLE
             binding?.tvNoVideosFound?.visibility = View.GONE
             videoSectionalAdapter?.refreshList(mediaMapList)
             return
-        } else
+        } else {
             binding?.rvHorizontal?.visibility = View.GONE
+            binding?.rlSorting?.visibility = View.GONE
+        }
 
         var filteredDataList: ArrayList<MediaData>? = arrayListOf()
 
@@ -171,7 +186,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
                 }
             }
 
-            filteredList?.add(SectionModel("", filteredDataList))
+            filteredList?.add(SectionModel(null, filteredDataList))
             Log.d(
                 "VideosFragment",
                 "filter A13 : >>22<<" + filteredList?.size + "//" + filteredDataList?.size + mediaMapList?.size

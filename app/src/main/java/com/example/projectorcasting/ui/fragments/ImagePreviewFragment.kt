@@ -61,6 +61,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     private var currentItemPos = 0
 
     private var mProvider: QueueDataProvider? = null
+    private var isImagesLoadedForHtml = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -86,10 +87,10 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
             MediaListSingleton.getAllImageListForPreview()?.let { itemList.addAll(it) }
 
 
-        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>"+isAscending)
+        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>" + isAscending+"//"+itemList[0].file?.name)
         if (!isAscending) {
 //            itemList.reversed()
-            Log.d("ImagePreviewFragment", "onViewCreated A13 : >>111"+isAscending)
+            Log.d("ImagePreviewFragment", "onViewCreated A13 : >>111" + isAscending+"//"+itemList[0].file?.name)
         }
 
         initViewpager()
@@ -140,7 +141,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     private fun initViewpager() {
-        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>222"+isAscending)
+        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>222" + isAscending+"//"+itemList[0].file?.name)
         imagePreviewAdapter = ImagePreviewAdapter(itemList)
         binding?.vpImgPreview?.adapter = imagePreviewAdapter
         binding?.vpImgPreview?.addOnPageChangeListener(this)
@@ -148,12 +149,13 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     private fun initRecyclerview() {
-        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>333"+isAscending)
+        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>333" + isAscending+"//"+itemList[0].file?.name)
         recyclerAdapter = MiniImagePreviewAdapter(itemList, ::recyclerItemClick)
         binding?.rvHorizontalPreview?.adapter = recyclerAdapter
         binding?.rvHorizontalPreview?.addOnChildAttachStateChangeListener(this)
         binding?.rvHorizontalPreview?.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        binding?.rvHorizontalPreview?.scrollToPosition(filePosition)
     }
 
     private fun slideshowButtonClick() {
@@ -322,19 +324,23 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 //            openDeviceListPage(true)
             findNavController().navigate(R.id.nav_scan_device)
         } else {
-            GlobalScope.launch(Dispatchers.Default) {
-                showImagesInHtml()
-            }
+            if (!isImagesLoadedForHtml)
+                GlobalScope.launch(Dispatchers.Default) {
+                    showImagesInHtml()
+                }
             openBrowserPage()
         }
     }
 
     private fun showImagesInHtml() {
+        Log.d("ImagePreviewFragment", "showImagesInHtml A13 : <>>")
+        isImagesLoadedForHtml = true
         var pathList: ArrayList<String> = arrayListOf()
         val selectedList = imagePreviewAdapter?.getList()
         val iterator: Iterator<MediaData>? = selectedList?.iterator()
         while (iterator?.hasNext() == true) {
             val mediaItem = iterator.next()
+
             val path = mediaItem.path?.split("0/")?.get(1)
             pathList.add(path.toString())
             CastHelper.showImagesInHtml(
@@ -427,6 +433,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
             changeItem(position, previousItemPos)
         }
 
+        filePosition = position
         castImage(position)
     }
 

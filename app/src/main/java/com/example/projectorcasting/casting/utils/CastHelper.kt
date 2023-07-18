@@ -25,13 +25,15 @@ object CastHelper {
     private const val CHROMECAST_SIGNATURE = "cast.media.CastMediaRouteProviderService"
 
     fun getAvailableDevices(mMediaRouter: MediaRouter): ArrayList<CastModel> {
+        Log.d("CastHelper", "getAvailableDevices A13 : >>00>>" + mMediaRouter)
         val routes = mMediaRouter.routes
 
+        Log.d("CastHelper", "getAvailableDevices A13 : >>11>>" + routes.size)
         var devices = ArrayList<CastModel>()
 
         for (routeInfo in routes) {
             val device = CastDevice.getFromBundle(routeInfo.extras)
-            Log.d("CastHelper", "getAvailableDevices A13 : >>" + routeInfo+"//"+device)
+            Log.d("CastHelper", "getAvailableDevices A13 : >>22>>" + routeInfo+"//"+device)
             if (device != null) {
                 devices.add(CastModel(routeInfo, device))
             }

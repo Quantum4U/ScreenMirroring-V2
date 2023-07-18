@@ -49,6 +49,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     private var isFromPreviewPage = false
     private var alteredList: List<SectionModel> = arrayListOf()
     private var isAscending = true
+    private var folderName: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -98,7 +99,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             MediaListSingleton.setSelectedImageList(imageSectionalAdapter?.getSelectedImageList())
             imageSectionalAdapter?.disableLongClick()
             if (isConnected) {
-                openPreviewPage(true, 0,"")
+                openPreviewPage(true, 0, "")
             } else {
 //                openDeviceListPage(true)
                 PromptHelper.showCastingPrompt(context, ::castPromtAction, isConnected, null)
@@ -271,8 +272,9 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         binding?.rvImages?.addItemDecoration(SpacesItemDecoration(1))
 
         if (!isFromPreviewPage) {
-            alteredList = ArrayList(MediaListSingleton.getGalleryImageFolderList()?.get(0)?.sectionList)
-        }else{
+            alteredList =
+                ArrayList(MediaListSingleton.getGalleryImageFolderList()?.get(0)?.sectionList)
+        } else {
             sortingIconPlacement(!isAscending)
         }
         imageSectionalAdapter?.refreshList(alteredList)
@@ -287,12 +289,15 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     private fun sortMediaList() {
         sortingIconPlacement(isAscending)
 
+        MediaListSingleton.setAllImageListForPreview(
+            MediaListSingleton.getAllImageListForPreview()?.reversed()
+        )
         val adapterList = imageSectionalAdapter?.getItemList()?.reversed()
         imageSectionalAdapter?.refreshList(adapterList)
         alteredList = ArrayList(imageSectionalAdapter?.getItemList()!!)
     }
 
-    private fun sortingIconPlacement(isAscendingBoolean:Boolean){
+    private fun sortingIconPlacement(isAscendingBoolean: Boolean) {
         if (isAscendingBoolean) {
             Log.d("ImagesFragment", "sortingIconPlacement A13 : >>00")
             isAscending = false
@@ -314,6 +319,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
                 )
             )
             binding?.tvSortingText?.text = getString(R.string.ascending)
+            binding?.tvFolderName?.text = folderName?:getString(R.string.all_photos)
         }
     }
 
@@ -333,7 +339,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         }
     }
 
-    private fun openPreviewPage(startSlideshow: Boolean, pos:Int,name: String) {
+    private fun openPreviewPage(startSlideshow: Boolean, pos: Int, name: String) {
 
 //        val imageList = MediaListSingleton.getSelectedImageList()
 //        var count =0
@@ -381,7 +387,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 
         isFromPreviewPage = true
         val action =
-            ImagesFragmentDirections.actionImageToPreview(startSlideshow, pos,isAscending)
+            ImagesFragmentDirections.actionImageToPreview(startSlideshow, pos, isAscending)
         findNavController().navigate(action)
         showFullAds(activity)
     }
@@ -448,9 +454,10 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     private fun folderClick(folderModel: FolderModel) {
         imgFolder = folderModel
         folderDialog?.cancel()
-        binding?.tvFolderName?.text = folderModel.folderName
+        folderName = folderModel.folderName
+        binding?.tvFolderName?.text = folderName
         val folderList = folderModel.sectionList
-        imageSectionalAdapter?.refreshList( folderList as ArrayList<SectionModel>?)
+        imageSectionalAdapter?.refreshList(folderList as ArrayList<SectionModel>?)
         alteredList = ArrayList(folderList)
 
         setListForPreview()
@@ -479,7 +486,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         setFragmentResultListener(AppConstants.START_SLIDESHOW_REQUEST_KEY) { requestKey: String, bundle: Bundle ->
             val result = bundle.getBoolean(AppConstants.START_SLIDESHOW)
             if (result)
-                openPreviewPage(true, 0,"")
+                openPreviewPage(true, 0, "")
         }
     }
 }

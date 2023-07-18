@@ -31,11 +31,11 @@ import java.util.concurrent.TimeUnit
 object AppUtils {
 
     fun createTempImagePath(context: Context?): File {
-//        return File(
-//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-//            "Quantum_CastingFolder/VideoThumb"
-//        )
-        return File(context?.filesDir, "VideoThumb")
+        return File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+            "Quantum_CastingFolder/VideoThumb"
+        )
+//        return File(context?.filesDir, "VideoThumb")
     }
 
     fun createAudioThumbPath(context: Context?): File {
@@ -413,7 +413,9 @@ object AppUtils {
         return ThumbnailUtils.createVideoThumbnail(file.path, MediaStore.Video.Thumbnails.MINI_KIND)
     }
 
-    fun convertDate(dateInMilliseconds: String): String? {
+    fun convertDate(dateInMilliseconds: String?): String? {
+        if (dateInMilliseconds == null || dateInMilliseconds == "null")
+            return null
         var s: String? = null
         s = if (isSameDay(System.currentTimeMillis().toString(), dateInMilliseconds)) "Today"
         else DateFormat.format("dd/MM/yyyy", dateInMilliseconds.toLong()).toString()

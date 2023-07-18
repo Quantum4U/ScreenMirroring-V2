@@ -16,7 +16,6 @@ import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.models.MediaData
-import com.example.projectorcasting.models.SectionModel
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
@@ -74,7 +73,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
         binding?.ivBack?.setOnClickListener {
             if (binding?.searchView?.isIconified == true)
                 exitPage()
-            else{
+            else {
                 binding?.rlToolbarLayout?.visibility = View.VISIBLE
                 binding?.searchView?.setQuery("", false)
                 binding?.searchView?.isIconified = true
@@ -88,9 +87,15 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
         }
 
         val provider: QueueDataProvider? = QueueDataProvider.Companion.getInstance(context)
-        if (provider?.count!! > 0)
-            binding?.tvQueued?.visibility = View.VISIBLE
-        else
+        if (provider?.count!! > 0) {
+            for (i in 0 until provider.count) {
+                if (provider.getItem(i) == null) {
+                    provider.removeFromQueue(i)
+                }
+            }
+            if (provider.count > 0)
+                binding?.tvQueued?.visibility = View.VISIBLE
+        } else
             binding?.tvQueued?.visibility = View.GONE
 
         setBrowserValue()
@@ -122,34 +127,37 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
     private fun filter(text: String) {
         Log.d("VideosFragment", "filter A13 : >>" + mediaMapList?.size)
         if (text.isEmpty()) {
+            binding?.rlSorting?.visibility = View.VISIBLE
             binding?.rvAudio?.visibility = View.VISIBLE
             binding?.tvNoAudiosFound?.visibility = View.GONE
             audioAdapter?.refreshList(mediaMapList)
             return
+        } else {
+            binding?.rlSorting?.visibility = View.GONE
         }
 
         var filteredDataList: ArrayList<MediaData>? = arrayListOf()
 
-            for (data in mediaMapList!!) {
-                if (data.file?.name?.lowercase()?.trim()?.contains(text.lowercase().trim()) == true) {
-                    // if the item is matched we are
-                    // adding it to our filtered list.
-                    filteredDataList?.add(data)
-                }
+        for (data in mediaMapList!!) {
+            if (data.file?.name?.lowercase()?.trim()?.contains(text.lowercase().trim()) == true) {
+                // if the item is matched we are
+                // adding it to our filtered list.
+                filteredDataList?.add(data)
             }
+        }
 
-            if (filteredDataList?.isEmpty() == true) {
-                // if no item is added in filtered list we are
-                // displaying a message as no data found.
-                binding?.rvAudio?.visibility = View.GONE
-                binding?.tvNoAudiosFound?.visibility = View.VISIBLE
-            } else {
-                // at last we are passing that filtered
-                // list to our adapter class.
-                binding?.rvAudio?.visibility = View.VISIBLE
-                binding?.tvNoAudiosFound?.visibility = View.GONE
-                audioAdapter?.filtereList(filteredDataList)
-            }
+        if (filteredDataList?.isEmpty() == true) {
+            // if no item is added in filtered list we are
+            // displaying a message as no data found.
+            binding?.rvAudio?.visibility = View.GONE
+            binding?.tvNoAudiosFound?.visibility = View.VISIBLE
+        } else {
+            // at last we are passing that filtered
+            // list to our adapter class.
+            binding?.rvAudio?.visibility = View.VISIBLE
+            binding?.tvNoAudiosFound?.visibility = View.GONE
+            audioAdapter?.filtereList(filteredDataList)
+        }
 
     }
 
@@ -190,12 +198,24 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
         })
     }
 
-    private fun getConnectionStatus(){
+    private fun getConnectionStatus() {
         isCastConnected = isCastingConnected() == true
-        if(isCastConnected)
-            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_enable,null))
+        if (isCastConnected)
+            binding?.ivCasting?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_cast_enable,
+                    null
+                )
+            )
         else
-            binding?.ivCasting?.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.ic_cast_disable,null))
+            binding?.ivCasting?.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_cast_disable,
+                    null
+                )
+            )
     }
 
     private fun setBrowserValue() {
@@ -341,7 +361,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
     private fun castPromtAction(isCastDeviceClick: Boolean, mediaData: MediaData?) {
         if (isCastDeviceClick) {
 //            if (!isCastConnected)
-                findNavController().navigate(R.id.nav_scan_device)
+            findNavController().navigate(R.id.nav_scan_device)
 //            else
 //                stopCasting()
         } else {

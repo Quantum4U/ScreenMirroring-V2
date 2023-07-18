@@ -1,6 +1,9 @@
 package com.example.projectorcasting.ui.fragments
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.setFragmentResult
@@ -48,6 +51,7 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
             })
 
         binding?.ivRefresh?.setOnClickListener {
+            Log.d("ScanDeviceFragment", "onViewCreated A13 : <<<<00")
             checkWifiNetwork()
         }
 
@@ -62,7 +66,7 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
     private fun observeDeviceList() {
         scanViewModel.deviceList.observe(viewLifecycleOwner, Observer { list ->
 //            hideLoader()
-            binding?.progressBar?.visibility = View.GONE
+            hideProgress()
             if (list != null && list.isNotEmpty()) {
                 binding?.llItemLayout?.visibility = View.VISIBLE
                 binding?.llNoDeviceFound?.visibility = View.GONE
@@ -103,6 +107,19 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
         })
     }
 
+    private fun hideProgress(){
+        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            activity?.runOnUiThread {
+                binding?.progressBar?.visibility = View.GONE
+            }
+        }, 1000)
+    }
+
+    private fun showProgress(){
+        if (binding?.progressBar?.visibility == View.GONE)
+            binding?.progressBar?.visibility = View.VISIBLE
+    }
+
     private fun getConnectionStatus() {
         val isConnected = isCastingConnected()
         if (isConnected != null) {
@@ -126,19 +143,25 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
     }
 
     private fun checkWifiNetwork() {
+        Log.d(
+            "ScanDeviceFragment",
+            "onViewCreated A13 : <<<<11" + Utils.isNetworkConnected(context)
+        )
         if (Utils.isNetworkConnected(context)) {
             fetchDeviceList()
         } else {
+            showProgress()
             binding?.llNoNetwork?.visibility = View.VISIBLE
             binding?.llNoDeviceFound?.visibility = View.GONE
             binding?.llItemLayout?.visibility = View.GONE
             binding?.llScanning?.visibility = View.GONE
+            hideProgress()
         }
     }
 
     private fun fetchDeviceList() {
 //        showLoader()
-        binding?.progressBar?.visibility = View.VISIBLE
+        showProgress()
         binding?.llScanning?.visibility = View.VISIBLE
         binding?.llNoNetwork?.visibility = View.GONE
         binding?.llNoDeviceFound?.visibility = View.GONE
