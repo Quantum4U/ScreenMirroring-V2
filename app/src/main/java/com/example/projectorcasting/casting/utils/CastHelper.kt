@@ -111,7 +111,7 @@ object CastHelper {
                          mediaData: MediaData?,
                          path: String,
                          type: Int){
-        startServer(context)
+
         Utils.buildMediaInfo(mediaData, path, path, type)
     }
 

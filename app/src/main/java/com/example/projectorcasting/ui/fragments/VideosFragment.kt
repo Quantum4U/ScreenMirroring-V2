@@ -20,6 +20,7 @@ import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.models.MediaData
 import com.example.projectorcasting.models.SectionModel
+import com.example.projectorcasting.prefrences.AppPreference
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
@@ -46,11 +47,13 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     private var mediaMapList: ArrayList<SectionModel>? = null
     private var isCastConnected = false
     private var itemMediaData: MediaData? = null
+    private var appPreference: AppPreference? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentVideosBinding.bind(view)
+        appPreference = context?.let { AppPreference(it) }
 
         observeCastingLiveData()
         observeVideoList()
@@ -82,7 +85,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         binding?.ivBack?.setOnClickListener {
             if (binding?.searchView?.isIconified == true)
                 exitPage()
-            else{
+            else {
                 binding?.rlToolbarLayout?.visibility = View.VISIBLE
                 binding?.searchView?.setQuery("", false)
                 binding?.searchView?.isIconified = true
@@ -104,23 +107,24 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
             showFullAds(activity)
         }
 
-        val provider: QueueDataProvider? = QueueDataProvider.getInstance(context)
+        val provider:QueueDataProvider? = QueueDataProvider.getInstance(context)
+        if (appPreference?.isImageCasting() == true && provider?.count!! >0)
+            provider.removeAll()
+
         if (provider?.count!! > 0) {
-            for (i in 0 until provider.count) {
-                Log.d("VideosFragment", "onViewCreated A13 : <><>"+i+"//"+provider.getItem(0)+"//"+provider.getItem(i))
-                if (provider.getItem(i) == null || provider.getItem(i)?.media?.metadata?.mediaType == null) {
-                    Log.d("VideosFragment", "onViewCreated A13 : <><> remove")
-                    provider.removeFromQueue(i)
-                }
-            }
-            if (provider.count > 0)
-                binding?.tvQueued?.visibility = View.VISIBLE
-        }else
+            binding?.tvQueued?.visibility = View.VISIBLE
+        } else
             binding?.tvQueued?.visibility = View.GONE
 
 
-        Log.d("VideosFragment", "onViewCreated A13 : <><>"+provider.currentItemId+"//"+provider.getItem(0)?.media?.metadata?.mediaType)
-        Log.d("VideosFragment", "onViewCreated A13 : <><>"+provider.getPositionByItemId(1)+"//"+provider.count)
+        Log.d(
+            "VideosFragment",
+            "onViewCreated A13 : <><>" + provider?.currentItemId + "//" + provider?.getItem(0)?.media?.metadata?.mediaType
+        )
+        Log.d(
+            "VideosFragment",
+            "onViewCreated A13 : <><>" + provider?.getPositionByItemId(1) + "//" + provider?.count
+        )
 
         setBrowserValue()
 
@@ -338,6 +342,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
     private fun playMedia(thumbFile: File?, mediaData: MediaData?) {
         hideLoader()
+        appPreference?.setImageCasting(false)
         val thumbPath = thumbFile?.path?.split("0/")?.get(1)
         val path = mediaData?.file?.path?.split("0/")?.get(1)
         path?.let {

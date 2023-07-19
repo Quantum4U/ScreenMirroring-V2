@@ -83,6 +83,11 @@ class MainActivity : BaseActivity(), View.OnClickListener, InAppUpdateListener {
                 }
             }
 
+//            when(destination.id){
+//                R.id.nav_scan_device-> binding.appBarMain.contentMain.adsbanner.visibility = View.GONE
+//                else -> binding.appBarMain.contentMain.adsbanner.visibility = View.VISIBLE
+//            }
+
         }
 
         binding.menuRateUs.setOnClickListener(this)
@@ -192,6 +197,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, InAppUpdateListener {
         if (!checkStoragePermission(Utils.IMAGE)) {
             checkForPermission = true
             isImagePageBtnClicked = true
+            isVideoPageBtnClicked = false
+            isAudioPageBtnClicked = false
             verifyPermissions(Utils.IMAGE)
         } else {
             navController?.navigate(R.id.nav_image)
@@ -203,6 +210,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, InAppUpdateListener {
         if (!checkStoragePermission(Utils.VIDEO)) {
             checkForPermission = true
             isVideoPageBtnClicked = true
+            isImagePageBtnClicked = false
+            isAudioPageBtnClicked = false
             verifyPermissions(Utils.VIDEO)
         } else {
             navController?.navigate(R.id.nav_video)
@@ -214,6 +223,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, InAppUpdateListener {
         if (!checkStoragePermission(Utils.AUDIO)) {
             checkForPermission = true
             isAudioPageBtnClicked = true
+            isVideoPageBtnClicked = false
+            isImagePageBtnClicked = false
             verifyPermissions(Utils.AUDIO)
         } else {
             navController?.navigate(R.id.nav_audio)

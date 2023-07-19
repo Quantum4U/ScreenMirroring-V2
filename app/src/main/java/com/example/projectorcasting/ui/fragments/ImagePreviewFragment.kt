@@ -22,6 +22,7 @@ import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.models.MediaData
+import com.example.projectorcasting.prefrences.AppPreference
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.utils.PromptHelper
@@ -36,6 +37,7 @@ import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 
@@ -62,11 +64,14 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
     private var mProvider: QueueDataProvider? = null
     private var isImagesLoadedForHtml = false
+    private var appPreference: AppPreference? = null
+//    private var job: Job? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentImagePreviewBinding.bind(view)
+        appPreference = context?.let { AppPreference(it) }
 
         observeCastingLiveData()
 
@@ -87,10 +92,16 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
             MediaListSingleton.getAllImageListForPreview()?.let { itemList.addAll(it) }
 
 
-        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>" + isAscending+"//"+itemList[0].file?.name)
+        Log.d(
+            "ImagePreviewFragment",
+            "onViewCreated A13 : >>" + isAscending + "//" + itemList[0].file?.name
+        )
         if (!isAscending) {
 //            itemList.reversed()
-            Log.d("ImagePreviewFragment", "onViewCreated A13 : >>111" + isAscending+"//"+itemList[0].file?.name)
+            Log.d(
+                "ImagePreviewFragment",
+                "onViewCreated A13 : >>111" + isAscending + "//" + itemList[0].file?.name
+            )
         }
 
         initViewpager()
@@ -141,7 +152,10 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     private fun initViewpager() {
-        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>222" + isAscending+"//"+itemList[0].file?.name)
+        Log.d(
+            "ImagePreviewFragment",
+            "onViewCreated A13 : >>222" + isAscending + "//" + itemList[0].file?.name
+        )
         imagePreviewAdapter = ImagePreviewAdapter(itemList)
         binding?.vpImgPreview?.adapter = imagePreviewAdapter
         binding?.vpImgPreview?.addOnPageChangeListener(this)
@@ -149,7 +163,10 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     private fun initRecyclerview() {
-        Log.d("ImagePreviewFragment", "onViewCreated A13 : >>333" + isAscending+"//"+itemList[0].file?.name)
+        Log.d(
+            "ImagePreviewFragment",
+            "onViewCreated A13 : >>333" + isAscending + "//" + itemList[0].file?.name
+        )
         recyclerAdapter = MiniImagePreviewAdapter(itemList, ::recyclerItemClick)
         binding?.rvHorizontalPreview?.adapter = recyclerAdapter
         binding?.rvHorizontalPreview?.addOnChildAttachStateChangeListener(this)
@@ -219,6 +236,11 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     private fun castImage(position: Int) {
+        val provider: QueueDataProvider? = QueueDataProvider.getInstance(context)
+        if (appPreference?.isImageCasting() == false && provider?.count!! > 0)
+            provider.removeAll()
+
+        appPreference?.setImageCasting(true)
         val mediaItem = imagePreviewAdapter?.getItem(position)
         val path = mediaItem?.path?.split("0/")?.get(1)
         CastHelper.castPhotos(remoteMediaClient, mediaItem, path.toString(), Utils.IMAGE)
@@ -324,23 +346,29 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 //            openDeviceListPage(true)
             findNavController().navigate(R.id.nav_scan_device)
         } else {
-            if (!isImagesLoadedForHtml)
+            if (!isImagesLoadedForHtml) {
+                showLoader()
                 GlobalScope.launch(Dispatchers.Default) {
                     showImagesInHtml()
+                    withContext(Dispatchers.Main) {
+                        hideLoader()
+                        openBrowserPage()
+                    }
                 }
-            openBrowserPage()
+            } else
+                openBrowserPage()
+
         }
     }
 
     private fun showImagesInHtml() {
-        Log.d("ImagePreviewFragment", "showImagesInHtml A13 : <>>")
         isImagesLoadedForHtml = true
         var pathList: ArrayList<String> = arrayListOf()
         val selectedList = imagePreviewAdapter?.getList()
         val iterator: Iterator<MediaData>? = selectedList?.iterator()
+        CastHelper.startServer(context)
         while (iterator?.hasNext() == true) {
             val mediaItem = iterator.next()
-
             val path = mediaItem.path?.split("0/")?.get(1)
             pathList.add(path.toString())
             CastHelper.showImagesInHtml(

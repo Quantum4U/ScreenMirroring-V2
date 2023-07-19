@@ -45,6 +45,25 @@
             android:text="@string/you_agree_to_the"
             android:textColor="@android:color/black"
             android:textColorHighlight="@color/black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text=" and "
+            android:textColor="@android:color/black"
+            android:textColorHighlight="@color/black" />
+
+        <TextView
+            android:id="@+id/tvPrivacy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/privacy_policy"
+            android:textColor="@android:color/black"
+            android:textColorHighlight="@color/black" />
 <!--        <TextView-->
 <!--            android:visibility="visible"-->
 <!--            android:id="@+id/tvTerms"-->
@@ -81,12 +100,6 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:orientation="horizontal">
-
-
-
-
-
-
 
         </LinearLayout>
     </LinearLayout>

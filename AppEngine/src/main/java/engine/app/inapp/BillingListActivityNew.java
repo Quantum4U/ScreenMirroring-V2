@@ -168,6 +168,7 @@ public class BillingListActivityNew extends AppCompatActivity implements Recycle
         if (fromSplash) {
 //            closeBtn.setVisibility(View.VISIBLE);
 //            backArrow.setVisibility(View.GONE);
+            textViewWithADs.setVisibility(View.VISIBLE);
             try {
                 if (AHandler.ShowBillingPage.equals("1")) {
                     tvTerms.setVisibility(View.GONE);
@@ -190,6 +191,7 @@ public class BillingListActivityNew extends AppCompatActivity implements Recycle
         } else {
 //            closeBtn.setVisibility(View.GONE);
 //            backArrow.setVisibility(View.VISIBLE);
+            textViewWithADs.setVisibility(View.GONE);
             tvTerms.setVisibility(View.INVISIBLE);
 //            tvPrivacy.setVisibility(View.INVISIBLE);
             dont_show.setVisibility(View.GONE);

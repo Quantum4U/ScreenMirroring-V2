@@ -122,6 +122,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         var pathList: java.util.ArrayList<String> = arrayListOf()
         val selectedList = MediaListSingleton.getSelectedImageList()
         Log.d("ImagesFragment", "showImagesInHtml A13 : >>" + selectedList?.size)
+        CastHelper.startServer(context)
         if (selectedList != null) {
             for (data in selectedList) {
                 val path = data.path?.split("0/")?.get(1)

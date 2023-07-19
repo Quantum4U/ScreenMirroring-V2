@@ -69,11 +69,11 @@
     <string name="inapp_ads_free_version">Ads free version for lifetime</string>
     <string name="inapp_no_recurring_changes">No recurring charges</string>
     <string name="inapp_improved_app">Improved app experience</string>
-    <string name="continue_with_ads">Continue with Ads</string>
+    <string name="continue_with_ads"><u>Continue with Ads</u></string>
     <string name="tap_on_select_plans">Tap on select plans</string>
     <string name="continuet"><u>Go to Home Screen</u></string>
 
-    <string name="you_agree_to_the">I agree to the <u>Terms of Services</u> and <u>Privacy Policy</u></string>
+    <string name="you_agree_to_the">I agree to the <u>Terms of Services</u></string>
     <string name="subscribe_now">Subscribe Now</string>
 
     <string name="purchase_now">Purchase Now</string>

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.example.projectorcasting.casting.activities.ExpandedControlsActivity
+import com.example.projectorcasting.prefrences.AppPreference
 import com.google.android.gms.cast.LaunchOptions
 import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.framework.CastOptions
@@ -26,10 +27,16 @@ class CastOptionsProvider : OptionsProvider {
      *  @see <a href="http://cast.google.com/publish">Cast Developers Console</a> to register for custom receiver Id.
      */
 
+    private var appPreference:AppPreference?=null
+
     override fun getCastOptions(ctx: Context): CastOptions {
         /**
          * This will also show a notification in device.
          */
+        appPreference = AppPreference(ctx)
+
+        Log.d("CastOptionsProvider", "getCastOptions A13 : >>"+appPreference?.isImageCasting())
+
         val notificationOptions = NotificationOptions.Builder()
             .setTargetActivityClassName(ExpandedControlsActivity::class.java.name)
             .build()

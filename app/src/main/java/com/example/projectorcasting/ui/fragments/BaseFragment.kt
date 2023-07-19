@@ -9,10 +9,8 @@ import com.example.projectorcasting.ui.activities.BaseActivity
 import com.example.projectorcasting.viewmodels.DashboardViewModel
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastContext
-import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import engine.app.adshandler.AHandler
-import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
-import java.io.File
+import engine.app.server.v2.Slave
 
 open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
 
@@ -29,7 +27,10 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
     }
 
     fun showFullAds(activity: Activity?) {
-        AHandler.getInstance().showFullAds(activity, false)
+        if (Slave.ETC_1 != null && !Slave.ETC_1.equals("") && Slave.ETC_1.equals("1"))
+            AHandler.getInstance().showFullAds(activity, true)
+        else
+            AHandler.getInstance().showFullAds(activity, false)
     }
 
     fun showBottomBannerAds(view: LinearLayout?, activity: Activity?) {
@@ -46,7 +47,7 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
 
     //mirroring
 
-    fun startMirroring(){
+    fun startMirroring() {
         (activity as BaseActivity).startMirroring()
     }
 
@@ -56,19 +57,19 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
         return (activity as BaseActivity).getMediaRouter()
     }
 
-    fun startCasting(routeInfo: MediaRouter.RouteInfo?,device: CastDevice?){
-        (activity as BaseActivity).startCasting(routeInfo,device)
+    fun startCasting(routeInfo: MediaRouter.RouteInfo?, device: CastDevice?) {
+        (activity as BaseActivity).startCasting(routeInfo, device)
     }
 
 //    fun startCasting(){
 //        (activity as BaseActivity).startCasting()
 //    }
 
-    fun stopCasting(){
+    fun stopCasting() {
         (activity as BaseActivity).stopCasting()
     }
 
-    fun stopServer(){
+    fun stopServer() {
         (activity as BaseActivity).stopServer()
     }
 
@@ -84,8 +85,8 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
         return (activity as BaseActivity).getConnectedDeviceName()
     }
 
-    fun setConnectionInfo(isConnected: Boolean,device: CastDevice?){
-        (activity as BaseActivity).setConnectionInfo(isConnected,device)
+    fun setConnectionInfo(isConnected: Boolean, device: CastDevice?) {
+        (activity as BaseActivity).setConnectionInfo(isConnected, device)
     }
 
     fun getConnectedCastDevice(): CastDevice? {
@@ -100,7 +101,7 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
         return (activity as BaseActivity).getServerValue()
     }
 
-    fun setServerValue(value:Boolean){
+    fun setServerValue(value: Boolean) {
         return (activity as BaseActivity).setServerValue(value)
     }
 
@@ -108,7 +109,7 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
         return (activity as BaseActivity).isServerRunning()
     }
 
-    fun openWifi(){
+    fun openWifi() {
         return (activity as BaseActivity).openWifi()
     }
 }

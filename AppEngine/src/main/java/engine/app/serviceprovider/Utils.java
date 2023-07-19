@@ -240,7 +240,7 @@ public class Utils {
     public void showPrivacyPolicy(final Context mContext, View mLayout, boolean isFirstTime) {
         LinearLayout linearLayout = mLayout.findViewById(R.id.bottom);
         TextView tvTerms = mLayout.findViewById(R.id.tcPriTerm);
-//        TextView tvPrivacy = mLayout.findViewById(R.id.tvPrivacy);
+        TextView tvPrivacy = mLayout.findViewById(R.id.tvPrivacy);
 
 //        tvTerms.setText(Html.fromHtml("<u>Terms of Service</u>"));
 //        tvPrivacy.setText(Html.fromHtml("<u>Privacy Policy</u>"));
@@ -264,19 +264,19 @@ public class Utils {
             }
         });
 
-//        tvPrivacy.setClickable(true);
-//        tvPrivacy.setMovementMethod(LinkMovementMethod.getInstance());
-//
-//        tvPrivacy.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try {
-//                    mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Slave.ABOUTDETAIL_PRIVACYPOLICY)));
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+        tvPrivacy.setClickable(true);
+        tvPrivacy.setMovementMethod(LinkMovementMethod.getInstance());
+
+        tvPrivacy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Slave.ABOUTDETAIL_PRIVACYPOLICY)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 

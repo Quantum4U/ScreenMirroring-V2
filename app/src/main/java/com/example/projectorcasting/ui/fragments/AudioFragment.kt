@@ -16,6 +16,7 @@ import com.example.projectorcasting.casting.queue.QueueDataProvider
 import com.example.projectorcasting.casting.utils.CastHelper
 import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.models.MediaData
+import com.example.projectorcasting.prefrences.AppPreference
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
@@ -37,11 +38,13 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
     private var isCastConnected = false
     private var itemMediaData: MediaData? = null
     private var mediaMapList: ArrayList<MediaData>? = null
+    private var appPreference: AppPreference? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentAudioBinding.bind(view)
+        appPreference = context?.let { AppPreference(it) }
 
         observeCastingLiveData()
         observeAudioList()
@@ -86,15 +89,12 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
             showFullAds(activity)
         }
 
-        val provider: QueueDataProvider? = QueueDataProvider.Companion.getInstance(context)
+        val provider:QueueDataProvider? = QueueDataProvider.getInstance(context)
+        if (appPreference?.isImageCasting() == true && provider?.count!! >0)
+            provider.removeAll()
+
         if (provider?.count!! > 0) {
-            for (i in 0 until provider.count) {
-                if (provider.getItem(i) == null) {
-                    provider.removeFromQueue(i)
-                }
-            }
-            if (provider.count > 0)
-                binding?.tvQueued?.visibility = View.VISIBLE
+            binding?.tvQueued?.visibility = View.VISIBLE
         } else
             binding?.tvQueued?.visibility = View.GONE
 
@@ -278,6 +278,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
     }
 
     private fun itemClick(mediaData: MediaData) {
+        appPreference?.setImageCasting(false)
         itemMediaData = mediaData
         if (isCastConnected) {
             val thumb = File(

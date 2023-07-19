@@ -60,7 +60,7 @@ class ScanDeviceFragment : BaseFragment(R.layout.fragment_scandevice) {
         }
 
         checkWifiNetwork()
-        showNativeMedium(binding?.bottomBannerAd, activity)
+//        showNativeMedium(binding?.bottomBannerAd, activity)
     }
 
     private fun observeDeviceList() {

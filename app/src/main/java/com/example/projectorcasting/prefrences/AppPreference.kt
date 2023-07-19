@@ -14,6 +14,7 @@ class AppPreference @Inject constructor(@ApplicationContext context: Context) {
 
     companion object {
         private const val KEY_SERVER_OPEN = "KEY_SERVER_OPEN"
+        private const val KEY_IMAGE_CASTING = "KEY_IMAGE_CASTING"
     }
 
     init {
@@ -37,6 +38,15 @@ class AppPreference @Inject constructor(@ApplicationContext context: Context) {
 
     fun setServerOpen(value: Boolean) {
         editor!!.putBoolean(KEY_SERVER_OPEN, value)
+        editor!!.apply()
+    }
+
+    fun isImageCasting(): Boolean? {
+        return getPreferences()?.getBoolean(KEY_IMAGE_CASTING, false)
+    }
+
+    fun setImageCasting(value: Boolean) {
+        editor!!.putBoolean(KEY_IMAGE_CASTING, value)
         editor!!.apply()
     }
 
