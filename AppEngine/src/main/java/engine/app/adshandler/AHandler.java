@@ -1,6 +1,8 @@
 package engine.app.adshandler;
 
 
+import static engine.app.serviceprovider.Utils.isShowRewardedAds;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -126,6 +128,9 @@ public class AHandler {
 
         initCacheOpenAds(context);
         initCacheBannerRect(context);
+        if (isShowRewardedAds(context)){
+            cacheNavigationRewardedAds(context);
+        }
     }
 
 

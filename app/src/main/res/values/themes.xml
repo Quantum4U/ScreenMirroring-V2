@@ -69,4 +69,8 @@
 
     </style>
 
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/sheet_dialog_bg</item>
+    </style>
+
 </resources>

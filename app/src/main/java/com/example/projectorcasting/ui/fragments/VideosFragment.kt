@@ -26,10 +26,14 @@ import com.example.projectorcasting.utils.AppUtils
 import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.utils.PromptHelper
 import com.example.projectorcasting.viewmodels.VideoViewModel
+import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.cast.framework.CastState
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentVideosBinding
+import engine.app.adshandler.AHandler
 import engine.app.analytics.logGAEvents
+import engine.app.listener.OnRewardedEarnedItem
+import engine.app.server.v2.Slave
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +52,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     private var isCastConnected = false
     private var itemMediaData: MediaData? = null
     private var appPreference: AppPreference? = null
+    private var isRewardedCompleted = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -104,11 +109,11 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         binding?.tvQueued?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Videos_Queue_Button)
             findNavController().navigate(R.id.nav_queue)
-            showFullAds(activity)
+            showNavigationFullAds(activity)
         }
 
-        val provider:QueueDataProvider? = QueueDataProvider.getInstance(context)
-        if (appPreference?.isImageCasting() == true && provider?.count!! >0)
+        val provider: QueueDataProvider? = QueueDataProvider.getInstance(context)
+        if (appPreference?.isImageCasting() == true && provider?.count!! > 0)
             provider.removeAll()
 
         if (provider?.count!! > 0) {
@@ -426,9 +431,47 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
     }
 
     private fun castPromtAction(isCastDeviceClick: Boolean, mediaData: MediaData?) {
+        if (Slave.hasPurchased(context)) {
+            openPageForConnection(isCastDeviceClick,mediaData)
+        }else{
+            PromptHelper.showInappBindPrompt(context,::premiumPromptAction,isCastDeviceClick,mediaData)
+        }
+    }
+
+    private fun premiumPromptAction(isGoPremium: Boolean,isCastDeviceClick: Boolean, mediaData: MediaData?) {
+        if (isGoPremium){
+            AHandler.getInstance().showRemoveAdsPrompt(context)
+        }else{
+//            appPreference?.setCastingCount(appPreference?.getCastingCount()?.minus(1) ?: 0)
+            AHandler.getInstance().showRewardedVideoOrFullAds(activity, true, object : OnRewardedEarnedItem{
+                override fun onRewardedLoaded() {
+
+                }
+
+                override fun onRewardedFailed(msg: String?) {
+                    openPageForConnection(isCastDeviceClick,mediaData)
+                }
+
+                override fun onUserEarnedReward(reward: RewardItem?) {
+                    isRewardedCompleted = true
+                }
+
+                override fun onRewardAdsDismiss() {
+                    if (isRewardedCompleted) {
+                        isRewardedCompleted = false
+                        openPageForConnection(isCastDeviceClick, mediaData)
+                    }
+                }
+
+            })
+        }
+    }
+
+    private fun openPageForConnection(isCastDeviceClick: Boolean, mediaData: MediaData?) {
         if (isCastDeviceClick) {
 //            if (!isCastConnected)
             findNavController().navigate(R.id.nav_scan_device)
+            showFullAds(activity)
 //            else
 //                stopCasting()
         } else {

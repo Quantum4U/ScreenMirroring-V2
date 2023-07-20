@@ -25,11 +25,15 @@ import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.utils.PromptHelper
 import com.example.projectorcasting.utils.SpacesItemDecoration
+import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagesBinding
+import engine.app.adshandler.AHandler
 import engine.app.analytics.logGAEvents
+import engine.app.listener.OnRewardedEarnedItem
+import engine.app.server.v2.Slave
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -50,12 +54,14 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     private var alteredList: List<SectionModel> = arrayListOf()
     private var isAscending = true
     private var folderName: String? = null
+    private var isRewardedCompleted = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentImagesBinding.bind(view)
         observeImageList()
+        observeFolderList()
         observeCastingLiveData()
         observeListForPreview()
 
@@ -259,6 +265,13 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         })
     }
 
+    private fun observeFolderList(){
+        getDashViewModel()?.imagesFolderList?.observe(viewLifecycleOwner, Observer {
+            if (it != null && it.isNotEmpty())
+                binding?.llFolder?.visibility = View.VISIBLE
+        })
+    }
+
     private fun setAdapter() {
         imageSectionalAdapter = ImageSectionalAdapter(
             requireContext(),
@@ -390,7 +403,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
         val action =
             ImagesFragmentDirections.actionImageToPreview(startSlideshow, pos, isAscending)
         findNavController().navigate(action)
-        showFullAds(activity)
+        showNavigationFullAds(activity)
     }
 
     private fun onLongClick(isLongClick: Boolean) {
@@ -415,6 +428,43 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
     }
 
     private fun castPromtAction(isCastDeviceClick: Boolean, mediaData: MediaData?) {
+        if (Slave.hasPurchased(context)) {
+            openPageForConnection(isCastDeviceClick,mediaData)
+        }else{
+            PromptHelper.showInappBindPrompt(context,::premiumPromptAction,isCastDeviceClick,mediaData)
+        }
+    }
+
+    private fun premiumPromptAction(isGoPremium: Boolean,isCastDeviceClick: Boolean, mediaData: MediaData?) {
+        if (isGoPremium){
+            AHandler.getInstance().showRemoveAdsPrompt(context)
+        }else{
+            AHandler.getInstance().showRewardedVideoOrFullAds(activity, true, object :
+                OnRewardedEarnedItem {
+                override fun onRewardedLoaded() {
+
+                }
+
+                override fun onRewardedFailed(msg: String?) {
+                    openPageForConnection(isCastDeviceClick,mediaData)
+                }
+
+                override fun onUserEarnedReward(reward: RewardItem?) {
+                    isRewardedCompleted = true
+                }
+
+                override fun onRewardAdsDismiss() {
+                    if (isRewardedCompleted) {
+                        isRewardedCompleted = false
+                        openPageForConnection(isCastDeviceClick,mediaData)
+                    }
+                }
+
+            })
+        }
+    }
+
+    private fun openPageForConnection(isCastDeviceClick: Boolean, mediaData: MediaData?) {
         if (isCastDeviceClick) {
 //            if (!isConnected)
 //                findNavController().navigate(R.id.nav_scan_device)
@@ -422,6 +472,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 //                stopCasting()
 //            openDeviceListPage(true)
             findNavController().navigate(R.id.nav_scan_device)
+            showFullAds(activity)
         } else {
             GlobalScope.launch(Dispatchers.Default) {
                 showImagesInHtml()
@@ -429,6 +480,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
             openBrowserPage()
         }
     }
+
 
     fun showFolderSortingPrompt() {
         isAscending = true

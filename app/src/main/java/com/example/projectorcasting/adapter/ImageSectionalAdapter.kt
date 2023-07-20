@@ -117,7 +117,7 @@ class ImageSectionalAdapter(
 
         holderItem.checkBox?.isChecked = media?.isCheck == true
 
-        holderItem.imgFile?.let { Glide.with(context).load(media?.path).apply(RequestOptions().override(200, 200)).placeholder(R.drawable.ic_image_placeholder).into(it) }
+        holderItem.imgFile?.let { Glide.with(context).load(media?.path).apply(RequestOptions().override(100, 100)).placeholder(R.drawable.ic_image_placeholder).into(it) }
 
         holderItem.card?.setOnLongClickListener {
             mLongClick = true

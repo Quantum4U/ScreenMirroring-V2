@@ -33,6 +33,10 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
             AHandler.getInstance().showFullAds(activity, false)
     }
 
+    fun showNavigationFullAds(activity: Activity?) {
+        AHandler.getInstance().showFullAds(activity, false)
+    }
+
     fun showBottomBannerAds(view: LinearLayout?, activity: Activity?) {
         view?.addView(AHandler.getInstance().getBannerHeader(activity))
     }
@@ -112,4 +116,9 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
     fun openWifi() {
         return (activity as BaseActivity).openWifi()
     }
+
+    fun isShowPremiumPrompt(): Boolean {
+        return (activity as BaseActivity).showPremiumPromt()
+    }
+
 }

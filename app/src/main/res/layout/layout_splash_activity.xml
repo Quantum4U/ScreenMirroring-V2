@@ -2,27 +2,46 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ic_splash_bg">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.airbnb.lottie.LottieAnimationView
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/dash_json"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_logo"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:srcCompat="@drawable/splash_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
 
     <LinearLayout
+        android:layout_above="@+id/layout_tnc"
+        android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:layout_centerInParent="true"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/app_icon" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_app_icon"
+            app:srcCompat="@drawable/splash_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
 
         <RelativeLayout
+            android:layout_marginBottom="@dimen/padding20dp"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_antenna_icon"
                 android:layout_toRightOf="@+id/tv_app_name"
                 android:layout_marginBottom="@dimen/padding5dp"
                 android:layout_marginLeft="-6dp"
@@ -45,10 +64,13 @@
 
         <RelativeLayout
             android:id="@+id/layoutStart"
-            android:layout_width="220dp"
+            android:layout_width="match_parent"
+            android:layout_marginRight="@dimen/padding5dp"
+            android:layout_marginLeft="@dimen/padding5dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
             android:background="@drawable/splash_btn_bg"
+            android:backgroundTint="@color/white"
             android:visibility="invisible">
 
             <TextView
@@ -58,9 +80,9 @@
                 android:padding="9dp"
                 android:text="@string/start_cast"
                 android:textAllCaps="false"
-                android:textColor="@android:color/white"
+                android:textColor="#FF3C00"
                 android:fontFamily="@font/inter_semibold"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
         </RelativeLayout>

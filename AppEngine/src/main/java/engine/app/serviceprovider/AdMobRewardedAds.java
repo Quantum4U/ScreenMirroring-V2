@@ -129,8 +129,10 @@ public class AdMobRewardedAds {
                         // Don't forget to set the ad reference to null so you
                         // don't show the ad a second time.
                         Log.d(TAG, "Ad was dismissed.");
-                        if (onRewardedEarnedItem != null)
+                        if (onRewardedEarnedItem != null) {
+                            onRewardedEarnedItem.onRewardAdsDismiss();
                             initAdMobRewardedVideo(context, finalId, listener, onRewardedEarnedItem);
+                        }
                     }
                 });
                 rewardedAd.show((Activity) context, new OnUserEarnedRewardListener() {

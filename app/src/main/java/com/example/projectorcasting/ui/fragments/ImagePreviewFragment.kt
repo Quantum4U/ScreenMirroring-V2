@@ -26,13 +26,17 @@ import com.example.projectorcasting.prefrences.AppPreference
 import com.example.projectorcasting.utils.AppConstants
 import com.example.projectorcasting.utils.MediaListSingleton
 import com.example.projectorcasting.utils.PromptHelper
+import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.FragmentImagePreviewBinding
+import engine.app.adshandler.AHandler
 import engine.app.analytics.logGAEvents
+import engine.app.listener.OnRewardedEarnedItem
+import engine.app.server.v2.Slave
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.PathSingleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -65,7 +69,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     private var mProvider: QueueDataProvider? = null
     private var isImagesLoadedForHtml = false
     private var appPreference: AppPreference? = null
-//    private var job: Job? = null
+    private var isRewardedCompleted = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -338,6 +342,52 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
     }
 
     private fun castPromtAction(isCastDeviceClick: Boolean, mediaData: MediaData?) {
+        if (Slave.hasPurchased(context)) {
+            openPageForConnection(isCastDeviceClick, mediaData)
+        } else {
+            PromptHelper.showInappBindPrompt(
+                context,
+                ::premiumPromptAction,
+                isCastDeviceClick,
+                mediaData
+            )
+        }
+    }
+
+    private fun premiumPromptAction(
+        isGoPremium: Boolean,
+        isCastDeviceClick: Boolean,
+        mediaData: MediaData?
+    ) {
+        if (isGoPremium) {
+            AHandler.getInstance().showRemoveAdsPrompt(context)
+        } else {
+            AHandler.getInstance().showRewardedVideoOrFullAds(activity, true, object :
+                OnRewardedEarnedItem {
+                override fun onRewardedLoaded() {
+
+                }
+
+                override fun onRewardedFailed(msg: String?) {
+                    openPageForConnection(isCastDeviceClick, mediaData)
+                }
+
+                override fun onUserEarnedReward(reward: RewardItem?) {
+                    isRewardedCompleted = true
+                }
+
+                override fun onRewardAdsDismiss() {
+                    if (isRewardedCompleted) {
+                        isRewardedCompleted = false
+                        openPageForConnection(isCastDeviceClick, mediaData)
+                    }
+                }
+
+            })
+        }
+    }
+
+    private fun openPageForConnection(isCastDeviceClick: Boolean, mediaData: MediaData?) {
         if (isCastDeviceClick) {
 //            if (!isConnected)
 //                findNavController().navigate(R.id.nav_scan_device)
@@ -345,6 +395,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 //                stopCasting()
 //            openDeviceListPage(true)
             findNavController().navigate(R.id.nav_scan_device)
+            showFullAds(activity)
         } else {
             if (!isImagesLoadedForHtml) {
                 showLoader()

@@ -146,7 +146,7 @@ class QueueFragment : BaseFragment(R.layout.fragment_queue),QueueListAdapter.OnS
         binding?.llConnect?.setOnClickListener {
             logGAEvents(AnalyticsConstant.GA_Queue_Cast_Connect)
             findNavController().navigate(R.id.nav_scan_device)
-            showFullAds(activity)
+            showNavigationFullAds(activity)
         }
 
         binding?.llConnected?.setOnClickListener {

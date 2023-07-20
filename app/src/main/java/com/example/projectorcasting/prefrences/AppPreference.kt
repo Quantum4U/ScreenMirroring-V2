@@ -15,6 +15,7 @@ class AppPreference @Inject constructor(@ApplicationContext context: Context) {
     companion object {
         private const val KEY_SERVER_OPEN = "KEY_SERVER_OPEN"
         private const val KEY_IMAGE_CASTING = "KEY_IMAGE_CASTING"
+        private const val KEY_CASTING_COUNT = "KEY_CASTING_COUNT"
     }
 
     init {
@@ -47,6 +48,15 @@ class AppPreference @Inject constructor(@ApplicationContext context: Context) {
 
     fun setImageCasting(value: Boolean) {
         editor!!.putBoolean(KEY_IMAGE_CASTING, value)
+        editor!!.apply()
+    }
+
+    fun getCastingCount(): Int? {
+        return getPreferences()?.getInt(KEY_CASTING_COUNT, 0)
+    }
+
+    fun setCastingCount(value: Int) {
+        editor!!.putInt(KEY_CASTING_COUNT, value)
         editor!!.apply()
     }
 

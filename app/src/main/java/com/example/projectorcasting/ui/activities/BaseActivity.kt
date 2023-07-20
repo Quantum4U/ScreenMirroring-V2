@@ -442,7 +442,7 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
         }
     }
 
-    fun openWifi(){
+    fun openWifi() {
         AppUtils.openWifiPopUpInApp(this)
     }
 
@@ -490,6 +490,11 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
 
     fun isServerRunning(): Boolean {
         return SimpleWebServer.serverRunning()
+    }
+
+    fun showPremiumPromt(): Boolean {
+        Log.d("SplashActivity", "onCreate A13 : >>>etc value"+appPreference?.getCastingCount())
+        return appPreference?.getCastingCount()!! > 0
     }
 
 }

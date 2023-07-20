@@ -135,10 +135,10 @@
                 android:layout_marginLeft="@dimen/padding20dp"
                 android:layout_marginTop="@dimen/padding30dp"
                 android:layout_marginRight="@dimen/padding20dp"
-                app:cardBackgroundColor="@color/light_blue"
                 app:cardCornerRadius="@dimen/padding10dp">
 
                 <RelativeLayout
+                    android:background="@drawable/dash_mirroring_bg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -159,7 +159,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/inter_semibold"
                             android:text="@string/screen_mirror"
-                            android:textColor="@color/heading"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/textsize20sp" />
 
                         <TextView
@@ -167,7 +167,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/inter_regular"
                             android:text="@string/screen_mirror_info"
-                            android:textColor="@color/sub_heading"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/textsize14sp" />
 
                     </LinearLayout>
@@ -187,6 +187,7 @@
                         android:paddingBottom="@dimen/padding10dp">
 
                         <RelativeLayout
+                            android:visibility="gone"
                             android:layout_width="@dimen/padding30dp"
                             android:layout_height="@dimen/padding30dp"
                             android:background="@drawable/cast_icon_bg">
@@ -205,9 +206,11 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="@dimen/padding5dp"
                             android:fontFamily="@font/inter_semibold"
-                            android:text="@string/start"
-                            android:textColor="@color/heading"
-                            android:textSize="@dimen/textsize10sp" />
+                            android:paddingLeft="@dimen/padding10dp"
+                            android:paddingRight="@dimen/padding10dp"
+                            android:text="@string/connect"
+                            android:textColor="#209DED"
+                            android:textSize="@dimen/textsize14sp" />
 
                     </LinearLayout>
 
@@ -247,6 +250,7 @@
                     android:layout_marginLeft="@dimen/padding5dp"
                     android:layout_toRightOf="@+id/v_center"
                     app:cardCornerRadius="@dimen/padding10dp"
+                    app:cardBackgroundColor="#FAEBFF"
                     app:cardUseCompatPadding="true">
 
                     <LinearLayout
@@ -285,6 +289,7 @@
                     android:layout_marginRight="@dimen/padding5dp"
                     android:layout_toLeftOf="@+id/v_center"
                     app:cardCornerRadius="@dimen/padding10dp"
+                    app:cardBackgroundColor="#DEFFE6"
                     app:cardUseCompatPadding="true">
 
                     <LinearLayout
@@ -324,6 +329,7 @@
                     android:layout_marginRight="@dimen/padding5dp"
                     android:layout_toLeftOf="@+id/v1_center"
                     app:cardCornerRadius="@dimen/padding10dp"
+                    app:cardBackgroundColor="#E8F8FF"
                     app:cardUseCompatPadding="true">
 
                     <LinearLayout
@@ -362,7 +368,14 @@
                     android:layout_marginLeft="@dimen/padding5dp"
                     android:layout_toRightOf="@+id/v1_center"
                     app:cardCornerRadius="@dimen/padding10dp"
+                    app:cardBackgroundColor="#E8F0FF"
                     app:cardUseCompatPadding="true">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_gravity="right"
+                        app:srcCompat="@drawable/ic_offer_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"

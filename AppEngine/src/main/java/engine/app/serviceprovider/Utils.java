@@ -578,4 +578,23 @@ public class Utils {
         }
         return false;
     }
+
+    public static boolean isShowRewardedAds(Activity activity){
+        if (Slave.hasPurchased(activity))
+            return false;
+        if (Slave.REWARDED_VIDEO_status.equals("true")
+                && Utils.getDaysDiff(activity) >= Utils.getStringtoInt(Slave.REWARDED_VIDEO_start_date)) {
+            Utils.setFullAdsCount(activity, -1);
+
+            if (Utils.getFullAdsCount(activity) >= Utils.getStringtoInt(Slave.REWARDED_VIDEO_nevigation)) {
+                Utils.setFullAdsCount(activity, 0);
+                return  true;
+            }else {
+                return false;
+            }
+
+        } else {
+            return false;
+        }
+    }
 }

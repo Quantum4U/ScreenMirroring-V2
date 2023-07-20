@@ -14,6 +14,7 @@ import com.example.projectorcasting.AnalyticsConstant.GA_Splash_Start
 import com.example.projectorcasting.casting.utils.Utils
 import com.example.projectorcasting.engine.AppMapperConstant
 import com.example.projectorcasting.engine.TransLaunchFullAdsActivity
+import com.example.projectorcasting.prefrences.AppPreference
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.R
 import com.quantum.projector.screenmirroring.cast.casting.phoneprojector.videoprojector.casttv.castforchromecast.screencast.casttotv.databinding.LayoutSplashActivityBinding
 import engine.app.adshandler.AHandler
@@ -25,12 +26,12 @@ import engine.app.listener.OnBannerAdsIdLoaded
 import engine.app.listener.OnCacheFullAdLoaded
 import engine.app.server.v2.DataHubConstant
 import engine.app.server.v2.Slave
-import engine.app.utils.EngineConstant
 import java.sql.DriverManager
 
 class SplashActivity : BaseActivity(), OnBannerAdsIdLoaded {
 
     private var mPreference: GCMPreferences? = null
+    private var appPreference: AppPreference? = null
     private var handler: Handler? = null
     private var appLaunch = false
     private var isBannerLoaded = false
@@ -45,7 +46,7 @@ class SplashActivity : BaseActivity(), OnBannerAdsIdLoaded {
 
         val decorView = window.decorView
         decorView.systemUiVisibility =
-            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
 
         binding = LayoutSplashActivityBinding.inflate(layoutInflater)
         setContentView(binding?.root)
@@ -53,6 +54,7 @@ class SplashActivity : BaseActivity(), OnBannerAdsIdLoaded {
         doImageFetchingWork()
 
         checkBox = findViewById(app.pnd.adshandler.R.id.privacy_checkbox)
+        appPreference = AppPreference(this)
         if (mPreference == null) mPreference = GCMPreferences(this)
 
         if (mPreference?.firsttimeString == "true") {
@@ -87,8 +89,16 @@ class SplashActivity : BaseActivity(), OnBannerAdsIdLoaded {
 
         if (mPreference?.isFirsttime == true /*|| !getCallDoRadoConditions()*/) {
 //imageView.setAnimation(animation);
+            binding?.ivLogo?.visibility = View.GONE
+            binding?.ivAppIcon?.visibility = View.VISIBLE
+            binding?.tvAppName?.visibility = View.VISIBLE
+            binding?.ivAntennaIcon?.visibility = View.VISIBLE
         } else {
             binding?.layoutStart?.visibility = View.GONE
+            binding?.ivLogo?.visibility = View.VISIBLE
+            binding?.ivAppIcon?.visibility = View.GONE
+            binding?.tvAppName?.visibility = View.GONE
+            binding?.ivAntennaIcon?.visibility = View.GONE
             // textClickBox.setVisibility(View.GONE);
             handler = Handler(Looper.getMainLooper())
             handler?.postDelayed(runnable, 10000)

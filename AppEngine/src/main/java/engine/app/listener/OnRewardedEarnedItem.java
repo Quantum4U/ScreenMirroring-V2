@@ -13,4 +13,6 @@ public interface OnRewardedEarnedItem {
 
     void onUserEarnedReward(RewardItem reward);
 
+    void onRewardAdsDismiss();
+
 }

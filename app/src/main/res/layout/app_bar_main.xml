@@ -25,6 +25,7 @@
         android:scaleType="centerCrop"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
+        app:lottie_speed="0.5"
         android:fitsSystemWindows="true"
         app:lottie_rawRes="@raw/dash_json" />
 
