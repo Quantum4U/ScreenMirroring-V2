@@ -137,7 +137,7 @@ public class BillingListActivityNew extends AppCompatActivity implements Recycle
                 tv_description.setText(billingListAdapter.getItem(0).button_sub_text);
 
             setDescription_text(0);
-            showDataAccordingToPurchase();
+//            showDataAccordingToPurchase();
         }
         TextView tvTerms = findViewById(R.id.tvTerms);
 //        TextView tvPrivacy = findViewById(R.id.tvPrivacy);
@@ -197,6 +197,7 @@ public class BillingListActivityNew extends AppCompatActivity implements Recycle
             dont_show.setVisibility(View.GONE);
 //            dont_showSpace.setVisibility(View.GONE);
         }
+        showDataAccordingToPurchase(0);
     }
 
     private void onSetBackIconUiWithPackage() {
@@ -271,45 +272,46 @@ public class BillingListActivityNew extends AppCompatActivity implements Recycle
 //                scroolView.smoothScrollTo(0, scroolView.getBottom());
 //            }
 //        }, 100);
-        switch (mBillingList.get(position).billing_type) {
-            case Slave.Billing_Free:
-                if (!Slave.hasPurchased(this)) {
-                    buttonSubs.setText(mBillingList.get(position).button_text);
-                }
-                break;
-            case Slave.Billing_Pro:
-                if (!Slave.IS_PRO) {
-                    buttonSubs.setText(mBillingList.get(position).button_text);
-                }
-                break;
-
-            case Slave.Billing_Weekly:
-                if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY && !Slave.IS_MONTHLY) && !Slave.IS_WEEKLY) {
-                    buttonSubs.setText(mBillingList.get(position).button_text);
-                }
-                break;
-            case Slave.Billing_Monthly:
-                if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY) && !Slave.IS_MONTHLY) {
-                    buttonSubs.setText(mBillingList.get(position).button_text);
-                }
-                break;
-            case Slave.Billing_Quarterly:
-                if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY) && !Slave.IS_QUARTERLY) {
-                    buttonSubs.setText(mBillingList.get(position).button_text);
-                }
-                break;
-            case Slave.Billing_HalfYear:
-                if ((!Slave.IS_PRO && !Slave.IS_YEARLY) && !Slave.IS_HALFYEARLY) {
-                    buttonSubs.setText(mBillingList.get(position).button_text);
-                }
-                break;
-
-            case Slave.Billing_Yearly:
-                if (!Slave.IS_PRO && !Slave.IS_YEARLY) {
-                    buttonSubs.setText(mBillingList.get(position).button_text);
-                }
-                break;
-        }
+//        switch (mBillingList.get(position).billing_type) {
+//            case Slave.Billing_Free:
+//                if (!Slave.hasPurchased(this)) {
+//                    buttonSubs.setText(mBillingList.get(position).button_text);
+//                }
+//                break;
+//            case Slave.Billing_Pro:
+//                if (!Slave.IS_PRO) {
+//                    buttonSubs.setText(mBillingList.get(position).button_text);
+//                }
+//                break;
+//
+//            case Slave.Billing_Weekly:
+//                if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY && !Slave.IS_MONTHLY) && !Slave.IS_WEEKLY) {
+//                    buttonSubs.setText(mBillingList.get(position).button_text);
+//                }
+//                break;
+//            case Slave.Billing_Monthly:
+//                if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY) && !Slave.IS_MONTHLY) {
+//                    buttonSubs.setText(mBillingList.get(position).button_text);
+//                }
+//                break;
+//            case Slave.Billing_Quarterly:
+//                if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY) && !Slave.IS_QUARTERLY) {
+//                    buttonSubs.setText(mBillingList.get(position).button_text);
+//                }
+//                break;
+//            case Slave.Billing_HalfYear:
+//                if ((!Slave.IS_PRO && !Slave.IS_YEARLY) && !Slave.IS_HALFYEARLY) {
+//                    buttonSubs.setText(mBillingList.get(position).button_text);
+//                }
+//                break;
+//
+//            case Slave.Billing_Yearly:
+//                if (!Slave.IS_PRO && !Slave.IS_YEARLY) {
+//                    buttonSubs.setText(mBillingList.get(position).button_text);
+//                }
+//                break;
+//        }
+        showDataAccordingToPurchase(position);
         setDescription_text(position);
     }
 
@@ -621,33 +623,64 @@ public class BillingListActivityNew extends AppCompatActivity implements Recycle
         super.onBackPressed();
     }
 
-    private void showDataAccordingToPurchase() {
-        for (Billing b : BillingResponseHandler.getInstance().getBillingResponse()) {
+    private void showDataAccordingToPurchase(int position) {
+//        for (Billing b : BillingResponseHandler.getInstance().getBillingResponse()) {
+        Billing b = mBillingList.get(position);
+            Log.d("TAG", "showDataAccordingToPurchase: >>"+b.billing_type);
             switch (b.billing_type) {
                 case Slave.Billing_Weekly:
-                    if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY && !Slave.IS_MONTHLY) && Slave.IS_WEEKLY) {
-                        buttonSubs.setEnabled(true);
-                        buttonSubs.setText("Upgrade Subscription");
+                    if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY && !Slave.IS_MONTHLY) && !Slave.IS_WEEKLY) {
+                        Log.d("TAG", "showDataAccordingToPurchase: >>33");
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_sub_btn));
+                        buttonSubs.setText(b.button_text);
+                    }else {
+                        Log.d("TAG", "showDataAccordingToPurchase: >>44");
+                        buttonSubs.setText("Subscribed");
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_unsub_btn));
                     }
                     break;
+
                 case Slave.Billing_Monthly:
-                    if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY) && Slave.IS_MONTHLY) {
-                        buttonSubs.setEnabled(true);
-                        buttonSubs.setText("Upgrade Subscription");
+                    Log.d("TAG", "showDataAccordingToPurchase: >>11");
+                    if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY) && !Slave.IS_MONTHLY) {
+                        Log.d("TAG", "showDataAccordingToPurchase: >>22");
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_sub_btn));
+                        if (Slave.IS_WEEKLY) {
+                            buttonSubs.setText("Upgrade Subscription");
+                        } else {
+                            buttonSubs.setText(b.button_text);
+                        }
+                    }else {
+                        buttonSubs.setText("Subscribed");
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_unsub_btn));
                     }
 
                     break;
                 case Slave.Billing_Quarterly:
-                    if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY) && Slave.IS_QUARTERLY) {
-                        buttonSubs.setEnabled(true);
-                        buttonSubs.setText("Upgrade Subscription");
+                    if ((!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY) && !Slave.IS_QUARTERLY) {
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_sub_btn));
+                        if (Slave.IS_MONTHLY || Slave.IS_WEEKLY) {
+                            buttonSubs.setText("Upgrade Subscription");
+                        } else {
+                            buttonSubs.setText(b.button_text);
+                        }
+                    }else {
+                        buttonSubs.setText("Subscribed");
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_unsub_btn));
                     }
 
                     break;
                 case Slave.Billing_HalfYear:
-                    if ((!Slave.IS_PRO && !Slave.IS_YEARLY) && Slave.IS_HALFYEARLY) {
-                        buttonSubs.setEnabled(true);
-                        buttonSubs.setText("Upgrade Subscription");
+                    if ((!Slave.IS_PRO && !Slave.IS_YEARLY) && !Slave.IS_HALFYEARLY) {
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_sub_btn));
+                        if (Slave.IS_QUARTERLY || Slave.IS_MONTHLY || Slave.IS_WEEKLY) {
+                            buttonSubs.setText("Upgrade Subscription");
+                        } else {
+                            buttonSubs.setText(b.button_text);
+                        }
+                    }else {
+                        buttonSubs.setText("Subscribed");
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_unsub_btn));
                     }
 
                     break;
@@ -658,6 +691,13 @@ public class BillingListActivityNew extends AppCompatActivity implements Recycle
                         buttonSubs.setText("Subscribed");
                         buttonSubs.setTextColor(getResources().getColor(R.color.white));
                         buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_unsub_btn));
+                    }else {
+                        if (Slave.IS_HALFYEARLY || Slave.IS_QUARTERLY || Slave.IS_MONTHLY || Slave.IS_WEEKLY) {
+                            buttonSubs.setText("Upgrade Subscription");
+                        } else {
+                            buttonSubs.setText(b.button_text);
+                        }
+                        buttonSubs.setBackgroundDrawable(getResources().getDrawable(R.drawable.inapp_sub_btn));
                     }
                     break;
 
@@ -679,7 +719,7 @@ public class BillingListActivityNew extends AppCompatActivity implements Recycle
                     }
                     break;
             }
-        }
+//        }
 
     }
 

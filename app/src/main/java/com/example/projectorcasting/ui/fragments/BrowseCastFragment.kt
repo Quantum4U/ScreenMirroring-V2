@@ -65,6 +65,7 @@ class BrowseCastFragment : BaseFragment(R.layout.fragment_browse_cast) {
         }
 
         binding?.tvDisconnect?.setOnClickListener {
+            showToast(getString(R.string.connection_closed))
             stopServer()
         }
 

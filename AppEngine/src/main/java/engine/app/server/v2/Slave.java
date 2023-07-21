@@ -13,7 +13,7 @@ import engine.app.server.v4.AdsProviders;
  */
 public class Slave {
 
-    public static boolean IS_PRO = false, IS_WEEKLY = false, IS_MONTHLY = false, IS_QUARTERLY, IS_HALFYEARLY = false, IS_YEARLY = false;
+    public static boolean IS_PRO = false, IS_WEEKLY = false, IS_MONTHLY = false, IS_QUARTERLY = false, IS_HALFYEARLY = false, IS_YEARLY = false;
    // public static int onExitCount=0;
     public static final String NATIVE_TYPE_MEDIUM = "native_medium";
     public static final String NATIVE_TYPE_LARGE = "native_large";

@@ -144,8 +144,11 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
         checkResultToStartSlideshow()
         setBrowserValue()
 
-        if (isCastConnected)
+        if (isCastConnected) {
+            CastHelper.startServer(context)
+            establishSession()
             castImage(filePosition)
+        }
     }
 
     private fun openDeviceListPage(startSlideShow: Boolean) {
@@ -395,7 +398,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 //                stopCasting()
 //            openDeviceListPage(true)
             findNavController().navigate(R.id.nav_scan_device)
-            showFullAds(activity)
+//            showFullAds(activity)
         } else {
             if (!isImagesLoadedForHtml) {
                 showLoader()
@@ -437,7 +440,7 @@ class ImagePreviewFragment : BaseFragment(R.layout.fragment_image_preview),
 
     private fun openBrowserPage() {
         findNavController().navigate(R.id.nav_browse_cast)
-        showFullAds(activity)
+//        showFullAds(activity)
     }
 
     private val runnable = Runnable {

@@ -112,7 +112,7 @@ class BillingListAdapterNew(
                         clickItem(it, holder, position)
                     }
                 Slave.Billing_Weekly -> {
-                    if (!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && !Slave.IS_QUARTERLY && !Slave.IS_MONTHLY && Slave.IS_WEEKLY) {
+                    if (Slave.IS_PRO || Slave.IS_YEARLY || Slave.IS_HALFYEARLY || Slave.IS_QUARTERLY || Slave.IS_MONTHLY || Slave.IS_WEEKLY) {
                         showToast()
                     } else {
                         clickItem(it, holder, position)
@@ -134,7 +134,7 @@ class BillingListAdapterNew(
                     }
                 }
                 Slave.Billing_Quarterly -> {
-                    if (!Slave.IS_PRO && !Slave.IS_YEARLY && !Slave.IS_HALFYEARLY && Slave.IS_QUARTERLY) {
+                    if (Slave.IS_PRO || Slave.IS_YEARLY || Slave.IS_HALFYEARLY || Slave.IS_QUARTERLY) {
                         showToast()
                     } else {
                         clickItem(it, holder, position)
@@ -145,7 +145,7 @@ class BillingListAdapterNew(
                     }
                 }
                 Slave.Billing_HalfYear -> {
-                    if (!Slave.IS_PRO && !Slave.IS_YEARLY && Slave.IS_HALFYEARLY) {
+                    if (Slave.IS_PRO || Slave.IS_YEARLY || Slave.IS_HALFYEARLY) {
                         showToast()
                     } else {
                         clickItem(it, holder, position)
@@ -156,7 +156,7 @@ class BillingListAdapterNew(
                     }
                 }
                 Slave.Billing_Yearly -> {
-                    if (!Slave.IS_PRO && Slave.IS_YEARLY) {
+                    if (Slave.IS_PRO || Slave.IS_YEARLY) {
                         showToast()
                     } else {
                         clickItem(it, holder, position)

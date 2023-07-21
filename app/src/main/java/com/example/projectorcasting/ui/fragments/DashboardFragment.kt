@@ -114,12 +114,12 @@ class DashboardFragment : BaseFragment(R.layout.fragment_dashboard) {
 
     private fun openDeviceListPage(){
         findNavController().navigate(R.id.nav_scan_device)
-        showNavigationFullAds(activity)
+//        showNavigationFullAds(activity)
     }
 
     private fun openBrowserPage() {
         findNavController().navigate(R.id.nav_browse_cast)
-        showNavigationFullAds(activity)
+//        showNavigationFullAds(activity)
     }
 
     private fun manageBrowserLayout() {

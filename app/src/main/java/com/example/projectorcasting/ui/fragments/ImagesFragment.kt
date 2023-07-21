@@ -472,7 +472,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 //                stopCasting()
 //            openDeviceListPage(true)
             findNavController().navigate(R.id.nav_scan_device)
-            showFullAds(activity)
+//            showFullAds(activity)
         } else {
             GlobalScope.launch(Dispatchers.Default) {
                 showImagesInHtml()
@@ -518,7 +518,7 @@ class ImagesFragment : BaseFragment(R.layout.fragment_images) {
 
     private fun openBrowserPage() {
         findNavController().navigate(R.id.nav_browse_cast)
-        showFullAds(activity)
+//        showFullAds(activity)
     }
 
     override fun onDestroyView() {

@@ -357,6 +357,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
 
         if (openBrowser) {
             openBrowserPage()
+            showNavigationFullAds(activity)
         }
 
         if (openDeviceListPage) {
@@ -406,7 +407,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
         if (isCastDeviceClick) {
 //            if (!isCastConnected)
             findNavController().navigate(R.id.nav_scan_device)
-            showFullAds(activity)
+//            showFullAds(activity)
 //            else
 //                stopCasting()
         } else {
@@ -417,7 +418,7 @@ class AudioFragment : BaseFragment(R.layout.fragment_audio) {
 
     private fun openBrowserPage() {
         findNavController().navigate(R.id.nav_browse_cast)
-        showFullAds(activity)
+//        showFullAds(activity)
     }
 
     override fun onDestroyView() {

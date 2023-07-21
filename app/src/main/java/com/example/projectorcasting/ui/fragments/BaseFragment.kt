@@ -2,6 +2,7 @@ package com.example.projectorcasting.ui.fragments
 
 import android.app.Activity
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.mediarouter.media.MediaRouter
@@ -22,14 +23,18 @@ open class BaseFragment(profileFragment: Int) : Fragment(profileFragment) {
         (activity as BaseActivity).hideLoader()
     }
 
+    fun showToast(mssg: String) {
+        Toast.makeText(context, mssg, Toast.LENGTH_SHORT).show()
+    }
+
     fun isLoaderShowing(): Boolean {
         return (activity as BaseActivity).isLoaderShowing()
     }
 
     fun showFullAds(activity: Activity?) {
-        if (Slave.ETC_1 != null && !Slave.ETC_1.equals("") && Slave.ETC_1.equals("1"))
-            AHandler.getInstance().showFullAds(activity, true)
-        else
+//        if (Slave.ETC_1 != null && !Slave.ETC_1.equals("") && Slave.ETC_1.equals("1"))
+//            AHandler.getInstance().showFullAds(activity, true)
+//        else
             AHandler.getInstance().showFullAds(activity, false)
     }
 

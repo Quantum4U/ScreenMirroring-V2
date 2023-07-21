@@ -403,7 +403,10 @@ open class BaseActivity @Inject constructor() : AppCompatActivity() {
     }
 
     fun showFullAds(activity: Activity) {
-        AHandler.getInstance().showFullAds(activity, false)
+        if (Slave.ETC_1 != null && !Slave.ETC_1.equals("") && Slave.ETC_1.equals("1"))
+            AHandler.getInstance().showFullAds(activity, true)
+        else
+            AHandler.getInstance().showFullAds(activity, false)
     }
 
     fun showBottomBannerAds(view: LinearLayout?, activity: Activity?) {

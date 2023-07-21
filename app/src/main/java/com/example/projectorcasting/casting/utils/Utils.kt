@@ -1,5 +1,6 @@
 package com.example.projectorcasting.casting.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -20,6 +21,7 @@ import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.images.WebImage
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import engine.app.adshandler.AHandler
 import engine.app.analytics.logGAEvents
 import io.github.dkbai.tinyhttpd.nanohttpd.core.util.ServerConstants
 import org.json.JSONObject
@@ -346,6 +348,7 @@ object Utils {
             val intent = Intent(context, ExpandedControlsActivity::class.java)
             context.startActivity(intent)
             sheetDialog.cancel()
+            AHandler.getInstance().showFullAds(context as Activity?,false)
         }
 
         playNext?.setOnClickListener {

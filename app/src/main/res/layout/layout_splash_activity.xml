@@ -9,6 +9,12 @@
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/dash_json"
         android:scaleType="centerCrop"
+        app:lottie_speed="0.5"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <View
+        android:background="#33000000"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

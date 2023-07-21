@@ -471,7 +471,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
         if (isCastDeviceClick) {
 //            if (!isCastConnected)
             findNavController().navigate(R.id.nav_scan_device)
-            showFullAds(activity)
+//            showFullAds(activity)
 //            else
 //                stopCasting()
         } else {
@@ -488,6 +488,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
         if (openBrowser) {
             openBrowserPage()
+            showNavigationFullAds(activity)
         }
 
         if (openDeviceListPage) {
@@ -498,7 +499,7 @@ class VideosFragment : BaseFragment(R.layout.fragment_videos) {
 
     private fun openBrowserPage() {
         findNavController().navigate(R.id.nav_browse_cast)
-        showFullAds(activity)
+//        showFullAds(activity)
     }
 
     override fun onDestroyView() {

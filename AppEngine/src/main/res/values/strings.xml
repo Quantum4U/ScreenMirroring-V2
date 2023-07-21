@@ -29,7 +29,7 @@
     <!--Provider app id -->
     <string name="fb_login_protocol_scheme">fb413092470065517</string>
     <string name="app_id_facebook">413092470065517</string>
-    <string name="app_id_admob">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="app_id_admob">ca-app-pub-3451337100490595~7486035631</string>
     <string name="app_id_startapp">210012641</string>
     <string name="app_id_unity">4402645</string>
     <string name="app_id_iron_source">1173cd355</string>
